@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DDCET Mock Test 2024-25 | Full 100 Questions</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --card: #1c2333;
+    --border: #30363d;
+    --accent: #f78166;
+    --accent2: #79c0ff;
+    --accent3: #56d364;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --wrong: #ff7b72;
+    --correct: #56d364;
+    --radius: 10px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Sora', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 18px 24px;
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+  }
+  .logo { font-size: 1.1rem; font-weight: 700; letter-spacing: .5px; }
+  .logo span { color: var(--accent); }
+  #timerBox {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.3rem; font-weight: 600;
+    color: var(--accent2);
+    background: #0d1117;
+    border: 1px solid var(--border);
+    padding: 6px 18px; border-radius: 8px;
+    min-width: 100px; text-align: center;
+  }
+  #timerBox.warn { color: var(--accent); animation: pulse .8s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
+
+  /* ── PROGRESS BAR ── */
+  #progressWrap { background: var(--border); height: 4px; width: 100%; }
+  #progressBar { height: 4px; background: linear-gradient(90deg,var(--accent),var(--accent2)); width: 0; transition: width .4s; }
+
+  /* ── MAIN LAYOUT ── */
+  .container { max-width: 900px; margin: 0 auto; padding: 28px 18px; }
+
+  /* ── SECTION BADGE ── */
+  .section-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--card); border: 1px solid var(--border);
+    padding: 6px 16px; border-radius: 20px;
+    font-size: .75rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase;
+    color: var(--accent2); margin: 32px 0 16px;
+  }
+  .section-badge.s2 { color: var(--accent3); }
+
+  /* ── QUESTION CARD ── */
+  .qcard {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px 24px;
+    margin-bottom: 16px;
+    transition: border-color .2s;
+  }
+  .qcard:hover { border-color: #444c56; }
+  .qcard.answered { border-color: #2d333b; }
+
+  .qtop { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 14px; }
+  .qnum {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .8rem; color: var(--muted);
+    background: var(--bg); border: 1px solid var(--border);
+    padding: 3px 10px; border-radius: 6px; white-space: nowrap; margin-top: 2px;
+  }
+  .qtext { font-size: .97rem; line-height: 1.6; font-weight: 400; }
+
+  /* ── OPTIONS ── */
+  .options { display: grid; gap: 8px; margin-top: 4px; }
+  .opt {
+    display: flex; align-items: flex-start; gap: 12px;
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 8px; padding: 10px 14px;
+    cursor: pointer; transition: all .18s; font-size: .9rem;
+  }
+  .opt:hover { border-color: var(--accent2); background: #1a2230; }
+  .opt input[type=radio] { display: none; }
+  .opt-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .8rem; font-weight: 600;
+    color: var(--accent2);
+    background: #162032; border: 1px solid #2a3a50;
+    padding: 2px 8px; border-radius: 5px;
+    flex-shrink: 0; margin-top: 1px;
+  }
+  .opt.selected { border-color: var(--accent2); background: #162032; }
+  .opt.correct { border-color: var(--correct); background: #0d2218; }
+  .opt.correct .opt-label { color: var(--correct); background: #0a1f12; border-color: #1a4025; }
+  .opt.wrong { border-color: var(--wrong); background: #2a0f0f; }
+  .opt.wrong .opt-label { color: var(--wrong); background: #200d0d; border-color: #4a1a1a; }
+
+  /* ── EXPLANATION ── */
+  .explanation {
+    margin-top: 14px; padding: 12px 16px;
+    background: var(--bg); border-left: 3px solid var(--accent3);
+    border-radius: 0 8px 8px 0; font-size: .85rem; color: var(--muted);
+    display: none; line-height: 1.6;
+  }
+  .explanation strong { color: var(--accent3); }
+  .explanation.visible { display: block; }
+
+  /* ── NAVIGATION PALETTE ── */
+  #navPalette {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 20px;
+    margin-bottom: 28px; position: sticky; top: 72px; z-index: 90;
+  }
+  #navPalette h4 { font-size: .8rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
+  #navGrid { display: flex; flex-wrap: wrap; gap: 6px; }
+  .navBtn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .72rem; width: 32px; height: 32px;
+    border: 1px solid var(--border); border-radius: 6px;
+    background: var(--bg); color: var(--muted);
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: all .15s;
+  }
+  .navBtn:hover { border-color: var(--accent2); color: var(--accent2); }
+  .navBtn.done { background: #0d2218; border-color: var(--correct); color: var(--correct); }
+  .navBtn.revealed { background: #162032; border-color: var(--accent2); color: var(--accent2); }
+
+  /* ── CONTROL BUTTONS ── */
+  .controls { display: flex; gap: 12px; flex-wrap: wrap; margin: 28px 0; justify-content: center; }
+  .btn {
+    font-family: 'Sora', sans-serif; font-size: .88rem; font-weight: 600;
+    padding: 11px 24px; border-radius: 8px; border: none; cursor: pointer;
+    transition: all .18s; letter-spacing: .3px;
+  }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover { background: #e0604a; }
+  .btn-secondary { background: var(--card); color: var(--text); border: 1px solid var(--border); }
+  .btn-secondary:hover { border-color: var(--accent2); color: var(--accent2); }
+  .btn-success { background: var(--correct); color: #0d2218; }
+  .btn-success:hover { background: #3db854; }
+
+  /* ── RESULT PANEL ── */
+  #resultPanel {
+    display: none; background: var(--card); border: 1px solid var(--border);
+    border-radius: 14px; padding: 36px; margin: 28px 0; text-align: center;
+  }
+  #resultPanel.visible { display: block; }
+  .result-score {
+    font-size: 4rem; font-weight: 700;
+    font-family: 'JetBrains Mono', monospace;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .result-label { font-size: 1rem; color: var(--muted); margin: 8px 0 24px; }
+  .stat-row { display: flex; justify-content: center; gap: 32px; flex-wrap: wrap; margin: 20px 0; }
+  .stat { text-align: center; }
+  .stat-val { font-family: 'JetBrains Mono', monospace; font-size: 1.8rem; font-weight: 700; }
+  .stat-key { font-size: .75rem; color: var(--muted); margin-top: 4px; }
+  .s-correct .stat-val { color: var(--correct); }
+  .s-wrong .stat-val { color: var(--wrong); }
+  .s-skip .stat-val { color: var(--muted); }
+  .s-pct .stat-val { color: var(--accent2); }
+
+  /* ── START SCREEN ── */
+  #startScreen {
+    text-align: center; padding: 60px 20px;
+  }
+  #startScreen h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 10px; }
+  #startScreen h1 span { color: var(--accent); }
+  #startScreen p { color: var(--muted); font-size: .95rem; margin-bottom: 10px; }
+  .tag-row { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin: 20px 0 32px; }
+  .tag {
+    background: var(--card); border: 1px solid var(--border);
+    padding: 6px 16px; border-radius: 20px; font-size: .8rem; color: var(--muted);
+  }
+  #testArea { display: none; }
+
+  .note { font-size: .8rem; color: var(--muted); text-align: center; margin-top: -10px; margin-bottom: 20px; }
+
+  /* scrollbar */
+  ::-webkit-scrollbar { width: 6px; } ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">DDCET <span>MockTest</span> 2024-25</div>
+  <div id="timerBox">2:30:00</div>
+</header>
+<div id="progressWrap"><div id="progressBar"></div></div>
+
+<div class="container">
+
+  <!-- START SCREEN -->
+  <div id="startScreen">
+    <h1>DDCET Full <span>Mock Test</span></h1>
+    <p>Gujarat Technological University &nbsp;|&nbsp; Engineering (All Branches)</p>
+    <div class="tag-row">
+      <span class="tag">📋 100 Questions</span>
+      <span class="tag">⏱ 150 Minutes</span>
+      <span class="tag">📊 200 Marks</span>
+      <span class="tag">BE-01 + BE-02</span>
+    </div>
+    <p style="color:var(--muted);font-size:.85rem;margin-bottom:28px;">Click an option to select. Click <strong style="color:var(--accent2)">Show Answer</strong> to reveal with explanation. Submit at any time.</p>
+    <button class="btn btn-primary" onclick="startTest()" style="font-size:1rem;padding:14px 40px;">▶ Start Test</button>
+  </div>
+
+  <!-- TEST AREA -->
+  <div id="testArea">
+
+    <!-- Navigator -->
+    <div id="navPalette">
+      <h4>Question Navigator</h4>
+      <div id="navGrid"></div>
+    </div>
+
+    <div id="questionsContainer"></div>
+
+    <div class="controls">
+      <button class="btn btn-secondary" onclick="showAllAnswers()">💡 Reveal All Answers</button>
+      <button class="btn btn-success" onclick="submitTest()">✅ Submit &amp; Score</button>
+    </div>
+
+    <div id="resultPanel">
+      <div class="result-score" id="resScore">0/100</div>
+      <div class="result-label">Your Score</div>
+      <div class="stat-row">
+        <div class="stat s-correct"><div class="stat-val" id="resC">0</div><div class="stat-key">Correct</div></div>
+        <div class="stat s-wrong"><div class="stat-val" id="resW">0</div><div class="stat-key">Wrong</div></div>
+        <div class="stat s-skip"><div class="stat-val" id="resS">0</div><div class="stat-key">Skipped</div></div>
+        <div class="stat s-pct"><div class="stat-val" id="resPct">0%</div><div class="stat-key">Percentage</div></div>
+      </div>
+      <button class="btn btn-secondary" onclick="resetTest()" style="margin-top:16px;">🔄 Retake Test</button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════════════════════
+//  QUESTION BANK  –  100 Questions
+// ════════════════════════════════════════════════
+const questions = [
+// ── BE-01: Units & Measurement (Q1-6) ──────────
+{section:"BE-01 · Units & Measurement",
+ q:"1 meter is equal to how many centimeters?",
+ opts:["10","100","1000","10000"], ans:1,
+ exp:"The SI unit metre equals 100 centimetres (CGS system: 1 m = 100 cm)."},
+{section:"BE-01 · Units & Measurement",
+ q:"The percentage error in a measurement is defined as:",
+ opts:["(Absolute error / True value) × 100","Absolute error × 100","(True value / Measured value) × 100","Measured value - True value"],
+ ans:0, exp:"Percentage error = (Absolute error / True value) × 100."},
+{section:"BE-01 · Units & Measurement",
+ q:"A Vernier caliper has a Vernier scale with 10 divisions equal to 9 main-scale divisions. If the least count of the main scale is 1 mm, the least count of the Vernier caliper is:",
+ opts:["0.01 mm","0.1 mm","0.001 mm","1 mm"], ans:1,
+ exp:"Least count = 1 MSD – 1 VSD = 1 – 0.9 = 0.1 mm."},
+{section:"BE-01 · Units & Measurement",
+ q:"Which of the following is a fundamental (base) unit in the SI system?",
+ opts:["Newton","Joule","Kilogram","Pascal"], ans:2,
+ exp:"Kilogram (kg) is one of the seven SI base units. Newton, Joule, and Pascal are derived units."},
+{section:"BE-01 · Units & Measurement",
+ q:"1 CGS unit of force (dyne) equals how many SI units (Newton)?",
+ opts:["10⁻⁵ N","10⁻³ N","10⁵ N","10³ N"], ans:0,
+ exp:"1 dyne = 10⁻⁵ Newton."},
+{section:"BE-01 · Units & Measurement",
+ q:"If two quantities A and B have errors ΔA and ΔB respectively, the error in the product A×B is:",
+ opts:["ΔA – ΔB","ΔA × ΔB","ΔA/A + ΔB/B","ΔA/A – ΔB/B"], ans:2,
+ exp:"For multiplication, relative errors add: Δ(AB)/(AB) = ΔA/A + ΔB/B."},
+
+// ── BE-01: Classical Mechanics (Q7-14) ──────────
+{section:"BE-01 · Classical Mechanics",
+ q:"Newton's first law of motion defines the concept of:",
+ opts:["Force","Inertia","Momentum","Acceleration"], ans:1,
+ exp:"Newton's first law states that a body remains at rest or in uniform motion unless an external force acts — this property is called inertia."},
+{section:"BE-01 · Classical Mechanics",
+ q:"A body of mass 5 kg is moving with velocity 4 m/s. Its kinetic energy is:",
+ opts:["10 J","20 J","40 J","80 J"], ans:2,
+ exp:"KE = ½mv² = ½ × 5 × 16 = 40 J."},
+{section:"BE-01 · Classical Mechanics",
+ q:"Centripetal force acts in which direction?",
+ opts:["Tangential to the circular path","Away from the centre","Towards the centre","Perpendicular to velocity and centre"], ans:2,
+ exp:"Centripetal force always points towards the centre of the circular path."},
+{section:"BE-01 · Classical Mechanics",
+ q:"A car accelerates from 0 to 72 km/h in 10 s. Its acceleration is:",
+ opts:["2 m/s²","7.2 m/s²","0.2 m/s²","20 m/s²"], ans:0,
+ exp:"72 km/h = 20 m/s; a = (20-0)/10 = 2 m/s²."},
+{section:"BE-01 · Classical Mechanics",
+ q:"The work done by a force is maximum when the angle between force and displacement is:",
+ opts:["90°","45°","180°","0°"], ans:3,
+ exp:"W = F·d·cosθ. When θ = 0°, cosθ = 1, giving maximum work."},
+{section:"BE-01 · Classical Mechanics",
+ q:"Power is defined as:",
+ opts:["Force × displacement","Work / time","Mass × acceleration","Energy × time"], ans:1,
+ exp:"Power = Work done / Time taken; unit is Watt (W)."},
+{section:"BE-01 · Classical Mechanics",
+ q:"The SI unit of angular velocity is:",
+ opts:["rad/s","m/s","rev/min","degrees/s"], ans:0,
+ exp:"Angular velocity ω is measured in radians per second (rad/s)."},
+{section:"BE-01 · Classical Mechanics",
+ q:"According to Newton's 3rd law, action and reaction forces:",
+ opts:["Act on the same body","Are unequal in magnitude","Act on different bodies","Cancel each other"], ans:2,
+ exp:"Action and reaction are equal and opposite but act on different bodies."},
+
+// ── BE-01: Electric Current (Q15-22) ──────────
+{section:"BE-01 · Electric Current",
+ q:"Ohm's law states that V = IR. If R doubles while V stays constant, the current:",
+ opts:["Doubles","Stays same","Halves","Becomes zero"], ans:2,
+ exp:"I = V/R. If R doubles, I = V/2R — current halves."},
+{section:"BE-01 · Electric Current",
+ q:"Two resistors of 4Ω and 6Ω are connected in parallel. The equivalent resistance is:",
+ opts:["10 Ω","2.4 Ω","5 Ω","24 Ω"], ans:1,
+ exp:"1/R = 1/4 + 1/6 = 3/12 + 2/12 = 5/12 → R = 2.4 Ω."},
+{section:"BE-01 · Electric Current",
+ q:"Coulomb's law gives force between two charges as F = kq₁q₂/r². If the distance is doubled, force becomes:",
+ opts:["4 times","Twice","Half","One-fourth"], ans:3,
+ exp:"F ∝ 1/r². Doubling r makes F one-fourth."},
+{section:"BE-01 · Electric Current",
+ q:"The SI unit of electrical resistance is:",
+ opts:["Ampere","Volt","Ohm","Siemens"], ans:2,
+ exp:"Resistance is measured in Ohm (Ω). Siemens is the unit of conductance."},
+{section:"BE-01 · Electric Current",
+ q:"A parallel plate capacitor has capacitance C. If the area of plates is doubled (keeping d same), the new capacitance is:",
+ opts:["C/2","C","2C","4C"], ans:2,
+ exp:"C = ε₀A/d. Doubling A doubles capacitance → 2C."},
+{section:"BE-01 · Electric Current",
+ q:"Electric field intensity is defined as:",
+ opts:["Force per unit charge","Charge per unit area","Energy per unit charge","Current per unit area"], ans:0,
+ exp:"Electric field E = F/q (force experienced per unit positive charge)."},
+{section:"BE-01 · Electric Current",
+ q:"Two capacitors C₁ = 2μF and C₂ = 3μF are in series. Equivalent capacitance is:",
+ opts:["5 μF","1 μF","1.2 μF","0.83 μF"], ans:2,
+ exp:"1/C = 1/2 + 1/3 = 5/6 → C = 6/5 = 1.2 μF."},
+{section:"BE-01 · Electric Current",
+ q:"Resistivity of a material depends on:",
+ opts:["Length of conductor","Cross-section area","Material and temperature","Applied voltage"], ans:2,
+ exp:"Resistivity (ρ) is a material property, varying with temperature but not with dimensions."},
+
+// ── BE-01: Heat & Thermometry (Q23-28) ──────────
+{section:"BE-01 · Heat & Thermometry",
+ q:"0°C is equal to how many Kelvin?",
+ opts:["0 K","100 K","273 K","373 K"], ans:2,
+ exp:"K = °C + 273.15 ≈ 273 K."},
+{section:"BE-01 · Heat & Thermometry",
+ q:"The primary mode of heat transfer in liquids and gases is:",
+ opts:["Conduction","Convection","Radiation","Reflection"], ans:1,
+ exp:"Convection is the main mode in fluids; molecules carry energy by bulk movement."},
+{section:"BE-01 · Heat & Thermometry",
+ q:"If 100°F is converted to Celsius, the value is approximately:",
+ opts:["32°C","100°C","37.8°C","50°C"], ans:2,
+ exp:"°C = (°F − 32) × 5/9 = (100 − 32) × 5/9 = 68 × 5/9 ≈ 37.8°C."},
+{section:"BE-01 · Heat & Thermometry",
+ q:"The specific heat of water is:",
+ opts:["1 cal/g°C","4.2 J/g°C","Both A and B","0.5 cal/g°C"], ans:2,
+ exp:"Water's specific heat is 1 cal/g°C = 4.2 J/g°C — both are equivalent."},
+{section:"BE-01 · Heat & Thermometry",
+ q:"Thermal conductivity measures a material's ability to:",
+ opts:["Store heat","Conduct electricity","Transmit heat by conduction","Reflect radiation"], ans:2,
+ exp:"Thermal conductivity (k) quantifies how well a material conducts heat."},
+{section:"BE-01 · Heat & Thermometry",
+ q:"Linear thermal expansion of a rod depends on:",
+ opts:["Only original length","Only temperature change","Both original length and temperature change","Material colour"], ans:2,
+ exp:"ΔL = α·L₀·ΔT — expansion depends on coefficient α, original length L₀, and ΔT."},
+
+// ── BE-01: Waves, Optics & Acoustics (Q29-34) ──
+{section:"BE-01 · Waves, Optics & Acoustics",
+ q:"Sound waves are:",
+ opts:["Transverse mechanical waves","Longitudinal mechanical waves","Electromagnetic waves","Non-mechanical waves"], ans:1,
+ exp:"Sound waves are longitudinal mechanical waves requiring a medium for propagation."},
+{section:"BE-01 · Waves, Optics & Acoustics",
+ q:"Snell's law relates the angles of incidence and refraction through:",
+ opts:["n₁ sinθ₁ = n₂ sinθ₂","n₁ cosθ₁ = n₂ cosθ₂","sinθ₁/sinθ₂ = n₁","sinθ₁ + sinθ₂ = constant"], ans:0,
+ exp:"Snell's law: n₁sinθ₁ = n₂sinθ₂, relating refractive indices and angles."},
+{section:"BE-01 · Waves, Optics & Acoustics",
+ q:"Total internal reflection occurs when light travels from:",
+ opts:["Rarer to denser medium at any angle","Denser to rarer medium at/beyond critical angle","Rarer to rarer medium","Denser to denser medium"], ans:1,
+ exp:"TIR occurs when light in a denser medium hits the interface at or beyond the critical angle."},
+{section:"BE-01 · Waves, Optics & Acoustics",
+ q:"Reverberation is defined as:",
+ opts:["Initial sound reflection","Persistence of sound after source stops","Absorption of sound","Frequency of sound"], ans:1,
+ exp:"Reverberation is the prolonged persistence of sound due to multiple reflections after the source has stopped."},
+{section:"BE-01 · Waves, Optics & Acoustics",
+ q:"LASER light is:",
+ opts:["White light","Coherent, monochromatic light","Incoherent white light","Sound wave"], ans:1,
+ exp:"LASER = Light Amplification by Stimulated Emission of Radiation — coherent and monochromatic."},
+{section:"BE-01 · Waves, Optics & Acoustics",
+ q:"Optical fibre works on the principle of:",
+ opts:["Refraction","Dispersion","Total internal reflection","Diffraction"], ans:2,
+ exp:"Optical fibres use total internal reflection to transmit light signals with minimal loss."},
+
+// ── BE-01: Chemical Reactions (Q35-38) ──────────
+{section:"BE-01 · Chemical Reactions",
+ q:"In a combination reaction:",
+ opts:["One substance breaks into two","Two substances combine to form one","Elements are displaced","Two compounds exchange ions"], ans:1,
+ exp:"Combination reaction: A + B → AB. Two reactants combine to form a single product."},
+{section:"BE-01 · Chemical Reactions",
+ q:"Which of the following is a decomposition reaction?",
+ opts:["2H₂ + O₂ → 2H₂O","CaCO₃ → CaO + CO₂","Fe + CuSO₄ → FeSO₄ + Cu","NaCl + AgNO₃ → AgCl + NaNO₃"], ans:1,
+ exp:"CaCO₃ → CaO + CO₂ is a decomposition reaction — one reactant gives multiple products."},
+{section:"BE-01 · Chemical Reactions",
+ q:"A balanced chemical equation follows the law of:",
+ opts:["Conservation of mass","Conservation of energy","Thermodynamics","Entropy"], ans:0,
+ exp:"A balanced equation ensures the law of conservation of mass: mass of reactants = mass of products."},
+{section:"BE-01 · Chemical Reactions",
+ q:"Double displacement reaction involves:",
+ opts:["Exchange of atoms between two compounds","Combination of elements","Breakdown of one compound","Simple displacement"], ans:0,
+ exp:"In double displacement, ions of two compounds exchange: AB + CD → AD + CB."},
+
+// ── BE-01: Acids, Bases & Salts (Q39-42) ──────
+{section:"BE-01 · Acids, Bases & Salts",
+ q:"A solution with pH 7 is:",
+ opts:["Acidic","Basic","Neutral","Strongly acidic"], ans:2,
+ exp:"pH 7 is neutral. pH < 7 is acidic; pH > 7 is basic."},
+{section:"BE-01 · Acids, Bases & Salts",
+ q:"Acids turn blue litmus paper:",
+ opts:["Blue","Red","Green","White"], ans:1,
+ exp:"Acids turn blue litmus red; bases turn red litmus blue."},
+{section:"BE-01 · Acids, Bases & Salts",
+ q:"When a metallic oxide reacts with acid, the products are:",
+ opts:["Salt + Water","Salt + Hydrogen","Oxide + Water","Base + Hydrogen"], ans:0,
+ exp:"Metal oxide + Acid → Salt + Water (e.g., CuO + H₂SO₄ → CuSO₄ + H₂O)."},
+{section:"BE-01 · Acids, Bases & Salts",
+ q:"Baking soda (NaHCO₃) solution is:",
+ opts:["Acidic","Neutral","Weakly basic","Strongly acidic"], ans:2,
+ exp:"NaHCO₃ is a salt of a strong base (NaOH) and weak acid (H₂CO₃) — its solution is weakly basic (pH slightly > 7)."},
+
+// ── BE-01: Metals & Non-metals (Q43-46) ────────
+{section:"BE-01 · Metals & Non-metals",
+ q:"Which of the following is a physical property of metals?",
+ opts:["Non-lustrous","Brittle","Good conductor of electricity","Poor thermal conductor"], ans:2,
+ exp:"Metals are good conductors of electricity due to free electrons."},
+{section:"BE-01 · Metals & Non-metals",
+ q:"Corrosion of iron is called:",
+ opts:["Tarnishing","Rusting","Burning","Plating"], ans:1,
+ exp:"Iron corrosion produces iron oxide (Fe₂O₃·xH₂O), commonly called rust."},
+{section:"BE-01 · Metals & Non-metals",
+ q:"Ionic compounds have:",
+ opts:["Low melting points","High melting points","Molecular bonds","No electrical conductivity"], ans:1,
+ exp:"Strong electrostatic forces in ionic compounds give them high melting and boiling points."},
+{section:"BE-01 · Metals & Non-metals",
+ q:"Non-metals are generally:",
+ opts:["Malleable","Ductile","Brittle","Lustrous"], ans:2,
+ exp:"Non-metals are brittle (if solid) and lack the malleability and ductility of metals."},
+
+// ── BE-01: Computer Practice (Q47-50) ──────────
+{section:"BE-01 · Computer Practice",
+ q:"The full form of CPU is:",
+ opts:["Central Program Unit","Central Processing Unit","Computer Processing Unit","Central Peripheral Unit"], ans:1,
+ exp:"CPU — Central Processing Unit — is the main processor of a computer."},
+{section:"BE-01 · Computer Practice",
+ q:"Which of the following is an input device?",
+ opts:["Monitor","Printer","Keyboard","Speaker"], ans:2,
+ exp:"Keyboard is an input device; monitor, printer, and speaker are output devices."},
+{section:"BE-01 · Computer Practice",
+ q:"HTML stands for:",
+ opts:["Hyper Text Markup Language","High Tech Markup Language","Hyper Transfer Markup Language","Hyper Text Machine Language"], ans:0,
+ exp:"HTML = Hyper Text Markup Language — the standard language for creating web pages."},
+{section:"BE-01 · Computer Practice",
+ q:"Which MS Office tool is used for creating presentations?",
+ opts:["MS Word","MS Excel","MS PowerPoint","MS Access"], ans:2,
+ exp:"MS PowerPoint is used to create slide-based presentations."},
+
+// ── BE-02: Determinants & Matrices (Q51-54) ────
+{section:"BE-02 · Determinants & Matrices",
+ q:"The determinant of a 2×2 matrix [[a,b],[c,d]] is:",
+ opts:["ab + cd","ad – bc","ac – bd","ab – cd"], ans:1,
+ exp:"det = ad − bc for a 2×2 matrix."},
+{section:"BE-02 · Determinants & Matrices",
+ q:"A matrix in which number of rows = number of columns is called:",
+ opts:["Rectangular matrix","Square matrix","Null matrix","Identity matrix"], ans:1,
+ exp:"A square matrix has equal number of rows and columns."},
+{section:"BE-02 · Determinants & Matrices",
+ q:"The identity matrix of order 2×2 is:",
+ opts:["[[0,0],[0,0]]","[[1,0],[0,1]]","[[1,1],[1,1]]","[[2,0],[0,2]]"], ans:1,
+ exp:"Identity matrix I has 1s on the diagonal and 0s elsewhere."},
+{section:"BE-02 · Determinants & Matrices",
+ q:"If A = [[2,3],[1,4]], the inverse A⁻¹ exists if:",
+ opts:["det(A) = 0","det(A) ≠ 0","A is rectangular","A is null matrix"], ans:1,
+ exp:"A matrix is invertible (non-singular) only when its determinant is non-zero."},
+
+// ── BE-02: Trigonometry (Q55-60) ───────────────
+{section:"BE-02 · Trigonometry",
+ q:"π radians equals how many degrees?",
+ opts:["90°","270°","360°","180°"], ans:3,
+ exp:"π radians = 180°. 2π radians = 360°."},
+{section:"BE-02 · Trigonometry",
+ q:"The value of sin 30° is:",
+ opts:["√3/2","1/2","1/√2","1"], ans:1,
+ exp:"sin 30° = 1/2 (standard trigonometric value)."},
+{section:"BE-02 · Trigonometry",
+ q:"cos(A + B) is equal to:",
+ opts:["cosA cosB + sinA sinB","cosA cosB − sinA sinB","sinA cosB + cosA sinB","sinA sinB − cosA cosB"], ans:1,
+ exp:"Compound angle formula: cos(A+B) = cosAcosB − sinAsinB."},
+{section:"BE-02 · Trigonometry",
+ q:"sin²θ + cos²θ is equal to:",
+ opts:["0","2","1","sinθ cosθ"], ans:2,
+ exp:"The Pythagorean identity: sin²θ + cos²θ = 1 for all θ."},
+{section:"BE-02 · Trigonometry",
+ q:"The period of sin(x) is:",
+ opts:["π","2π","π/2","4π"], ans:1,
+ exp:"sin(x) completes one full cycle in 2π radians."},
+{section:"BE-02 · Trigonometry",
+ q:"sin 2A is equal to:",
+ opts:["2sinA","2cosA","2sinA cosA","sin²A − cos²A"], ans:2,
+ exp:"Double angle formula: sin 2A = 2 sinA cosA."},
+
+// ── BE-02: Vectors (Q61-64) ─────────────────────
+{section:"BE-02 · Vectors",
+ q:"The dot product of two perpendicular vectors is:",
+ opts:["1","−1","0","Undefined"], ans:2,
+ exp:"A·B = |A||B|cosθ. For θ = 90°, cos90° = 0 → A·B = 0."},
+{section:"BE-02 · Vectors",
+ q:"A unit vector has magnitude:",
+ opts:["0","Infinity","1","Depends on direction"], ans:2,
+ exp:"A unit vector has magnitude exactly 1 and indicates direction only."},
+{section:"BE-02 · Vectors",
+ q:"The cross product A × B gives a vector:",
+ opts:["Parallel to A","Parallel to B","Perpendicular to both A and B","In the plane of A and B"], ans:2,
+ exp:"Cross product A×B is perpendicular to the plane containing A and B."},
+{section:"BE-02 · Vectors",
+ q:"If |A| = 3, |B| = 4 and A·B = 0, then |A + B| is:",
+ opts:["7","1","5","12"], ans:2,
+ exp:"|A+B|² = |A|² + |B|² + 2A·B = 9 + 16 + 0 = 25 → |A+B| = 5."},
+
+// ── BE-02: Coordinate Geometry (Q65-68) ─────────
+{section:"BE-02 · Coordinate Geometry",
+ q:"Slope of the line joining (2,3) and (4,7) is:",
+ opts:["1","2","3","4"], ans:1,
+ exp:"m = (y₂−y₁)/(x₂−x₁) = (7−3)/(4−2) = 4/2 = 2."},
+{section:"BE-02 · Coordinate Geometry",
+ q:"Two lines are perpendicular if the product of their slopes is:",
+ opts:["0","1","−1","∞"], ans:2,
+ exp:"Condition for perpendicular lines: m₁ × m₂ = −1."},
+{section:"BE-02 · Coordinate Geometry",
+ q:"The general equation of a circle with centre (h,k) and radius r is:",
+ opts:["(x−h)² + (y−k)² = r²","(x+h)² + (y+k)² = r","x² + y² = r","(x−h) + (y−k) = r"], ans:0,
+ exp:"Standard equation of circle: (x−h)² + (y−k)² = r²."},
+{section:"BE-02 · Coordinate Geometry",
+ q:"The slope of the line 3x + 4y = 12 is:",
+ opts:["3/4","−3/4","4/3","−4/3"], ans:1,
+ exp:"Rearranging: y = −(3/4)x + 3 → slope m = −3/4."},
+
+// ── BE-02: Function & Limit (Q69-72) ────────────
+{section:"BE-02 · Function & Limit",
+ q:"lim(x→0) (sin x)/x is equal to:",
+ opts:["0","∞","1","Undefined"], ans:2,
+ exp:"Standard limit: lim(x→0) sinx/x = 1 (fundamental result in calculus)."},
+{section:"BE-02 · Function & Limit",
+ q:"The domain of f(x) = √x is:",
+ opts:["All real numbers","x > 0","x ≥ 0","x < 0"], ans:2,
+ exp:"Square root is defined for non-negative values → domain is x ≥ 0."},
+{section:"BE-02 · Function & Limit",
+ q:"lim(x→∞) (1/x) is equal to:",
+ opts:["1","∞","0","−1"], ans:2,
+ exp:"As x → ∞, 1/x → 0."},
+{section:"BE-02 · Function & Limit",
+ q:"lim(x→2) (x² − 4)/(x − 2) is equal to:",
+ opts:["0","2","4","Undefined"], ans:2,
+ exp:"Factor: (x²−4)/(x−2) = (x+2)(x−2)/(x−2) = x+2. At x=2: 2+2 = 4."},
+
+// ── BE-02: Differentiation (Q73-78) ─────────────
+{section:"BE-02 · Differentiation",
+ q:"d/dx (xⁿ) is equal to:",
+ opts:["xⁿ⁻¹","n·xⁿ","n·xⁿ⁻¹","nxⁿ⁺¹"], ans:2,
+ exp:"Power rule: d/dx(xⁿ) = n·xⁿ⁻¹."},
+{section:"BE-02 · Differentiation",
+ q:"d/dx (sin x) is:",
+ opts:["−sin x","cos x","−cos x","tan x"], ans:1,
+ exp:"Derivative of sin x is cos x."},
+{section:"BE-02 · Differentiation",
+ q:"If y = e^x, then dy/dx is:",
+ opts:["e^(x−1)","xe^x","e^x","1/e^x"], ans:2,
+ exp:"The exponential function e^x is its own derivative."},
+{section:"BE-02 · Differentiation",
+ q:"The chain rule is used to differentiate:",
+ opts:["Sum of functions","Composite functions","Product of functions","Quotient of functions"], ans:1,
+ exp:"Chain rule: d/dx[f(g(x))] = f'(g(x))·g'(x) — used for composite functions."},
+{section:"BE-02 · Differentiation",
+ q:"If y = x² + 3x, the velocity (dy/dt) when x = 2 and dx/dt = 1 is:",
+ opts:["7","4","14","3"], ans:0,
+ exp:"dy/dt = (2x+3)·(dx/dt) = (4+3)×1 = 7."},
+{section:"BE-02 · Differentiation",
+ q:"d/dx (log x) [natural log] is:",
+ opts:["x","1/x","log x","x·log x"], ans:1,
+ exp:"d/dx(ln x) = 1/x."},
+
+// ── BE-02: Integration (Q79-84) ─────────────────
+{section:"BE-02 · Integration",
+ q:"∫ xⁿ dx (n ≠ −1) is equal to:",
+ opts:["xⁿ⁺¹ + C","xⁿ⁺¹/(n+1) + C","n·xⁿ⁻¹ + C","xⁿ/n + C"], ans:1,
+ exp:"Power rule for integration: ∫xⁿdx = xⁿ⁺¹/(n+1) + C."},
+{section:"BE-02 · Integration",
+ q:"∫ cos x dx is:",
+ opts:["sin x + C","−sin x + C","cos x + C","tan x + C"], ans:0,
+ exp:"∫cos x dx = sin x + C."},
+{section:"BE-02 · Integration",
+ q:"∫₀¹ x dx is equal to:",
+ opts:["1","0","1/2","2"], ans:2,
+ exp:"∫₀¹ x dx = [x²/2]₀¹ = 1/2 − 0 = 1/2."},
+{section:"BE-02 · Integration",
+ q:"∫ e^x dx is:",
+ opts:["e^(x−1) + C","xe^x + C","e^x + C","e^x/x + C"], ans:2,
+ exp:"∫e^x dx = e^x + C."},
+{section:"BE-02 · Integration",
+ q:"Integration is the reverse process of:",
+ opts:["Multiplication","Differentiation","Logarithm","Trigonometry"], ans:1,
+ exp:"Integration (antiderivative) is the inverse operation of differentiation."},
+{section:"BE-02 · Integration",
+ q:"∫ (1/x) dx is equal to:",
+ opts:["x + C","x² + C","ln|x| + C","1/x² + C"], ans:2,
+ exp:"∫(1/x)dx = ln|x| + C — a standard integral result."},
+
+// ── BE-02: Logarithm (Q85-88) ───────────────────
+{section:"BE-02 · Logarithm",
+ q:"log(A × B) is equal to:",
+ opts:["log A − log B","log A × log B","log A + log B","log(A+B)"], ans:2,
+ exp:"Law of logarithms: log(A×B) = log A + log B."},
+{section:"BE-02 · Logarithm",
+ q:"log(Aⁿ) is equal to:",
+ opts:["n × log A","log A / n","log A + n","A × log n"], ans:0,
+ exp:"Power rule: log(Aⁿ) = n·log A."},
+{section:"BE-02 · Logarithm",
+ q:"The value of log₁₀(100) is:",
+ opts:["1","10","20","2"], ans:3,
+ exp:"log₁₀(100) = log₁₀(10²) = 2."},
+{section:"BE-02 · Logarithm",
+ q:"log(A/B) is equal to:",
+ opts:["log A + log B","log A × log B","log A − log B","log A / log B"], ans:2,
+ exp:"Quotient rule: log(A/B) = log A − log B."},
+
+// ── BE-02: Statistics (Q89-90) ──────────────────
+{section:"BE-02 · Statistics",
+ q:"The mean of 2, 4, 6, 8, 10 is:",
+ opts:["5","6","7","8"], ans:1,
+ exp:"Mean = (2+4+6+8+10)/5 = 30/5 = 6."},
+{section:"BE-02 · Statistics",
+ q:"The median of 3, 7, 1, 9, 5 (when arranged in order) is:",
+ opts:["3","5","7","9"], ans:1,
+ exp:"Sorted: 1,3,5,7,9 → middle value (3rd) = 5."},
+
+// ── BE-02: Communication (Q91-94) ───────────────
+{section:"BE-02 · Theory of Communication",
+ q:"Which of the following is a barrier to communication?",
+ opts:["Clear language","Active listening","Noise","Eye contact"], ans:2,
+ exp:"Noise (physical, psychological, or semantic) is a major barrier to effective communication."},
+{section:"BE-02 · Theory of Communication",
+ q:"Non-verbal communication includes:",
+ opts:["Letters","Emails","Body language","Phone calls"], ans:2,
+ exp:"Non-verbal communication: gestures, facial expressions, posture, eye contact — no words used."},
+{section:"BE-02 · Theory of Communication",
+ q:"The sender, message, channel, receiver model is part of:",
+ opts:["Marketing mix","Communication process","Supply chain","Management theory"], ans:1,
+ exp:"The basic communication process model involves: Sender → Message → Channel → Receiver → Feedback."},
+{section:"BE-02 · Theory of Communication",
+ q:"Verbal communication involves:",
+ opts:["Body language only","Written and spoken words","Gestures","Facial expressions"], ans:1,
+ exp:"Verbal communication uses spoken or written words (e.g., speech, letters, emails)."},
+
+// ── BE-02: Techniques of Writing (Q95-97) ───────
+{section:"BE-02 · Techniques of Writing",
+ q:"A business letter of 'Complaint' is written to:",
+ opts:["Place an order","Enquire about products","Express dissatisfaction about a product/service","Reply to a query"], ans:2,
+ exp:"A complaint letter formally expresses dissatisfaction about a product, service, or situation."},
+{section:"BE-02 · Techniques of Writing",
+ q:"The abbreviation 'Re:' in a business letter stands for:",
+ opts:["Reply","Regarding","Receipt","Reference"], ans:1,
+ exp:"'Re:' is Latin-derived shorthand for 'Regarding' — used in email/letter subject lines."},
+{section:"BE-02 · Techniques of Writing",
+ q:"Which part of a formal letter appears at the top right?",
+ opts:["Salutation","Body","Sender's address","Complimentary close"], ans:2,
+ exp:"In a formal letter, the sender's address is placed at the top right (or top left in full-block style)."},
+
+// ── BE-02: Grammar (Q98-100) ─────────────────────
+{section:"BE-02 · Grammar",
+ q:"In the sentence 'She runs fast,' the word 'fast' is a/an:",
+ opts:["Noun","Adjective","Adverb","Preposition"], ans:2,
+ exp:"'Fast' modifies the verb 'runs' — it is an adverb."},
+{section:"BE-02 · Grammar",
+ q:"Which sentence is correct?",
+ opts:["He don't know the answer.","He doesn't know the answer.","He not know the answer.","He not knows the answer."],
+ ans:1, exp:"Subject-verb agreement: 'He' (third-person singular) → uses 'doesn't'."},
+{section:"BE-02 · Grammar",
+ q:"'They have been waiting for two hours.' This sentence is in:",
+ opts:["Simple past","Present perfect continuous","Past perfect","Future continuous"], ans:1,
+ exp:"'Have been waiting' = present perfect continuous tense — ongoing action from past to present."},
+];
+
+// ════════════════════════════════════════════════
+//  STATE
+// ════════════════════════════════════════════════
+let userAnswers = new Array(questions.length).fill(null);
+let revealed    = new Array(questions.length).fill(false);
+let timerInterval, seconds = 150 * 60;
+let testStarted = false;
+
+// ── START ────────────────────────────────────────
+function startTest() {
+  document.getElementById('startScreen').style.display = 'none';
+  document.getElementById('testArea').style.display    = 'block';
+  buildQuestions();
+  buildNavGrid();
+  startTimer();
+  testStarted = true;
+}
+
+// ── BUILD QUESTIONS ──────────────────────────────
+function buildQuestions() {
+  const cont = document.getElementById('questionsContainer');
+  let lastSection = '';
+  questions.forEach((q, i) => {
+    if (q.section !== lastSection) {
+      lastSection = q.section;
+      const badge = document.createElement('div');
+      badge.className = 'section-badge' + (q.section.startsWith('BE-02') ? ' s2' : '');
+      badge.textContent = q.section;
+      cont.appendChild(badge);
+    }
+    const card = document.createElement('div');
+    card.className = 'qcard'; card.id = 'qcard-' + i;
+    const letters = ['A','B','C','D'];
+    let optsHTML = q.opts.map((o,j)=>`
+      <label class="opt" id="opt-${i}-${j}" onclick="selectOpt(${i},${j})">
+        <input type="radio" name="q${i}" value="${j}">
+        <span class="opt-label">${letters[j]}</span>
+        <span>${o}</span>
+      </label>`).join('');
+    card.innerHTML = `
+      <div class="qtop">
+        <span class="qnum">Q${i+1}</span>
+        <span class="qtext">${q.q}</span>
+      </div>
+      <div class="options">${optsHTML}</div>
+      <div class="explanation" id="exp-${i}">
+        <strong>✓ Answer: ${letters[q.ans]} — ${q.opts[q.ans]}</strong><br>${q.exp}
+      </div>`;
+    cont.appendChild(card);
+  });
+}
+
+// ── SELECT OPTION ────────────────────────────────
+function selectOpt(qi, oi) {
+  if (revealed[qi]) return;
+  userAnswers[qi] = oi;
+  const letters = ['A','B','C','D'];
+  questions[qi].opts.forEach((_,j)=>{
+    const el = document.getElementById(`opt-${qi}-${j}`);
+    el.classList.toggle('selected', j===oi);
+  });
+  document.getElementById('qcard-'+qi).classList.add('answered');
+  updateNav(qi, 'done');
+  updateProgress();
+}
+
+// ── SHOW ANSWER (per card) ───────────────────────
+function revealQuestion(qi) {
+  if (revealed[qi]) return;
+  revealed[qi] = true;
+  const q = questions[qi];
+  const letters = ['A','B','C','D'];
+  q.opts.forEach((_,j)=>{
+    const el = document.getElementById(`opt-${qi}-${j}`);
+    el.classList.remove('selected');
+    if (j === q.ans) el.classList.add('correct');
+    else if (userAnswers[qi] === j) el.classList.add('wrong');
+    el.style.pointerEvents = 'none';
+  });
+  document.getElementById('exp-'+qi).classList.add('visible');
+  updateNav(qi,'revealed');
+}
+
+// ── SHOW ALL ─────────────────────────────────────
+function showAllAnswers() {
+  questions.forEach((_,i) => revealQuestion(i));
+}
+
+// ── SUBMIT ───────────────────────────────────────
+function submitTest() {
+  clearInterval(timerInterval);
+  showAllAnswers();
+  let correct=0, wrong=0, skip=0;
+  questions.forEach((q,i)=>{
+    if (userAnswers[i]===null) skip++;
+    else if (userAnswers[i]===q.ans) correct++;
+    else wrong++;
+  });
+  const pct = ((correct/questions.length)*100).toFixed(1);
+  document.getElementById('resScore').textContent = correct+'/'+questions.length;
+  document.getElementById('resC').textContent = correct;
+  document.getElementById('resW').textContent = wrong;
+  document.getElementById('resS').textContent = skip;
+  document.getElementById('resPct').textContent = pct+'%';
+  const panel = document.getElementById('resultPanel');
+  panel.classList.add('visible');
+  panel.scrollIntoView({behavior:'smooth'});
+}
+
+// ── RESET ────────────────────────────────────────
+function resetTest() {
+  location.reload();
+}
+
+// ── TIMER ────────────────────────────────────────
+function startTimer() {
+  const box = document.getElementById('timerBox');
+  timerInterval = setInterval(()=>{
+    seconds--;
+    if (seconds<=0){ clearInterval(timerInterval); submitTest(); return; }
+    const h=Math.floor(seconds/3600), m=Math.floor((seconds%3600)/60), s=seconds%60;
+    box.textContent = `${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    if (seconds<300) box.classList.add('warn');
+  },1000);
+}
+
+// ── PROGRESS BAR ────────────────────────────────
+function updateProgress() {
+  const done = userAnswers.filter(a=>a!==null).length;
+  document.getElementById('progressBar').style.width = (done/questions.length*100)+'%';
+}
+
+// ── NAV GRID ────────────────────────────────────
+function buildNavGrid() {
+  const grid = document.getElementById('navGrid');
+  questions.forEach((_,i)=>{
+    const btn = document.createElement('button');
+    btn.className='navBtn'; btn.id='nav-'+i;
+    btn.textContent = i+1;
+    btn.onclick = ()=>{
+      document.getElementById('qcard-'+i).scrollIntoView({behavior:'smooth',block:'center'});
+    };
+    grid.appendChild(btn);
+  });
+}
+function updateNav(qi, state) {
+  const btn = document.getElementById('nav-'+qi);
+  btn.classList.remove('done','revealed');
+  btn.classList.add(state);
+}
+</script>
+</body>
+</html>

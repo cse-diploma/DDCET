@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>DDCET Mock Test - Complete | Instant Feedback for BOTH Sections</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #f0f4f8;
+      font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      padding: 1.5rem;
+      color: #0f172a;
+    }
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    .exam-header {
+      background: linear-gradient(135deg, #0b3b5f, #1e4a76);
+      color: white;
+      padding: 1.5rem 2rem;
+      border-radius: 2rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 12px 20px rgba(0,0,0,0.1);
+    }
+
+    .exam-header h1 {
+      font-size: 1.8rem;
+    }
+
+    .info-grid {
+      background: white;
+      border-radius: 1.5rem;
+      padding: 0.8rem 1.8rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      margin-bottom: 1.8rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      font-weight: 500;
+    }
+
+    .section-tab {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      border-bottom: 2px solid #cbd5e1;
+      padding-bottom: 0.5rem;
+    }
+
+    .tab-btn {
+      background: none;
+      border: none;
+      font-size: 1.1rem;
+      font-weight: 600;
+      padding: 0.6rem 1.8rem;
+      border-radius: 40px;
+      cursor: pointer;
+      transition: 0.2s;
+      color: #1e293b;
+    }
+
+    .tab-btn.active {
+      background: #1e4a76;
+      color: white;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    .question-panel {
+      display: none;
+      animation: fade 0.2s ease;
+    }
+
+    .question-panel.active-panel {
+      display: block;
+    }
+
+    @keyframes fade {
+      from { opacity: 0; transform: translateY(6px);}
+      to { opacity: 1; transform: translateY(0);}
+    }
+
+    .question-card {
+      background: white;
+      border-radius: 1.2rem;
+      padding: 1.2rem 1.5rem;
+      margin-bottom: 1.2rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      transition: all 0.15s;
+      border: 1px solid #e2e8f0;
+    }
+
+    .q-header {
+      display: flex;
+      align-items: baseline;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.75rem;
+    }
+
+    .q-num {
+      background: #eef2ff;
+      padding: 0.2rem 0.8rem;
+      border-radius: 30px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #1e4a76;
+    }
+
+    .q-text {
+      font-weight: 600;
+      font-size: 1rem;
+      line-height: 1.4;
+    }
+
+    .options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin: 1rem 0 0.8rem 0.8rem;
+    }
+
+    .option {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      background: #f8fafc;
+      padding: 0.45rem 1.2rem;
+      border-radius: 40px;
+      transition: 0.1s;
+      border: 1px solid #e2e8f0;
+      font-size: 0.9rem;
+    }
+
+    .option:hover {
+      background: #e6f0ff;
+    }
+
+    .option.selected-correct {
+      background: #d1fae5;
+      border-color: #10b981;
+      color: #065f46;
+    }
+
+    .option.selected-wrong {
+      background: #fee2e2;
+      border-color: #f87171;
+      color: #991b1b;
+    }
+
+    input[type="radio"] {
+      accent-color: #1e4a76;
+      width: 1rem;
+      height: 1rem;
+      margin: 0;
+      cursor: pointer;
+    }
+
+    .feedback-area {
+      margin-top: 0.9rem;
+      padding: 0.7rem 1rem;
+      border-radius: 1rem;
+      font-size: 0.85rem;
+      background: #fef9e3;
+      border-left: 5px solid #f59e0b;
+      display: none;
+    }
+
+    .feedback-area.show-feedback {
+      display: block;
+    }
+
+    .feedback-correct {
+      background: #e6f7ec;
+      border-left-color: #2ecc71;
+      color: #0a3b2a;
+    }
+
+    .feedback-wrong {
+      background: #ffeaea;
+      border-left-color: #e74c3c;
+      color: #a1220a;
+    }
+
+    .action-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 1.5rem 0 1rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    button {
+      background: #1e4a76;
+      border: none;
+      color: white;
+      padding: 0.7rem 1.5rem;
+      border-radius: 60px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+      font-size: 0.9rem;
+    }
+
+    button.outline {
+      background: white;
+      color: #1e4a76;
+      border: 1.5px solid #1e4a76;
+    }
+
+    button:hover {
+      transform: scale(0.97);
+      opacity: 0.9;
+    }
+
+    .score-area {
+      background: #e6f0ff;
+      padding: 0.8rem 1.5rem;
+      border-radius: 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+    }
+
+    .badge {
+      background: #1e4a76;
+      color: white;
+      padding: 0.4rem 1rem;
+      border-radius: 30px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .footer-note {
+      text-align: center;
+      margin-top: 2rem;
+      font-size: 0.75rem;
+      color: #5a6e7c;
+    }
+
+    @media (max-width: 700px) {
+      body { padding: 1rem; }
+      .option { padding: 0.3rem 0.9rem; font-size: 0.8rem; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="exam-header">
+    <h1>📘 DDCET Mock Test 1 — Complete Interactive Learning</h1>
+    <div style="font-size:0.9rem; margin-top: 0.5rem;">✅ Both Sections Active | Click any option → Instant correct answer + Explanation</div>
+  </div>
+  <div class="info-grid">
+    <span>🎯 Each correct = 2 marks | No negative marking</span>
+    <span>🔍 BE-01: Science & Engg (50) | BE-02: Aptitude (50)</span>
+    <span>💡 Feedback shows correct option & concept explanation</span>
+  </div>
+
+  <div class="section-tab">
+    <button class="tab-btn active" data-section="be01">🔬 BE-01: Science & Engineering</button>
+    <button class="tab-btn" data-section="be02">📊 BE-02: Aptitude (Math & Soft Skills)</button>
+  </div>
+
+  <div id="be01-panel" class="question-panel active-panel"></div>
+  <div id="be02-panel" class="question-panel"></div>
+
+  <div class="action-bar">
+    <div>
+      <button id="resetBtn" class="outline">🔄 Reset All Answers & Feedback</button>
+    </div>
+    <div class="score-area">
+      <span class="badge" id="liveScore">📈 Live Score: 0 / 200</span>
+      <span style="font-size:0.8rem;">✔️ Updates after each answer</span>
+    </div>
+  </div>
+  <div class="footer-note">
+    💡 Tip: Click any option to check your answer. Green highlight = correct answer shown for learning. Score updates live.
+  </div>
+</div>
+
+<script>
+  // ======================== BE-01: Science & Engineering (50 Questions with Explanations) ========================
+  const be01Questions = [
+    { text: "Which instrument is used to measure the diameter of a wire with high precision?", options: ["Metre scale", "Vernier caliper", "Screw gauge", "Measuring tape"], correct: "C", explanation: "Screw gauge (micrometer) has least count up to 0.01 mm, best for fine wire diameter measurement." },
+    { text: "The least count of a Vernier caliper is 0.1 mm. If main scale reads 2.3 cm and Vernier scale coincidence is at 4th division, the reading is:", options: ["2.34 cm", "2.30 cm", "2.04 cm", "2.40 cm"], correct: "A", explanation: "Reading = MSR + (VCD × LC) = 2.3 cm + (4 × 0.01 cm) = 2.34 cm (since 0.1 mm = 0.01 cm)." },
+    { text: "Relative error is defined as:", options: ["Absolute error / True value", "True value / Absolute error", "Absolute error × True value", "Absolute error + True value"], correct: "A", explanation: "Relative error = (|Δx| / x_true). It gives error fraction relative to true value." },
+    { text: "1 Newton (SI) is equal to how many dynes (CGS)?", options: ["10³", "10⁴", "10⁵", "10⁶"], correct: "C", explanation: "1 N = 1 kg·m/s² = 1000 g × 100 cm/s² = 10⁵ dyne." },
+    { text: "The physical quantity having the unit kg·m/s is:", options: ["Force", "Momentum", "Energy", "Power"], correct: "B", explanation: "Momentum = mass × velocity → unit kg·m/s. Force is kg·m/s², Energy = kg·m²/s²." },
+    { text: "Percentage error in measuring length is 2% and in time is 3%. The percentage error in velocity (v = L/T) is:", options: ["1%", "5%", "6%", "3%"], correct: "B", explanation: "For division, % error = %ΔL + %ΔT = 2% + 3% = 5%." },
+    { text: "A body starts from rest and accelerates uniformly at 4 m/s². Its velocity after 5 s is:", options: ["10 m/s", "20 m/s", "25 m/s", "40 m/s"], correct: "B", explanation: "v = u + at = 0 + 4×5 = 20 m/s." },
+    { text: "Newton's Second Law of motion states that force equals:", options: ["mass × distance", "mass × acceleration", "mass × velocity", "mass / acceleration"], correct: "B", explanation: "F = m·a, net force equals rate of change of momentum." },
+    { text: "The centripetal acceleration of a body moving in a circle of radius r with speed v is:", options: ["v²r", "v/r", "v²/r", "vr²"], correct: "C", explanation: "Centripetal acceleration a_c = v²/r directed towards center." },
+    { text: "1 kWh is equal to:", options: ["3.6 × 10³ J", "3.6 × 10⁵ J", "3.6 × 10⁶ J", "3.6 × 10⁷ J"], correct: "C", explanation: "1 kWh = 1000 W × 3600 s = 3.6 × 10⁶ J." },
+    { text: "The Law of Conservation of Momentum applies when:", options: ["External force acts", "No external force acts", "Friction is present", "Gravity acts"], correct: "B", explanation: "Total momentum remains constant only if net external force is zero." },
+    { text: "Kinetic energy of a body of mass m and velocity v is:", options: ["mv", "mv²", "½mv²", "2mv²"], correct: "C", explanation: "KE = ½ m v² (scalar quantity)." },
+    { text: "Ohm's Law states that V = IR. If resistance doubles, current (at constant V):", options: ["Doubles", "Halves", "Stays same", "Becomes zero"], correct: "B", explanation: "I = V/R, so if R doubles, current becomes half." },
+    { text: "The SI unit of electric conductance is:", options: ["Ohm", "Farad", "Siemens", "Coulomb"], correct: "C", explanation: "Conductance (G = 1/R) unit is siemens (S) or mho." },
+    { text: "Three resistors of 3 Ω each are connected in parallel. The effective resistance is:", options: ["9 Ω", "3 Ω", "1 Ω", "6 Ω"], correct: "C", explanation: "1/R_eq = 1/3+1/3+1/3 = 1 → R_eq = 1 Ω." },
+    { text: "The capacitance of a parallel plate capacitor increases when:", options: ["Distance between plates increases", "Area of plates decreases", "A dielectric is inserted", "Charge decreases"], correct: "C", explanation: "C = κε₀A/d. Inserting dielectric (κ>1) increases capacitance." },
+    { text: "Electric potential at a point is the work done per unit charge. Its SI unit is:", options: ["Ampere", "Watt", "Volt", "Joule"], correct: "C", explanation: "1 Volt = 1 Joule/Coulomb, measures electric potential." },
+    { text: "Two capacitors of 4 μF each in series give an equivalent capacitance of:", options: ["8 μF", "2 μF", "4 μF", "1 μF"], correct: "B", explanation: "Series: 1/Ceq = 1/4+1/4 = 1/2 → Ceq = 2 μF." },
+    { text: "Convert 100°C to Kelvin:", options: ["273 K", "373 K", "100 K", "173 K"], correct: "B", explanation: "K = °C + 273.15 → 100°C = 373.15 K ≈ 373 K." },
+    { text: "The mode of heat transfer that does not require a medium is:", options: ["Conduction", "Convection", "Radiation", "All modes"], correct: "C", explanation: "Radiation transfers via EM waves, works in vacuum." },
+    { text: "Specific heat of water is 4200 J/kg°C. Heat required to raise 2 kg of water by 5°C is:", options: ["840 J", "4200 J", "42000 J", "2100 J"], correct: "C", explanation: "Q = m·c·ΔT = 2×4200×5 = 42000 J." },
+    { text: "The coefficient of linear thermal expansion α has SI unit:", options: ["°C", "K⁻¹", "m/K", "J/K"], correct: "B", explanation: "α = ΔL/(L·ΔT) → unit K⁻¹ (or °C⁻¹)." },
+    { text: "Convert 32°F to °C:", options: ["0°C", "100°C", "32°C", "−32°C"], correct: "A", explanation: "°C = (32-32)×5/9 = 0°C." },
+    { text: "Heat flows from a hot body to a cold body. This is stated by:", options: ["Zeroth law", "First law", "Second law of thermodynamics", "Third law"], correct: "C", explanation: "Second law: heat flows spontaneously from hot to cold." },
+    { text: "The relationship between frequency (f), wavelength (λ) and wave speed (v) is:", options: ["v = f/λ", "v = fλ", "f = vλ", "λ = vf"], correct: "B", explanation: "Wave speed v = f·λ." },
+    { text: "Total internal reflection occurs when light travels from:", options: ["Rare to dense medium", "Dense to rare medium above critical angle", "Any medium", "Vacuum to medium"], correct: "B", explanation: "From denser to rarer medium at angle > critical angle, TIR happens." },
+    { text: "Reverberation time is increased by:", options: ["Adding absorbing material", "Removing absorbing material", "Reducing room volume", "Opening windows"], correct: "B", explanation: "Removing absorbers increases sound reflection, increasing reverberation time." },
+    { text: "Optical fiber works on the principle of:", options: ["Refraction", "Dispersion", "Total internal reflection", "Interference"], correct: "C", explanation: "Light signals bounce via TIR inside core of fiber." },
+    { text: "Ultrasonic waves have frequency:", options: ["Below 20 Hz", "20 Hz -- 20 kHz", "Above 20 kHz", "Exactly 20 kHz"], correct: "C", explanation: "Ultrasonic > 20 kHz, inaudible to humans." },
+    { text: "Snell's law relates:", options: ["Frequency and wavelength", "Angles of incidence and refraction", "Amplitude and intensity", "Echo and absorption"], correct: "B", explanation: "n₁ sinθ₁ = n₂ sinθ₂ (relation of angles)." },
+    { text: "A + B → AB represents a ________ reaction.", options: ["Decomposition", "Combination", "Displacement", "Double displacement"], correct: "B", explanation: "Two or more reactants combine → single product = combination." },
+    { text: "AB → A + B represents a ________ reaction.", options: ["Combination", "Displacement", "Decomposition", "Neutralisation"], correct: "C", explanation: "Single compound breaks into simpler substances = decomposition." },
+    { text: "In a balanced chemical equation, the number of atoms of each element is:", options: ["Different on both sides", "Same on both sides", "More on reactant side", "More on product side"], correct: "B", explanation: "Law of conservation of mass: atoms equal both sides." },
+    { text: "The pH of a neutral solution is:", options: ["0", "7", "14", "1"], correct: "B", explanation: "pH = 7 for pure water at 25°C." },
+    { text: "An acid reacts with a metal oxide to produce:", options: ["Salt and water", "Gas and water", "Salt and gas", "Base and water"], correct: "A", explanation: "Acid + Metal oxide → Salt + Water (neutralization)." },
+    { text: "Common salt NaCl belongs to which family of salts?", options: ["Acidic salts", "Basic salts", "Neutral salts", "Double salts"], correct: "C", explanation: "NaCl from strong acid & strong base → neutral salt." },
+    { text: "HCl dissolved in water releases:", options: ["OH⁻ ions", "H⁺ ions", "Cl² gas", "Na⁺ ions"], correct: "B", explanation: "HCl → H⁺ + Cl⁻, increases H⁺ concentration." },
+    { text: "Which of the following is a physical property of metals?", options: ["They are lustrous", "They are brittle", "They are non-malleable", "They are non-conductors"], correct: "A", explanation: "Lustre (shiny) is physical property; metals are malleable & conductive." },
+    { text: "Corrosion of iron is called:", options: ["Tarnishing", "Rusting", "Burning", "Alloying"], correct: "B", explanation: "Rusting: Fe + O₂ + H₂O → hydrated iron(III) oxide." },
+    { text: "Ionic compounds are formed between:", options: ["Two metals", "Two non-metals", "A metal and non-metal", "Two gases"], correct: "C", explanation: "Electrostatic attraction between metal cation & non-metal anion." },
+    { text: "HTML stands for:", options: ["Hyper Text Markup Language", "High Transfer Markup Language", "Hyper Text Making Language", "High Text Markup Link"], correct: "A", explanation: "Standard language for web pages." },
+    { text: "Which MS Office application is used for spreadsheets?", options: ["MS Word", "MS Excel", "MS PowerPoint", "MS Access"], correct: "B", explanation: "Excel for calculations, charts, data tables." },
+    { text: "The brain of a computer is called:", options: ["RAM", "Hard Disk", "CPU", "Monitor"], correct: "C", explanation: "CPU executes instructions and processes data." },
+    { text: "Which tag is used to create a hyperlink in HTML?", options: ["<link>", "<href>", "<a>", "<url>"], correct: "C", explanation: "<a href='url'>Link</a> defines anchor/hyperlink." },
+    { text: "The Internet is a:", options: ["Single computer", "Local area network", "Global network of networks", "Private server"], correct: "C", explanation: "Worldwide interconnection of networks using TCP/IP." },
+    { text: "Which of the following is a renewable source of energy?", options: ["Coal", "Petroleum", "Solar energy", "Natural gas"], correct: "C", explanation: "Solar is inexhaustible; fossil fuels are non-renewable." },
+    { text: "Ecosystem includes:", options: ["Only living organisms", "Only non-living environment", "Both biotic and abiotic components", "Only plants"], correct: "C", explanation: "Biotic (living) + Abiotic (physical) environment." },
+    { text: "The greenhouse gas primarily responsible for global warming is:", options: ["Oxygen", "Nitrogen", "Carbon dioxide", "Hydrogen"], correct: "C", explanation: "CO₂ traps heat; main anthropogenic GHG." },
+    { text: "Wind energy is generated by:", options: ["Solar panels", "Turbines driven by wind", "Burning biomass", "Nuclear fission"], correct: "B", explanation: "Wind turbines convert kinetic wind to electricity." },
+    { text: "Which type of pollution is caused by excess fertilizer use?", options: ["Air pollution", "Noise pollution", "Water/Soil pollution", "Radiation pollution"], correct: "C", explanation: "Runoff causes eutrophication in water & soil contamination." }
+  ];
+
+  // ======================== BE-02: Aptitude (50 Questions with FULL Explanations) ========================
+  const be02Questions = [
+    { text: "The determinant of a 2×2 matrix [[a,b],[c,d]] is:", options: ["ad+bc", "ab−cd", "ad−bc", "ac+bd"], correct: "C", explanation: "For matrix [[a,b],[c,d]], determinant = ad - bc." },
+    { text: "A matrix with equal number of rows and columns is called:", options: ["Rectangular matrix", "Square matrix", "Null matrix", "Identity matrix"], correct: "B", explanation: "Square matrix has m = n (equal rows and columns)." },
+    { text: "The identity matrix of order 2 is:", options: ["[[0,0],[0,0]]", "[[1,0],[0,1]]", "[[1,1],[1,1]]", "[[0,1],[1,0]]"], correct: "B", explanation: "Identity matrix has 1s on diagonal and 0s elsewhere: I₂ = [[1,0],[0,1]]." },
+    { text: "If A is a 2×3 matrix and B is a 3×2 matrix, the product AB is of order:", options: ["3×3", "2×2", "3×2", "2×3"], correct: "B", explanation: "Inner dimensions (3) match, result is 2×2." },
+    { text: "π radians equals how many degrees?", options: ["90°", "180°", "270°", "360°"], correct: "B", explanation: "π rad = 180° (half circle)." },
+    { text: "sin²θ + cos²θ =", options: ["0", "1", "2", "sinθ·cosθ"], correct: "B", explanation: "Fundamental Pythagorean identity: always equals 1." },
+    { text: "The value of sin 30° is:", options: ["√3/2", "1/2", "1/√2", "√3"], correct: "B", explanation: "sin 30° = 1/2 exactly." },
+    { text: "The dot product of two perpendicular vectors is:", options: ["1", "-1", "0", "Undefined"], correct: "C", explanation: "For perpendicular vectors, cos90°=0 → dot product = 0." },
+    { text: "The magnitude of vector A = 3i + 4j is:", options: ["7", "1", "5", "√7"], correct: "C", explanation: "|A| = √(3²+4²) = √25 = 5." },
+    { text: "Slope of a line parallel to x-axis is:", options: ["1", "-1", "0", "Undefined"], correct: "C", explanation: "Horizontal line has zero slope (no change in y)." },
+    { text: "The equation of a circle with centre (0,0) and radius r is:", options: ["x+y=r", "x²+y²=r", "x²+y²=r²", "(x+y)²=r²"], correct: "C", explanation: "Standard circle equation: x² + y² = r²." },
+    { text: "lim(x→0) sinx/x =", options: ["0", "∞", "1", "-1"], correct: "C", explanation: "Standard trigonometric limit equals 1." },
+    { text: "A function f(x) is defined when each input has:", options: ["Two outputs", "No output", "Exactly one output", "Infinite outputs"], correct: "C", explanation: "Definition of a function: each input maps to exactly one output." },
+    { text: "lim(x→2) (x²−4)/(x−2) =", options: ["0", "2", "4", "∞"], correct: "C", explanation: "Factor (x-2)(x+2)/(x-2) = x+2 → at x=2, value = 4." },
+    { text: "d/dx(xⁿ) =", options: ["xⁿ⁻¹", "nxⁿ", "nxⁿ⁻¹", "nxⁿ⁺¹"], correct: "C", explanation: "Power rule: derivative = n·xⁿ⁻¹." },
+    { text: "d/dx(sin x) =", options: ["−cos x", "cos x", "−sin x", "sin x"], correct: "B", explanation: "Derivative of sin x is cos x." },
+    { text: "If y = uv, then dy/dx (product rule) =", options: ["u·dv/dx", "v·du/dx", "u·dv/dx + v·du/dx", "u·dv/dx − v·du/dx"], correct: "C", explanation: "Product rule: (uv)' = u'v + uv'." },
+    { text: "d/dx(eˣ) =", options: ["eˣ⁻¹", "xeˣ", "eˣ", "1/eˣ"], correct: "C", explanation: "Exponential function eˣ is its own derivative." },
+    { text: "∫xⁿ dx =", options: ["xⁿ + C", "nxⁿ⁻¹ + C", "xⁿ⁺¹/(n+1) + C", "xⁿ⁺¹ + C"], correct: "C", explanation: "Integration power rule: ∫xⁿ dx = xⁿ⁺¹/(n+1) + C, n ≠ -1." },
+    { text: "∫sin x dx =", options: ["cos x + C", "−cos x + C", "sin x + C", "−sin x + C"], correct: "B", explanation: "∫ sin x dx = -cos x + C." },
+    { text: "∫eˣ dx =", options: ["eˣ⁺¹ + C", "xeˣ + C", "eˣ + C", "1/eˣ + C"], correct: "C", explanation: "∫ eˣ dx = eˣ + C." },
+    { text: "∫₀¹ x dx =", options: ["1", "½", "2", "0"], correct: "B", explanation: "∫₀¹ x dx = [x²/2]₀¹ = 1/2." },
+    { text: "log(mn) =", options: ["log m − log n", "log m × log n", "log m + log n", "log m / log n"], correct: "C", explanation: "Logarithm product rule: log(mn) = log m + log n." },
+    { text: "log₁₀ 100 =", options: ["1", "10", "2", "100"], correct: "C", explanation: "10² = 100, therefore log₁₀100 = 2." },
+    { text: "Mode of the data set {3, 5, 5, 7, 9} is:", options: ["3", "7", "9", "5"], correct: "D", explanation: "Mode = most frequent value. 5 appears twice, others once." },
+    { text: "In communication, 'exchange' most nearly means:", options: ["Hiding", "Sharing", "Deleting", "Creating"], correct: "B", explanation: "Exchange implies mutual sharing of information." },
+    { text: "A message is successfully communicated when:", options: ["Sender sends it", "Receiver decodes it correctly", "Medium transmits it", "Noise is present"], correct: "B", explanation: "Successful communication requires correct decoding by receiver." },
+    { text: "Primary purpose of communication passage:", options: ["Entertain", "Define communication", "Criticise media", "Argue for silence"], correct: "B", explanation: "The passage defines what communication is." },
+    { text: "Non-verbal communication includes:", options: ["Spoken words", "Written letters", "Body language", "Telephone calls"], correct: "C", explanation: "Body language, gestures, facial expressions are non-verbal." },
+    { text: "Essential medium for effective communication:", options: ["Noise", "Channel", "Barrier", "Distortion"], correct: "B", explanation: "Channel (medium) carries the message from sender to receiver." },
+    { text: "Communication involves sender, message, medium and:", options: ["Writer", "Receiver", "Publisher", "Director"], correct: "B", explanation: "Receiver completes the communication loop." },
+    { text: "Which is a barrier to communication?", options: ["Clear language", "Noise", "Good channel", "Attentive listening"], correct: "B", explanation: "Noise interferes with message transmission/reception." },
+    { text: "Non-verbal communication includes:", options: ["Emails", "Reports", "Gestures and expressions", "Memos"], correct: "C", explanation: "Gestures, posture, eye contact are non-verbal cues." },
+    { text: "Feedback in communication refers to:", options: ["Original message", "Sender's intention", "Receiver's response", "Medium used"], correct: "C", explanation: "Feedback is receiver's response that confirms understanding." },
+    { text: "Semantic barrier arises due to:", options: ["Physical noise", "Different meanings of words", "Poor handwriting", "Loud voice"], correct: "B", explanation: "Semantic barriers occur when words have different meanings to different people." },
+    { text: "Letter to request information is called:", options: ["Complaint letter", "Order letter", "Inquiry letter", "Adjustment letter"], correct: "C", explanation: "Inquiry letter seeks information or clarification." },
+    { text: "Abbreviation 'e.g.' stands for:", options: ["Every grammar", "For example", "Each group", "Easy going"], correct: "B", explanation: "Latin 'exempli gratia' meaning 'for example'." },
+    { text: "Part containing writer's address:", options: ["Salutation", "Body", "Heading/Letterhead", "Complimentary close"], correct: "C", explanation: "Heading or letterhead contains sender's address." },
+    { text: "Adjustment letter responds to:", options: ["An inquiry", "An order", "A complaint", "A quotation"], correct: "C", explanation: "Adjustment letter addresses a customer complaint or claim." },
+    { text: "'cc' in email stands for:", options: ["Carbon copy", "Close communication", "Coded content", "Correct copy"], correct: "A", explanation: "Carbon copy indicates additional recipients." },
+    { text: "Correct tense: 'She ___ to school every day.'", options: ["go", "goes", "went", "has gone"], correct: "B", explanation: "Present simple for habitual action: She goes." },
+    { text: "Preposition in 'The book is on the table.'", options: ["book", "is", "on", "table"], correct: "C", explanation: "'on' shows position/relationship between book and table." },
+    { text: "Noun that names quality or idea:", options: ["Proper", "Common", "Collective", "Abstract"], correct: "D", explanation: "Abstract nouns name concepts, feelings, qualities (love, honesty)." },
+    { text: "Singular subject takes a ___ verb:", options: ["Plural", "Singular", "Past", "Future"], correct: "B", explanation: "Subject-verb agreement: singular subject + singular verb." },
+    { text: "'Quickly' in 'She ran quickly' is:", options: ["Adjective", "Noun", "Adverb", "Pronoun"], correct: "C", explanation: "Adverb modifies the verb 'ran'." },
+    { text: "Correct spelling:", options: ["Accomodate", "Acommodate", "Accommodate", "Acomodate"], correct: "C", explanation: "Accommodate has double c and double m." },
+    { text: "Grammatically correct sentence:", options: ["He go to school.", "She has went.", "They are playing.", "We was happy."], correct: "C", explanation: "They are playing = present continuous, correct." },
+    { text: "Correct spelling:", options: ["Recieve", "Receive", "Receve", "Recieeve"], correct: "B", explanation: "'i' before 'e' except after 'c'? Here 'receive' follows rule." },
+    { text: "Correct sentence:", options: ["Neither of them are ready.", "Neither of them is ready.", "Neither of them were ready.", "Neither of them was readies."], correct: "B", explanation: "Neither is singular → takes singular verb 'is'." },
+    { text: "Correct spelling:", options: ["Occurance", "Occurrence", "Occurence", "Occurrance"], correct: "B", explanation: "Occurrence has double c and double r." }
+  ];
+
+  // ========== UNIVERSAL BUILD FUNCTION (works for both sections perfectly) ==========
+  function buildSection(containerId, questionsArray, storageKey) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    
+    let html = '';
+    questionsArray.forEach((q, idx) => {
+      html += `<div class="question-card" data-qidx="${idx}" data-storage="${storageKey}">
+        <div class="q-header">
+          <span class="q-num">Q${idx+1}</span>
+          <span class="q-text">${escapeHtml(q.text)}</span>
+        </div>
+        <div class="options" id="opts-${storageKey}-${idx}">`;
+      
+      q.options.forEach((opt, optIdx) => {
+        const optLetter = String.fromCharCode(65 + optIdx);
+        html += `<label class="option" data-opt="${optLetter}" data-qidx="${idx}" data-storage="${storageKey}">
+          <input type="radio" name="${storageKey}_q${idx}" value="${optLetter}"> 
+          <strong>${optLetter}.</strong> ${escapeHtml(opt)}
+        </label>`;
+      });
+      
+      html += `</div><div class="feedback-area" id="fb-${storageKey}-${idx}"></div></div>`;
+    });
+    
+    container.innerHTML = html;
+    attachOptionListeners(questionsArray, storageKey);
+    restoreSavedAnswers(questionsArray, storageKey);
+    updateOverallScore();
+  }
+
+  function escapeHtml(str) {
+    return str.replace(/[&<>]/g, function(m) {
+      if (m === '&') return '&amp;';
+      if (m === '<') return '&lt;';
+      if (m === '>') return '&gt;';
+      return m;
+    });
+  }
+
+  function attachOptionListeners(questionsArray, storageKey) {
+    for (let i = 0; i < questionsArray.length; i++) {
+      const radioButtons = document.querySelectorAll(`input[name="${storageKey}_q${i}"]`);
+      radioButtons.forEach(radio => {
+        radio.removeEventListener('change', radio._listener);
+        const handler = function(e) {
+          const selectedVal = e.target.value;
+          const correctAns = questionsArray[i].correct;
+          const explanation = questionsArray[i].explanation;
+          const feedbackDiv = document.getElementById(`fb-${storageKey}-${i}`);
+          const allOptions = document.querySelectorAll(`#opts-${storageKey}-${i} .option`);
+          
+          // Clear previous highlights
+          allOptions.forEach(opt => {
+            opt.classList.remove('selected-correct', 'selected-wrong');
+          });
+          
+          const parentLabel = e.target.closest('.option');
+          
+          if (selectedVal === correctAns) {
+            parentLabel.classList.add('selected-correct');
+            feedbackDiv.innerHTML = `✅ <strong>Correct!</strong> ${escapeHtml(explanation)}`;
+            feedbackDiv.className = "feedback-area show-feedback feedback-correct";
+          } else {
+            parentLabel.classList.add('selected-wrong');
+            const correctLetter = correctAns;
+            const correctIndex = correctLetter.charCodeAt(0) - 65;
+            const correctOptionText = questionsArray[i].options[correctIndex];
+            feedbackDiv.innerHTML = `❌ <strong>Incorrect.</strong> Correct answer is <strong>${correctLetter}. ${escapeHtml(correctOptionText)}</strong><br>📘 ${escapeHtml(explanation)}`;
+            feedbackDiv.className = "feedback-area show-feedback feedback-wrong";
+            
+            // Highlight correct option for learning
+            const correctLabel = Array.from(allOptions).find(opt => opt.getAttribute('data-opt') === correctAns);
+            if (correctLabel) correctLabel.classList.add('selected-correct');
+          }
+          
+          saveAnswer(storageKey, i, selectedVal);
+          updateOverallScore();
+        };
+        radio.addEventListener('change', handler);
+        radio._listener = handler;
+      });
+    }
+  }
+
+  function saveAnswer(storageKey, qIndex, value) {
+    let stored = JSON.parse(localStorage.getItem(storageKey) || '{}');
+    stored[qIndex] = value;
+    localStorage.setItem(storageKey, JSON.stringify(stored));
+  }
+
+  function restoreSavedAnswers(questionsArray, storageKey) {
+    const stored = JSON.parse(localStorage.getItem(storageKey) || '{}');
+    for (let idx in stored) {
+      const val = stored[idx];
+      if (val) {
+        const radio = document.querySelector(`input[name="${storageKey}_q${idx}"][value="${val}"]`);
+        if (radio) {
+          radio.checked = true;
+          // Trigger feedback display
+          const event = new Event('change', { bubbles: true });
+          radio.dispatchEvent(event);
+        }
+      }
+    }
+  }
+
+  function updateOverallScore() {
+    let total = 0;
+    
+    // BE-01 score
+    const be01Stored = JSON.parse(localStorage.getItem('be01Answers') || '{}');
+    be01Questions.forEach((q, i) => {
+      if (be01Stored[i] && be01Stored[i] === q.correct) total += 2;
+    });
+    
+    // BE-02 score
+    const be02Stored = JSON.parse(localStorage.getItem('be02Answers') || '{}');
+    be02Questions.forEach((q, i) => {
+      if (be02Stored[i] && be02Stored[i] === q.correct) total += 2;
+    });
+    
+    const scoreElement = document.getElementById('liveScore');
+    if (scoreElement) scoreElement.innerHTML = `📈 Live Score: ${total} / 200`;
+  }
+
+  function resetAllAnswers() {
+    if (confirm('⚠️ Reset all answers and feedback? Your progress will be lost.')) {
+      localStorage.removeItem('be01Answers');
+      localStorage.removeItem('be02Answers');
+      buildSection('be01-panel', be01Questions, 'be01Answers');
+      buildSection('be02-panel', be02Questions, 'be02Answers');
+      updateOverallScore();
+    }
+  }
+
+  // Tab switching
+  function initTabs() {
+    const tabs = document.querySelectorAll('.tab-btn');
+    const panel01 = document.getElementById('be01-panel');
+    const panel02 = document.getElementById('be02-panel');
+    
+    tabs.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const section = btn.getAttribute('data-section');
+        tabs.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        
+        if (section === 'be01') {
+          panel01.classList.add('active-panel');
+          panel02.classList.remove('active-panel');
+        } else {
+          panel02.classList.add('active-panel');
+          panel01.classList.remove('active-panel');
+        }
+      });
+    });
+  }
+
+  // Initialize everything
+  buildSection('be01-panel', be01Questions, 'be01Answers');
+  buildSection('be02-panel', be02Questions, 'be02Answers');
+  initTabs();
+  document.getElementById('resetBtn').addEventListener('click', resetAllAnswers);
+</script>
+</body>
+</html>

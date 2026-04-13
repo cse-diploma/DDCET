@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DDCET Engineering Mock Test 2024-25</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --success: #10b981;
+            --error: #ef4444;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
+        body { background: var(--bg); color: var(--text); line-height: 1.6; padding: 20px; min-height: 100vh; }
+        .container { max-width: 800px; margin: 0 auto; }
+        
+        header { text-align: center; margin-bottom: 25px; background: var(--card); padding: 20px; border-radius: 12px; box-shadow: var(--shadow); }
+        header h1 { font-size: 1.8rem; margin-bottom: 5px; color: var(--primary-dark); }
+        header p { color: var(--text-light); font-size: 0.95rem; }
+        .hint { font-size: 0.85rem; color: var(--primary); font-weight: 500; margin-top: 8px; }
+        
+        .progress-bar { width: 100%; height: 8px; background: var(--border); border-radius: 4px; margin: 15px 0; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--primary); width: 0%; transition: width 0.4s ease; }
+
+        .card { background: var(--card); padding: 25px; border-radius: 12px; box-shadow: var(--shadow); margin-bottom: 20px; }
+        .section-tag { display: inline-block; background: #e0e7ff; color: var(--primary-dark); padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; margin-bottom: 12px; }
+        .topic-tag { display: inline-block; background: #f1f5f9; color: var(--text-light); padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; margin-left: 8px; }
+        
+        .question { font-size: 1.15rem; font-weight: 500; margin-bottom: 20px; }
+        
+        .options { display: grid; gap: 12px; }
+        .option { padding: 14px 16px; border: 2px solid var(--border); border-radius: 8px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; }
+        .option:hover:not(.disabled) { border-color: var(--primary); background: #f0f7ff; transform: translateX(4px); }
+        .option.correct { border-color: var(--success); background: #d1fae5; }
+        .option.incorrect { border-color: var(--error); background: #fee2e2; }
+        .option.disabled { cursor: default; opacity: 0.85; }
+        
+        .radio-circle { width: 20px; height: 20px; border: 2px solid var(--text-light); border-radius: 50%; margin-right: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.2s; }
+        .correct .radio-circle { border-color: var(--success); background: var(--success); }
+        .incorrect .radio-circle { border-color: var(--error); background: var(--error); }
+        .radio-circle::after { content: ''; width: 6px; height: 6px; background: white; border-radius: 50%; display: none; }
+        .correct .radio-circle::after, .incorrect .radio-circle::after { display: block; }
+
+        .feedback { margin-top: 20px; padding: 15px; border-radius: 8px; display: none; animation: slideIn 0.3s ease; }
+        .feedback.correct { background: #d1fae5; border-left: 4px solid var(--success); }
+        .feedback.incorrect { background: #fee2e2; border-left: 4px solid var(--error); }
+        .feedback strong { display: block; margin-bottom: 5px; }
+        
+        .btn { padding: 14px 24px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 1rem; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .btn-next { background: var(--primary); color: white; width: 100%; margin-top: 20px; display: none; transform: translateY(10px); opacity: 0; transition: all 0.3s ease; }
+        .btn-next:hover { background: var(--primary-dark); transform: translateY(0); }
+        .btn-next.show { display: block; transform: translateY(0); opacity: 1; }
+
+        .results { text-align: center; }
+        .results h2 { margin-bottom: 15px; }
+        .score-circle { width: 150px; height: 150px; border-radius: 50%; background: conic-gradient(var(--primary) 0%, var(--border) 0%); display: flex; align-items: center; justify-content: center; margin: 20px auto; position: relative; }
+        .score-circle::before { content: ''; position: absolute; width: 130px; height: 130px; background: var(--card); border-radius: 50%; }
+        .score-text { position: relative; font-size: 2rem; font-weight: 700; color: var(--primary-dark); }
+        .breakdown { text-align: left; margin-top: 20px; background: #f8fafc; padding: 15px; border-radius: 8px; }
+        .breakdown-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); }
+        .breakdown-row:last-child { border-bottom: none; }
+
+        @keyframes slideIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        @media (max-width: 600px) { body { padding: 10px; } .card { padding: 15px; } .question { font-size: 1.05rem; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>DDCET Engineering Mock Test</h1>
+            <p>Based on GTU Revised Syllabus 2024-25 | Proportional Weightage</p>
+            <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+            <div style="display:flex; justify-content:space-between; font-size:0.85rem; color:var(--text-light);">
+                <span>Question <span id="currentQ">1</span> of <span id="totalQ">30</span></span>
+                <span id="section-label">Section: BE-01</span>
+            </div>
+            <p class="hint">💡 Click any option to instantly check answer & explanation</p>
+        </header>
+
+        <div id="quiz-container">
+            <!-- Questions injected here -->
+        </div>
+
+        <div id="result-container" style="display:none;">
+            <div class="card results">
+                <h2>🎉 Test Completed!</h2>
+                <div class="score-circle" id="score-circle">
+                    <div class="score-text" id="score-text">0%</div>
+                </div>
+                <p id="final-msg"></p>
+                <div class="breakdown" id="breakdown"></div>
+                <button class="btn btn-next show" onclick="restartTest()" style="margin-top:20px; width:auto; padding: 12px 30px;">🔄 Retake Test</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 30 Questions: 15 BE-01, 15 BE-02 (Weightage proportional to syllabus)
+        const questions = [
+            // BE-01: Basics of Science & Engineering
+            { s: "BE-01", t: "Units & Measurement", q: "A micrometer screw gauge has a pitch of 0.5 mm and 100 divisions on its circular scale. What is its least count?", o: ["0.005 mm", "0.05 mm", "0.001 mm", "0.5 mm"], c: 0, e: "Least Count = Pitch / Divisions = 0.5 / 100 = 0.005 mm." },
+            { s: "BE-01", t: "Units & Measurement", q: "If the percentage error in measuring mass is 2% and in velocity is 3%, what is the max % error in kinetic energy (KE = ½mv²)?", o: ["5%", "6%", "8%", "11%"], c: 2, e: "Error in KE = %m + 2×%v = 2% + 2(3%) = 8%." },
+            { s: "BE-01", t: "Classical Mechanics", q: "A 5 kg object accelerates from 2 m/s to 8 m/s in 3 seconds. What is the net force acting on it?", o: ["10 N", "15 N", "20 N", "30 N"], c: 0, e: "a = (v-u)/t = (8-2)/3 = 2 m/s². F = ma = 5×2 = 10 N." },
+            { s: "BE-01", t: "Classical Mechanics", q: "Which quantity remains constant for a satellite in uniform circular orbit around Earth?", o: ["Velocity", "Acceleration", "Kinetic Energy", "Momentum"], c: 2, e: "Speed is constant in uniform circular motion, so KE (½mv²) stays constant. Direction changes for velocity/momentum." },
+            { s: "BE-01", t: "Electric Current", q: "Three resistors of 6Ω each are connected in parallel. Their equivalent resistance is:", o: ["2 Ω", "18 Ω", "6 Ω", "3 Ω"], c: 0, e: "1/Req = 1/6 + 1/6 + 1/6 = 3/6 = 1/2 → Req = 2 Ω." },
+            { s: "BE-01", t: "Electric Current", q: "A parallel plate capacitor has capacitance C. If distance is halved and dielectric K=4 is inserted, new capacitance is:", o: ["2C", "4C", "8C", "16C"], c: 2, e: "C = Kε₀A/d. Halving d doubles C. Inserting K=4 multiplies by 4. Total = 2×4×C = 8C." },
+            { s: "BE-01", t: "Heat & Thermometry", q: "The temperature at which Fahrenheit and Celsius scales show the same reading is:", o: ["-40°", "0°", "32°", "100°"], c: 0, e: "Set °F = °C = x. x = (9/5)x + 32 → -4/5 x = 32 → x = -40." },
+            { s: "BE-01", t: "Heat & Thermometry", q: "Heat flows from a hot body to a cold body primarily due to:", o: ["Difference in mass", "Difference in temperature", "Difference in specific heat", "Difference in density"], c: 1, e: "Heat transfer is driven by temperature gradient (2nd Law of Thermodynamics)." },
+            { s: "BE-01", t: "Wave Motion & Optics", q: "Total Internal Reflection occurs when light travels from:", o: ["Rarer to denser at any angle", "Denser to rarer at angle > critical angle", "Denser to rarer at angle < critical angle", "Rarer to denser at angle > critical angle"], c: 1, e: "TIR requires: (1) Denser → rarer medium, (2) Incident angle > critical angle." },
+            { s: "BE-01", t: "Wave Motion & Optics", q: "According to Sabine's formula, reverberation time is directly proportional to:", o: ["Volume of hall", "Total absorption", "Frequency of sound", "Intensity of source"], c: 0, e: "T = 0.161V/A. Reverberation time T ∝ Volume (V) and ∝ 1/Total absorption (A)." },
+            { s: "BE-01", t: "Chemical Reactions", q: "BaCl₂ + Na₂SO₄ → BaSO₄↓ + 2NaCl is an example of:", o: ["Decomposition", "Displacement", "Double displacement", "Combination"], c: 2, e: "Ions exchange between two compounds to form two new ones → Double displacement." },
+            { s: "BE-01", t: "Acids, Bases & Salts", q: "Which salt will have pH < 7 in aqueous solution?", o: ["NaCl", "CH₃COONa", "NH₄Cl", "KNO₃"], c: 2, e: "NH₄Cl is from weak base (NH₃) + strong acid (HCl) → hydrolyzes to acidic solution (pH < 7)." },
+            { s: "BE-01", t: "Metals & Non-metals", q: "Galvanization coats iron with which metal to prevent corrosion?", o: ["Copper", "Zinc", "Aluminum", "Tin"], c: 1, e: "Zinc is more reactive, acts as sacrificial anode, and forms protective oxide layer." },
+            { s: "BE-01", t: "Computer Practice", q: "In HTML, which tag creates a hyperlink?", o: ["<link>", "<href>", "<a>", "<url>"], c: 2, e: "The <a> (anchor) tag with href attribute creates hyperlinks in HTML." },
+            { s: "BE-01", t: "Environmental Sciences", q: "Major limitation of solar energy is:", o: ["High emissions", "Intermittency & weather dependence", "Non-renewable nature", "High noise"], c: 1, e: "Solar is clean/renewable but generation depends on sunlight (day/night, clouds)." },
+
+            // BE-02: Aptitude Test (Mathematics & Soft Skill)
+            { s: "BE-02", t: "Determinant & Matrices", q: "If matrix A = [[2, 3], [4, 5]], what is |A|?", o: ["2", "-2", "22", "-22"], c: 1, e: "Determinant = (ad - bc) = (2×5) - (3×4) = 10 - 12 = -2." },
+            { s: "BE-02", t: "Trigonometry", q: "The exact value of sin(75°) is:", o: ["(√3+1)/2√2", "(√3-1)/2√2", "(√6+√2)/4", "(√6-√2)/4"], c: 2, e: "sin(45+30) = sin45cos30 + cos45sin30 = (1/√2)(√3/2)+(1/√2)(1/2) = (√6+√2)/4." },
+            { s: "BE-02", t: "Vectors", q: "If a = 2i + j and b = i - 2j, then a·b equals:", o: ["0", "4", "-4", "3"], c: 0, e: "Dot product = (2)(1) + (1)(-2) = 2 - 2 = 0. (Vectors are perpendicular)." },
+            { s: "BE-02", t: "Coordinate Geometry", q: "Equation of line through (2,3) with slope -1:", o: ["x + y = 5", "x - y = 5", "x + y = 1", "2x + y = 7"], c: 0, e: "y - 3 = -1(x - 2) → y - 3 = -x + 2 → x + y = 5." },
+            { s: "BE-02", t: "Function & Limit", q: "lim(x→2) (x² - 4)/(x - 2) equals:", o: ["0", "2", "4", "Undefined"], c: 2, e: "Factor: (x-2)(x+2)/(x-2) = x+2. As x→2, limit = 4." },
+            { s: "BE-02", t: "Differentiation", q: "If y = e^(3x)·sin(2x), then dy/dx at x=0 is:", o: ["2", "3", "5", "6"], c: 1, e: "dy/dx = 3e^(3x)sin(2x) + 2e^(3x)cos(2x). At x=0: 0 + 2(1)(1) = 2." },
+            { s: "BE-02", t: "Differentiation", q: "Particle moves as s = t³ - 6t² + 9t. Velocity is zero at t = ?", o: ["1 and 3", "2 and 3", "0 and 3", "1 and 2"], c: 0, e: "v = ds/dt = 3t² - 12t + 9 = 3(t-1)(t-3). v=0 at t=1,3." },
+            { s: "BE-02", t: "Integration", q: "∫ 2x cos(x²) dx equals:", o: ["sin(x²) + C", "cos(x²) + C", "-sin(x²) + C", "x² sin(x²) + C"], c: 0, e: "Sub u = x² → du = 2x dx. ∫ cos(u) du = sin(u) + C = sin(x²) + C." },
+            { s: "BE-02", t: "Integration", q: "∫₀¹ (3x² + 2x) dx equals:", o: ["1", "2", "3", "4"], c: 1, e: "[x³ + x²]₀¹ = (1+1) - (0+0) = 2." },
+            { s: "BE-02", t: "Logarithm", q: "If log₁₀ 2 = 0.3010, then log₁₀ 8 equals:", o: ["0.6020", "0.9030", "1.2040", "0.4771"], c: 1, e: "log 8 = log 2³ = 3 log 2 = 3 × 0.3010 = 0.9030." },
+            { s: "BE-02", t: "Communication", q: "Which is a semantic barrier to communication?", o: ["Noise in environment", "Poor network", "Ambiguous/technical jargon", "Prejudice"], c: 2, e: "Semantic barriers arise from language/symbols causing misinterpretation." },
+            { s: "BE-02", t: "Communication", q: "In communication process, 'decoding' refers to:", o: ["Sender encoding message", "Receiver interpreting message", "Choosing channel", "Providing feedback"], c: 1, e: "Decoding is the receiver translating encoded message into meaningful info." },
+            { s: "BE-02", t: "Techniques of Writing", q: "Abbreviation at end of formal letter for attachments:", o: ["cc:", "Encl. or Enc.", "Re:", "P.S."], c: 1, e: "'Encl.' = Enclosure. 'cc' = carbon copy, 'Re' = subject, 'P.S.' = postscript." },
+            { s: "BE-02", t: "Grammar", q: "Correct subject-verb agreement:", o: ["The list of items are on desk.", "Each of students have submitted.", "Neither teacher nor students was present.", "Committee has decided deadline."], c: 3, e: "'Committee' = singular collective → 'has' correct. Others mismatch plural/singular." },
+            { s: "BE-02", t: "Grammar", q: "Correct tense: By the time we reached station, train ____.", o: ["leaves", "had left", "has left", "was leaving"], c: 1, e: "Past perfect 'had left' for action completed before another past action ('reached')." }
+        ];
+
+        let current = 0;
+        let score = { be01: 0, be02: 0 };
+        let answered = { be01: 0, be02: 0 };
+
+        function init() {
+            document.getElementById('totalQ').textContent = questions.length;
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            const q = questions[current];
+            const container = document.getElementById('quiz-container');
+            document.getElementById('currentQ').textContent = current + 1;
+            document.getElementById('section-label').textContent = `Section: ${q.s}`;
+            document.getElementById('progress').style.width = `${((current) / questions.length) * 100}%`;
+            
+            container.innerHTML = `
+                <div class="card">
+                    <div>
+                        <span class="section-tag">${q.s}</span>
+                        <span class="topic-tag">${q.t}</span>
+                    </div>
+                    <p class="question">${q.q}</p>
+                    <div class="options">
+                        ${q.o.map((opt, i) => `
+                            <label class="option" onclick="handleOptionClick(${i}, this)">
+                                <div class="radio-circle"></div>
+                                <span>${String.fromCharCode(65 + i)}. ${opt}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                    <div id="feedback" class="feedback"></div>
+                    <button id="next-btn" class="btn btn-next" onclick="nextQuestion()">Next Question →</button>
+                </div>
+            `;
+        }
+
+        function handleOptionClick(index, el) {
+            if (el.classList.contains('disabled')) return;
+
+            const q = questions[current];
+            const options = document.querySelectorAll('.option');
+            const feedback = document.getElementById('feedback');
+            const nextBtn = document.getElementById('next-btn');
+
+            // Lock all options
+            options.forEach(opt => opt.classList.add('disabled'));
+
+            // Evaluate & UI update
+            if (index === q.c) {
+                el.classList.add('correct');
+                feedback.className = 'feedback correct';
+                feedback.innerHTML = `<strong>✅ Correct!</strong> ${q.e}`;
+                score[q.s.toLowerCase().replace('-', '')]++;
+            } else {
+                el.classList.add('incorrect');
+                options[q.c].classList.add('correct');
+                feedback.className = 'feedback incorrect';
+                feedback.innerHTML = `<strong>❌ Incorrect.</strong> Correct: <strong>${String.fromCharCode(65 + q.c)}</strong><br>${q.e}`;
+            }
+            feedback.style.display = 'block';
+            answered[q.s.toLowerCase().replace('-', '')]++;
+
+            // Smooth show next button
+            nextBtn.classList.add('show');
+        }
+
+        function nextQuestion() {
+            current++;
+            if (current < questions.length) {
+                renderQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            document.getElementById('quiz-container').style.display = 'none';
+            document.getElementById('result-container').style.display = 'block';
+            document.getElementById('progress').style.width = '100%';
+            
+            const totalCorrect = score.be01 + score.be02;
+            const percentage = Math.round((totalCorrect / questions.length) * 100);
+            
+            document.getElementById('score-text').textContent = `${percentage}%`;
+            document.getElementById('score-circle').style.background = `conic-gradient(var(--success) ${percentage}%, var(--border) ${percentage}%)`;
+            
+            let msg = percentage >= 80 ? "Outstanding! You're exam-ready." :
+                      percentage >= 60 ? "Good job! Focus on weak topics." :
+                      percentage >= 40 ? "Keep practicing. Review explanations." :
+                      "Needs improvement. Revisit syllabus systematically.";
+            document.getElementById('final-msg').textContent = msg;
+            
+            document.getElementById('breakdown').innerHTML = `
+                <div class="breakdown-row"><span>🔬 BE-01 (Science & Engg)</span><strong>${score.be01} / ${answered.be01}</strong></div>
+                <div class="breakdown-row"><span>📐 BE-02 (Aptitude & Soft Skill)</span><strong>${score.be02} / ${answered.be02}</strong></div>
+                <div class="breakdown-row"><strong>🎯 Total Score</strong><strong>${totalCorrect} / ${questions.length}</strong></div>
+            `;
+        }
+
+        function restartTest() {
+            current = 0;
+            score = { be01: 0, be02: 0 };
+            answered = { be01: 0, be02: 0 };
+            document.getElementById('result-container').style.display = 'none';
+            document.getElementById('quiz-container').style.display = 'block';
+            renderQuestion();
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>

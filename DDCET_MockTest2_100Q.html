@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DDCET Mock Test 2 | 100 Questions</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#0f1923;--surface:#162030;--card:#1e2d40;--border:#2a3d52;
+    --accent:#f4a261;--accent2:#4cc9f0;--accent3:#4ade80;
+    --text:#e2e8f0;--muted:#7a90a8;--wrong:#f87171;--correct:#4ade80;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+  header{background:var(--surface);border-bottom:1px solid var(--border);padding:18px 24px;position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+  .logo{font-size:1.1rem;font-weight:700;letter-spacing:.5px;}
+  .logo span{color:var(--accent);}
+  #timerBox{font-family:'JetBrains Mono',monospace;font-size:1.3rem;font-weight:600;color:var(--accent2);background:#0f1923;border:1px solid var(--border);padding:6px 18px;border-radius:8px;min-width:100px;text-align:center;}
+  #timerBox.warn{color:var(--accent);animation:pulse .8s infinite;}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+  #progressWrap{background:var(--border);height:4px;width:100%;}
+  #progressBar{height:4px;background:linear-gradient(90deg,var(--accent),var(--accent2));width:0;transition:width .4s;}
+  .container{max-width:900px;margin:0 auto;padding:28px 18px;}
+  .section-badge{display:inline-flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--border);padding:6px 16px;border-radius:20px;font-size:.75rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--accent2);margin:32px 0 16px;}
+  .section-badge.s2{color:var(--accent3);}
+  .qcard{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:22px 24px;margin-bottom:16px;transition:border-color .2s;}
+  .qcard:hover{border-color:#3a5068;}
+  .qtop{display:flex;gap:12px;align-items:flex-start;margin-bottom:14px;}
+  .qnum{font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--muted);background:var(--bg);border:1px solid var(--border);padding:3px 10px;border-radius:6px;white-space:nowrap;margin-top:2px;}
+  .qtext{font-size:.97rem;line-height:1.6;}
+  .options{display:grid;gap:8px;margin-top:4px;}
+  .opt{display:flex;align-items:flex-start;gap:12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 14px;cursor:pointer;transition:all .18s;font-size:.9rem;}
+  .opt:hover{border-color:var(--accent2);background:#162435;}
+  .opt input[type=radio]{display:none;}
+  .opt-label{font-family:'JetBrains Mono',monospace;font-size:.8rem;font-weight:600;color:var(--accent2);background:#0f2030;border:1px solid #1e3a50;padding:2px 8px;border-radius:5px;flex-shrink:0;margin-top:1px;}
+  .opt.selected{border-color:var(--accent2);background:#0f2030;}
+  .opt.correct{border-color:var(--correct);background:#0d2218;}
+  .opt.correct .opt-label{color:var(--correct);background:#0a1f12;border-color:#1a4025;}
+  .opt.wrong{border-color:var(--wrong);background:#2a0f0f;}
+  .opt.wrong .opt-label{color:var(--wrong);background:#200d0d;border-color:#4a1a1a;}
+  .explanation{margin-top:14px;padding:12px 16px;background:var(--bg);border-left:3px solid var(--accent3);border-radius:0 8px 8px 0;font-size:.85rem;color:var(--muted);display:none;line-height:1.6;}
+  .explanation strong{color:var(--accent3);}
+  .explanation.visible{display:block;}
+  #navPalette{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:28px;position:sticky;top:72px;z-index:90;}
+  #navPalette h4{font-size:.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;}
+  #navGrid{display:flex;flex-wrap:wrap;gap:6px;}
+  .navBtn{font-family:'JetBrains Mono',monospace;font-size:.72rem;width:32px;height:32px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+  .navBtn:hover{border-color:var(--accent2);color:var(--accent2);}
+  .navBtn.done{background:#0d2218;border-color:var(--correct);color:var(--correct);}
+  .navBtn.revealed{background:#0f2030;border-color:var(--accent2);color:var(--accent2);}
+  .controls{display:flex;gap:12px;flex-wrap:wrap;margin:28px 0;justify-content:center;}
+  .btn{font-family:'Sora',sans-serif;font-size:.88rem;font-weight:600;padding:11px 24px;border-radius:8px;border:none;cursor:pointer;transition:all .18s;letter-spacing:.3px;}
+  .btn-primary{background:var(--accent);color:#fff;}
+  .btn-primary:hover{background:#e08a50;}
+  .btn-secondary{background:var(--card);color:var(--text);border:1px solid var(--border);}
+  .btn-secondary:hover{border-color:var(--accent2);color:var(--accent2);}
+  .btn-success{background:var(--correct);color:#0d2218;}
+  .btn-success:hover{background:#3db854;}
+  #resultPanel{display:none;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:36px;margin:28px 0;text-align:center;}
+  #resultPanel.visible{display:block;}
+  .result-score{font-size:4rem;font-weight:700;font-family:'JetBrains Mono',monospace;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+  .result-label{font-size:1rem;color:var(--muted);margin:8px 0 24px;}
+  .stat-row{display:flex;justify-content:center;gap:32px;flex-wrap:wrap;margin:20px 0;}
+  .stat{text-align:center;}
+  .stat-val{font-family:'JetBrains Mono',monospace;font-size:1.8rem;font-weight:700;}
+  .stat-key{font-size:.75rem;color:var(--muted);margin-top:4px;}
+  .s-correct .stat-val{color:var(--correct);}
+  .s-wrong .stat-val{color:var(--wrong);}
+  .s-skip .stat-val{color:var(--muted);}
+  .s-pct .stat-val{color:var(--accent2);}
+  #startScreen{text-align:center;padding:60px 20px;}
+  #startScreen h1{font-size:2.2rem;font-weight:700;margin-bottom:10px;}
+  #startScreen h1 span{color:var(--accent);}
+  #startScreen p{color:var(--muted);font-size:.95rem;margin-bottom:10px;}
+  .tag-row{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin:20px 0 32px;}
+  .tag{background:var(--card);border:1px solid var(--border);padding:6px 16px;border-radius:20px;font-size:.8rem;color:var(--muted);}
+  #testArea{display:none;}
+  ::-webkit-scrollbar{width:6px;}::-webkit-scrollbar-track{background:var(--bg);}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">DDCET <span>Mock Test 2</span></div>
+  <div id="timerBox">2:30:00</div>
+</header>
+<div id="progressWrap"><div id="progressBar"></div></div>
+<div class="container">
+  <div id="startScreen">
+    <h1>DDCET Mock Test <span>#2</span></h1>
+    <p>Gujarat Technological University &nbsp;|&nbsp; Engineering (All Branches)</p>
+    <div class="tag-row">
+      <span class="tag">📋 100 Questions</span>
+      <span class="tag">⏱ 150 Minutes</span>
+      <span class="tag">📊 200 Marks</span>
+      <span class="tag">BE-01 + BE-02</span>
+    </div>
+    <p style="color:var(--muted);font-size:.85rem;margin-bottom:28px;">All new questions — different from Mock Test 1.</p>
+    <button class="btn btn-primary" onclick="startTest()" style="font-size:1rem;padding:14px 40px;">▶ Start Test</button>
+  </div>
+  <div id="testArea">
+    <div id="navPalette"><h4>Question Navigator</h4><div id="navGrid"></div></div>
+    <div id="questionsContainer"></div>
+    <div class="controls">
+      <button class="btn btn-secondary" onclick="showAllAnswers()">💡 Reveal All Answers</button>
+      <button class="btn btn-success" onclick="submitTest()">✅ Submit &amp; Score</button>
+    </div>
+    <div id="resultPanel">
+      <div class="result-score" id="resScore">0/100</div>
+      <div class="result-label">Your Score</div>
+      <div class="stat-row">
+        <div class="stat s-correct"><div class="stat-val" id="resC">0</div><div class="stat-key">Correct</div></div>
+        <div class="stat s-wrong"><div class="stat-val" id="resW">0</div><div class="stat-key">Wrong</div></div>
+        <div class="stat s-skip"><div class="stat-val" id="resS">0</div><div class="stat-key">Skipped</div></div>
+        <div class="stat s-pct"><div class="stat-val" id="resPct">0%</div><div class="stat-key">Percentage</div></div>
+      </div>
+      <button class="btn btn-secondary" onclick="resetTest()" style="margin-top:16px;">🔄 Retake Test</button>
+    </div>
+  </div>
+</div>
+<script>
+const questions = [
+// ── BE-01: Units & Measurement ──
+{section:"BE-01 · Units & Measurement",
+ q:"The dimensional formula for velocity is:",
+ opts:["[M⁰L¹T⁻¹]","[M¹L¹T⁻¹]","[M⁰L⁰T⁻¹]","[M⁰L²T⁻²]"],ans:0,
+ exp:"Velocity = displacement/time = L/T → [M⁰L¹T⁻¹]."},
+{section:"BE-01 · Units & Measurement",
+ q:"Which instrument measures very small lengths like the diameter of a wire most precisely?",
+ opts:["Metre scale","Vernier calliper","Screw gauge","Measuring tape"],ans:2,
+ exp:"Screw gauge (micrometer) has a least count of 0.001 mm — most precise for small dimensions."},
+{section:"BE-01 · Units & Measurement",
+ q:"The significant figures in 0.00420 are:",
+ opts:["5","3","6","2"],ans:1,
+ exp:"Leading zeros are not significant; trailing zeros after decimal are significant. So 4, 2, 0 → 3 significant figures."},
+{section:"BE-01 · Units & Measurement",
+ q:"One light year is the distance travelled by light in one year. It is approximately:",
+ opts:["9.46 × 10¹⁵ m","3 × 10⁸ m","1.5 × 10¹¹ m","6.67 × 10⁻¹¹ m"],ans:0,
+ exp:"1 light year ≈ 9.46 × 10¹⁵ metres (speed of light × seconds in a year)."},
+{section:"BE-01 · Units & Measurement",
+ q:"Dimensional analysis CANNOT be used to:",
+ opts:["Derive formulae","Check correctness of equations","Find values of dimensionless constants","Convert units"],ans:2,
+ exp:"Dimensional analysis cannot determine dimensionless constants (e.g., 2, π) since they have no dimensions."},
+{section:"BE-01 · Units & Measurement",
+ q:"The SI unit of pressure is:",
+ opts:["Bar","Atm","Pascal","Dyne/cm²"],ans:2,
+ exp:"Pascal (Pa) = N/m² is the SI unit of pressure."},
+
+// ── BE-01: Classical Mechanics ──
+{section:"BE-01 · Classical Mechanics",
+ q:"A ball is thrown vertically upward with velocity 20 m/s. The maximum height reached is (g = 10 m/s²):",
+ opts:["10 m","20 m","40 m","80 m"],ans:1,
+ exp:"h = v²/2g = 400/20 = 20 m."},
+{section:"BE-01 · Classical Mechanics",
+ q:"The law of conservation of momentum applies when:",
+ opts:["External force is present","Net external force is zero","Friction exists","Speed is constant"],ans:1,
+ exp:"Linear momentum is conserved when the net external force on the system is zero."},
+{section:"BE-01 · Classical Mechanics",
+ q:"Moment of inertia depends on:",
+ opts:["Mass only","Distance from axis only","Both mass and distribution about axis","Speed of rotation"],ans:2,
+ exp:"Moment of inertia I = Σmr² — depends on both the mass and how it is distributed about the rotation axis."},
+{section:"BE-01 · Classical Mechanics",
+ q:"A projectile is launched at 45°. The range is maximum when:",
+ opts:["θ = 30°","θ = 60°","θ = 45°","θ = 90°"],ans:2,
+ exp:"Range R = v²sin2θ/g. Maximum when sin2θ = 1 → 2θ = 90° → θ = 45°."},
+{section:"BE-01 · Classical Mechanics",
+ q:"Impulse is defined as:",
+ opts:["Force × distance","Force × time","Mass × velocity","Work / time"],ans:1,
+ exp:"Impulse = Force × time = change in momentum. Unit: N·s."},
+{section:"BE-01 · Classical Mechanics",
+ q:"The gravitational potential energy of a body at height h (mass m) is:",
+ opts:["mgh²","m²gh","mgh","mg/h"],ans:2,
+ exp:"Gravitational PE = mgh, where m = mass, g = 9.8 m/s², h = height above reference."},
+{section:"BE-01 · Classical Mechanics",
+ q:"A wheel rotating at 600 rpm has angular velocity (in rad/s):",
+ opts:["10π","20π","60","600"],ans:1,
+ exp:"ω = 2π × (600/60) = 2π × 10 = 20π rad/s."},
+{section:"BE-01 · Classical Mechanics",
+ q:"In uniform circular motion, the speed is:",
+ opts:["Increasing","Decreasing","Constant","Zero"],ans:2,
+ exp:"In uniform circular motion, the magnitude of velocity (speed) is constant; only direction changes."},
+
+// ── BE-01: Electric Current ──
+{section:"BE-01 · Electric Current",
+ q:"The power dissipated in a resistor is given by:",
+ opts:["V²/R","IR","V/R","V²R"],ans:0,
+ exp:"Power P = V²/R = I²R = VI. All three forms are correct; V²/R is the first option."},
+{section:"BE-01 · Electric Current",
+ q:"Kirchhoff's Current Law (KCL) states:",
+ opts:["Sum of voltages in a loop = 0","Sum of currents at a node = 0","Current is same in series","Voltage divides equally"],ans:1,
+ exp:"KCL: the algebraic sum of all currents entering and leaving a node equals zero."},
+{section:"BE-01 · Electric Current",
+ q:"A galvanometer is converted into a voltmeter by connecting:",
+ opts:["Low resistance in parallel","High resistance in series","Low resistance in series","High resistance in parallel"],ans:1,
+ exp:"A voltmeter is made by adding a high series resistance to a galvanometer to limit current."},
+{section:"BE-01 · Electric Current",
+ q:"Wheatstone bridge is used to measure:",
+ opts:["Voltage","Current","Unknown resistance","Capacitance"],ans:2,
+ exp:"Wheatstone bridge accurately measures an unknown resistance using three known resistances."},
+{section:"BE-01 · Electric Current",
+ q:"The energy stored in a capacitor C charged to voltage V is:",
+ opts:["CV","CV²","½CV²","2CV²"],ans:2,
+ exp:"Energy stored = ½CV² — standard formula for energy in a capacitor."},
+{section:"BE-01 · Electric Current",
+ q:"Magnetic force on a moving charge q with velocity v in field B is:",
+ opts:["qvB sinθ","qvB cosθ","qB/v","qv/B"],ans:0,
+ exp:"Lorentz force: F = qvB sinθ, where θ is the angle between v and B."},
+{section:"BE-01 · Electric Current",
+ q:"A transformer increases voltage from 220 V to 2200 V. The turns ratio (primary:secondary) is:",
+ opts:["10:1","1:10","100:1","1:100"],ans:1,
+ exp:"Vs/Vp = Ns/Np → 2200/220 = 10 → turns ratio Np:Ns = 1:10."},
+{section:"BE-01 · Electric Current",
+ q:"Lenz's law states that induced EMF always:",
+ opts:["Adds to the cause","Opposes the change causing it","Increases the flux","Has no relation to flux"],ans:1,
+ exp:"Lenz's law: induced current opposes the change in flux that caused it (conservation of energy)."},
+
+// ── BE-01: Heat & Thermometry ──
+{section:"BE-01 · Heat & Thermometry",
+ q:"The first law of thermodynamics is a statement of:",
+ opts:["Conservation of momentum","Conservation of energy","Conservation of mass","Conservation of charge"],ans:1,
+ exp:"First law: ΔU = Q − W. It is the law of conservation of energy applied to thermodynamic systems."},
+{section:"BE-01 · Heat & Thermometry",
+ q:"During an adiabatic process:",
+ opts:["Temperature is constant","Pressure is constant","No heat exchange occurs","Volume is constant"],ans:2,
+ exp:"Adiabatic process: Q = 0 (no heat exchange between system and surroundings)."},
+{section:"BE-01 · Heat & Thermometry",
+ q:"A metal rod expands 0.2 mm for every 1°C rise. For a 1 m rod, the coefficient of linear expansion is:",
+ opts:["0.2 × 10⁻³ /°C","2 × 10⁻⁴ /°C","0.2 /°C","2 × 10⁻³ /°C"],ans:1,
+ exp:"α = ΔL/(L₀·ΔT) = 0.2×10⁻³/(1×1) = 2×10⁻⁴ /°C."},
+{section:"BE-01 · Heat & Thermometry",
+ q:"Stefan's law states that the energy radiated by a black body per unit area is proportional to:",
+ opts:["T","T²","T³","T⁴"],ans:3,
+ exp:"Stefan-Boltzmann law: E = σT⁴. Energy radiated is proportional to the fourth power of absolute temperature."},
+{section:"BE-01 · Heat & Thermometry",
+ q:"The efficiency of a Carnot engine working between temperatures T₁ (hot) and T₂ (cold) is:",
+ opts:["T₂/T₁","1 − T₁/T₂","1 − T₂/T₁","T₁ − T₂"],ans:2,
+ exp:"Carnot efficiency η = 1 − T₂/T₁, where T₁ and T₂ are absolute temperatures."},
+{section:"BE-01 · Heat & Thermometry",
+ q:"Latent heat of vaporisation of water is approximately:",
+ opts:["80 cal/g","540 cal/g","100 cal/g","273 cal/g"],ans:1,
+ exp:"Latent heat of vaporisation of water ≈ 540 cal/g (at 100°C)."},
+
+// ── BE-01: Waves, Optics & Acoustics ──
+{section:"BE-01 · Waves, Optics & Acoustics",
+ q:"The speed of light in vacuum is approximately:",
+ opts:["3 × 10⁶ m/s","3 × 10⁸ m/s","3 × 10¹⁰ m/s","3 × 10⁴ m/s"],ans:1,
+ exp:"Speed of light in vacuum c ≈ 3 × 10⁸ m/s."},
+{section:"BE-01 · Waves, Optics & Acoustics",
+ q:"Diffraction of light is most significant when the slit size is:",
+ opts:["Much larger than wavelength","Much smaller than wavelength","Equal to wavelength","Independent of wavelength"],ans:2,
+ exp:"Diffraction is most prominent when the slit size is comparable to (approximately equal to) the wavelength."},
+{section:"BE-01 · Waves, Optics & Acoustics",
+ q:"Which colour of light has the highest frequency?",
+ opts:["Red","Green","Violet","Yellow"],ans:2,
+ exp:"Violet light has the shortest wavelength and thus the highest frequency in the visible spectrum."},
+{section:"BE-01 · Waves, Optics & Acoustics",
+ q:"The Doppler effect is observed when:",
+ opts:["Sound is absorbed","Relative motion exists between source and observer","Light is reflected","Sound is refracted"],ans:1,
+ exp:"Doppler effect: apparent change in frequency due to relative motion between source and observer."},
+{section:"BE-01 · Waves, Optics & Acoustics",
+ q:"SONAR uses which type of waves?",
+ opts:["Electromagnetic","Infrared","Ultrasonic sound","Radio"],ans:2,
+ exp:"SONAR (Sound Navigation And Ranging) uses ultrasonic sound waves to detect underwater objects."},
+{section:"BE-01 · Waves, Optics & Acoustics",
+ q:"A concave mirror is used as a:",
+ opts:["Shaving mirror","Rear-view mirror","Both A and B","Decorative mirror"],ans:0,
+ exp:"Concave mirrors produce magnified upright images when object is within focal length — used as shaving/makeup mirrors."},
+
+// ── BE-01: Chemical Reactions ──
+{section:"BE-01 · Chemical Reactions",
+ q:"Which of the following represents an oxidation reaction?",
+ opts:["Gaining electrons","Losing electrons","Gaining hydrogen","Losing oxygen"],ans:1,
+ exp:"Oxidation = loss of electrons (OIL: Oxidation Is Loss). Reduction = gain of electrons (RIG)."},
+{section:"BE-01 · Chemical Reactions",
+ q:"The reaction between an acid and a base to form salt and water is called:",
+ opts:["Combination","Decomposition","Neutralisation","Displacement"],ans:2,
+ exp:"Acid + Base → Salt + Water — this is a neutralisation reaction."},
+{section:"BE-01 · Chemical Reactions",
+ q:"In electrolysis of water, the gas collected at cathode is:",
+ opts:["Oxygen","Hydrogen","Both","CO₂"],ans:1,
+ exp:"At cathode (−ve): reduction occurs → 2H⁺ + 2e⁻ → H₂ (hydrogen gas)."},
+{section:"BE-01 · Chemical Reactions",
+ q:"Exothermic reactions:",
+ opts:["Absorb heat from surroundings","Release heat to surroundings","Require UV light","Produce no products"],ans:1,
+ exp:"Exothermic reactions release heat energy to surroundings (e.g., combustion, respiration)."},
+
+// ── BE-01: Acids, Bases & Salts ──
+{section:"BE-01 · Acids, Bases & Salts",
+ q:"Which of the following is a strong acid?",
+ opts:["Acetic acid","Carbonic acid","Hydrochloric acid","Citric acid"],ans:2,
+ exp:"HCl is a strong acid — it fully ionises in water. Acetic, carbonic, and citric acids are weak acids."},
+{section:"BE-01 · Acids, Bases & Salts",
+ q:"The formula of common salt is:",
+ opts:["NaOH","NaCl","Na₂CO₃","NaHCO₃"],ans:1,
+ exp:"Common salt (table salt) = Sodium Chloride (NaCl)."},
+{section:"BE-01 · Acids, Bases & Salts",
+ q:"pH of a solution is defined as:",
+ opts:["log[H⁺]","−log[OH⁻]","−log[H⁺]","log[OH⁻]"],ans:2,
+ exp:"pH = −log₁₀[H⁺] — the negative logarithm of hydrogen ion concentration."},
+{section:"BE-01 · Acids, Bases & Salts",
+ q:"Washing soda is:",
+ opts:["Na₂CO₃","NaHCO₃","NaOH","Na₂SO₄"],ans:0,
+ exp:"Washing soda = Sodium carbonate (Na₂CO₃·10H₂O). Baking soda is NaHCO₃."},
+
+// ── BE-01: Metals & Non-metals ──
+{section:"BE-01 · Metals & Non-metals",
+ q:"The process of coating iron with zinc to prevent rusting is called:",
+ opts:["Anodising","Galvanising","Electroplating","Alloying"],ans:1,
+ exp:"Galvanising = coating iron/steel with zinc to protect against corrosion."},
+{section:"BE-01 · Metals & Non-metals",
+ q:"Which non-metal is a good conductor of electricity?",
+ opts:["Sulphur","Phosphorus","Graphite","Iodine"],ans:2,
+ exp:"Graphite (an allotrope of carbon) is a non-metal that conducts electricity due to delocalized electrons."},
+{section:"BE-01 · Metals & Non-metals",
+ q:"The most reactive metal in the reactivity series is:",
+ opts:["Iron","Copper","Gold","Potassium"],ans:3,
+ exp:"Potassium (K) is among the most reactive metals — at the top of the reactivity series."},
+{section:"BE-01 · Metals & Non-metals",
+ q:"Alloys are:",
+ opts:["Pure metals","Mixtures of metals (or metal + non-metal)","Chemical compounds of metals","Ionic salts"],ans:1,
+ exp:"Alloys are homogeneous mixtures of metals or a metal with a non-metal (e.g., steel = iron + carbon)."},
+
+// ── BE-01: Computer Practice ──
+{section:"BE-01 · Computer Practice",
+ q:"RAM stands for:",
+ opts:["Read Access Memory","Random Access Memory","Rapid Access Module","Read and Modify"],ans:1,
+ exp:"RAM = Random Access Memory — volatile memory used for temporary data storage during processing."},
+{section:"BE-01 · Computer Practice",
+ q:"Which of the following is an output device?",
+ opts:["Scanner","Microphone","Plotter","Keyboard"],ans:2,
+ exp:"Plotter is an output device that draws vector graphics. Scanner and microphone are input devices."},
+{section:"BE-01 · Computer Practice",
+ q:"In MS Excel, a formula always begins with:",
+ opts:["#","@","=","&"],ans:2,
+ exp:"In MS Excel, every formula starts with an equals sign (=), e.g., =SUM(A1:A5)."},
+{section:"BE-01 · Computer Practice",
+ q:"The Internet protocol that assigns addresses to devices is:",
+ opts:["HTTP","FTP","IP","SMTP"],ans:2,
+ exp:"IP (Internet Protocol) assigns unique IP addresses to devices on a network for identification and routing."},
+
+// ── BE-02: Determinants & Matrices ──
+{section:"BE-02 · Determinants & Matrices",
+ q:"If A is a 3×3 matrix, the maximum number of elements it contains is:",
+ opts:["3","6","9","12"],ans:2,
+ exp:"A 3×3 matrix has 3 rows × 3 columns = 9 elements."},
+{section:"BE-02 · Determinants & Matrices",
+ q:"The transpose of matrix A is obtained by:",
+ opts:["Multiplying all elements by −1","Interchanging rows and columns","Taking reciprocal of each element","Multiplying row elements"],ans:1,
+ exp:"Transpose Aᵀ is formed by converting rows of A into columns (and columns into rows)."},
+{section:"BE-02 · Determinants & Matrices",
+ q:"The determinant of [[3,1],[2,4]] is:",
+ opts:["10","14","12","−10"],ans:0,
+ exp:"det = (3×4) − (1×2) = 12 − 2 = 10."},
+{section:"BE-02 · Determinants & Matrices",
+ q:"Two matrices A and B can be multiplied (AB) only when:",
+ opts:["They are both square","Number of columns of A = number of rows of B","They have equal dimensions","Their determinants are equal"],ans:1,
+ exp:"Matrix multiplication AB is defined when columns of A = rows of B."},
+
+// ── BE-02: Trigonometry ──
+{section:"BE-02 · Trigonometry",
+ q:"tan 45° is equal to:",
+ opts:["0","√3","1/√2","1"],ans:3,
+ exp:"tan 45° = sin45°/cos45° = (1/√2)/(1/√2) = 1."},
+{section:"BE-02 · Trigonometry",
+ q:"The value of cos 0° is:",
+ opts:["0","1","−1","√3/2"],ans:1,
+ exp:"cos 0° = 1. (sin 0° = 0)."},
+{section:"BE-02 · Trigonometry",
+ q:"sin(A − B) is equal to:",
+ opts:["sinA cosB + cosA sinB","sinA cosB − cosA sinB","cosA cosB − sinA sinB","cosA sinB + sinA cosB"],ans:1,
+ exp:"sin(A−B) = sinA cosB − cosA sinB."},
+{section:"BE-02 · Trigonometry",
+ q:"In a right-angled triangle with hypotenuse c and sides a, b: a² + b² = ?",
+ opts:["c","c²","2c","√c"],ans:1,
+ exp:"Pythagorean theorem: a² + b² = c² in a right-angled triangle."},
+{section:"BE-02 · Trigonometry",
+ q:"The general solution of sin θ = 0 is:",
+ opts:["θ = nπ","θ = nπ/2","θ = (2n+1)π/2","θ = 2nπ"],ans:0,
+ exp:"sinθ = 0 when θ = nπ (n is any integer: 0, ±1, ±2, ...)."},
+{section:"BE-02 · Trigonometry",
+ q:"cos 2A can be written as:",
+ opts:["2cos²A","2cos²A − 1","1 − 2cos²A","2sinA cosA"],ans:1,
+ exp:"cos 2A = 2cos²A − 1 (also = 1 − 2sin²A = cos²A − sin²A)."},
+
+// ── BE-02: Vectors ──
+{section:"BE-02 · Vectors",
+ q:"The magnitude of vector A = 3î + 4ĵ is:",
+ opts:["3","4","5","7"],ans:2,
+ exp:"|A| = √(3² + 4²) = √(9+16) = √25 = 5."},
+{section:"BE-02 · Vectors",
+ q:"î × î (cross product of unit vector with itself) is:",
+ opts:["1","0","î","−1"],ans:1,
+ exp:"A × A = 0 for any vector; î × î = 0 since sinθ = sin0° = 0."},
+{section:"BE-02 · Vectors",
+ q:"If A = 2î + 3ĵ and B = î − ĵ, then A + B is:",
+ opts:["3î + 2ĵ","î + 4ĵ","3î + 4ĵ","2î − 3ĵ"],ans:0,
+ exp:"A + B = (2+1)î + (3−1)ĵ = 3î + 2ĵ."},
+{section:"BE-02 · Vectors",
+ q:"The scalar projection of A on B is:",
+ opts:["A·B","A×B","A·B̂","A/B"],ans:2,
+ exp:"Scalar projection = A·B̂ = A·(B/|B|) = (A·B)/|B|."},
+
+// ── BE-02: Coordinate Geometry ──
+{section:"BE-02 · Coordinate Geometry",
+ q:"The distance between points (1,2) and (4,6) is:",
+ opts:["3","5","7","25"],ans:1,
+ exp:"d = √((4−1)² + (6−2)²) = √(9+16) = √25 = 5."},
+{section:"BE-02 · Coordinate Geometry",
+ q:"The equation of a line passing through origin with slope 3 is:",
+ opts:["y = 3","x = 3","y = 3x","3y = x"],ans:2,
+ exp:"Line through origin: y = mx. With m = 3: y = 3x."},
+{section:"BE-02 · Coordinate Geometry",
+ q:"The midpoint of segment joining (2,4) and (6,8) is:",
+ opts:["(4,6)","(8,12)","(3,5)","(2,4)"],ans:0,
+ exp:"Midpoint = ((2+6)/2, (4+8)/2) = (4, 6)."},
+{section:"BE-02 · Coordinate Geometry",
+ q:"A parabola with equation y² = 4ax has its vertex at:",
+ opts:["(a,0)","(0,a)","Origin (0,0)","(−a,0)"],ans:2,
+ exp:"Standard parabola y² = 4ax has vertex at origin (0,0) and focus at (a,0)."},
+
+// ── BE-02: Function & Limit ──
+{section:"BE-02 · Function & Limit",
+ q:"A function f(x) is continuous at x = a if:",
+ opts:["f(a) is defined only","lim f(x) exists only","Both limit exists and equals f(a)","f'(a) exists"],ans:2,
+ exp:"Continuity at x=a requires: f(a) defined, lim(x→a) f(x) exists, and lim(x→a) f(x) = f(a)."},
+{section:"BE-02 · Function & Limit",
+ q:"lim(x→0) (eˣ − 1)/x is equal to:",
+ opts:["0","e","1","∞"],ans:2,
+ exp:"Standard limit: lim(x→0) (eˣ−1)/x = 1."},
+{section:"BE-02 · Function & Limit",
+ q:"The range of f(x) = x² is:",
+ opts:["All real numbers","x ≥ 0","x > 0","[0, ∞)"],ans:3,
+ exp:"x² ≥ 0 for all real x, so range is [0, ∞)."},
+{section:"BE-02 · Function & Limit",
+ q:"lim(x→3) (x² − 9)/(x − 3) is equal to:",
+ opts:["0","3","6","9"],ans:2,
+ exp:"Factor: (x²−9)/(x−3) = (x+3). At x=3: 3+3 = 6."},
+
+// ── BE-02: Differentiation ──
+{section:"BE-02 · Differentiation",
+ q:"d/dx (tan x) is:",
+ opts:["sec x","sec²x","cosec²x","−sec²x"],ans:1,
+ exp:"d/dx(tan x) = sec²x."},
+{section:"BE-02 · Differentiation",
+ q:"If y = 3x³ − 2x + 5, then dy/dx at x = 1 is:",
+ opts:["5","7","9","3"],ans:1,
+ exp:"dy/dx = 9x² − 2. At x=1: 9(1)−2 = 7."},
+{section:"BE-02 · Differentiation",
+ q:"The second derivative d²y/dx² represents:",
+ opts:["Slope of tangent","Rate of change of slope","Area under curve","Total distance"],ans:1,
+ exp:"The second derivative gives the rate of change of the first derivative (slope) — used for concavity and maxima/minima."},
+{section:"BE-02 · Differentiation",
+ q:"Product rule: d/dx [u·v] is:",
+ opts:["u·dv/dx","v·du/dx","u·dv/dx + v·du/dx","u/v · du/dx"],ans:2,
+ exp:"Product rule: d/dx(uv) = u·(dv/dx) + v·(du/dx)."},
+{section:"BE-02 · Differentiation",
+ q:"At a maximum point of a function f(x), f'(x) is:",
+ opts:["Positive","Negative","Zero","Infinity"],ans:2,
+ exp:"At a local maximum, the first derivative f'(x) = 0 (turning point condition)."},
+{section:"BE-02 · Differentiation",
+ q:"d/dx (√x) is:",
+ opts:["2√x","√x/2","1/(2√x)","2/√x"],ans:2,
+ exp:"d/dx(x^½) = ½x^(−½) = 1/(2√x)."},
+
+// ── BE-02: Integration ──
+{section:"BE-02 · Integration",
+ q:"∫ sin x dx is:",
+ opts:["cos x + C","−cos x + C","sin x + C","tan x + C"],ans:1,
+ exp:"∫sin x dx = −cos x + C."},
+{section:"BE-02 · Integration",
+ q:"∫₀² x² dx is:",
+ opts:["4/3","8/3","4","2"],ans:1,
+ exp:"∫₀² x² dx = [x³/3]₀² = 8/3 − 0 = 8/3."},
+{section:"BE-02 · Integration",
+ q:"∫ sec²x dx is:",
+ opts:["sec x tan x + C","tan x + C","2sec x + C","cot x + C"],ans:1,
+ exp:"∫sec²x dx = tan x + C."},
+{section:"BE-02 · Integration",
+ q:"Integration by substitution is used when the integrand contains:",
+ opts:["A product","A composite function","A sum","Constants only"],ans:1,
+ exp:"Substitution method is used for composite functions — replace inner function with a new variable u."},
+{section:"BE-02 · Integration",
+ q:"The area under a curve y = f(x) from x=a to x=b is given by:",
+ opts:["∫ₐᵇ f'(x) dx","∫ₐᵇ f(x) dx","f(b) − f(a)","f(b) + f(a)"],ans:1,
+ exp:"Area = ∫ₐᵇ f(x) dx — the definite integral gives the area under the curve."},
+{section:"BE-02 · Integration",
+ q:"∫ (3x² + 2x) dx is:",
+ opts:["6x + 2 + C","x³ + x² + C","3x³ + 2x² + C","x³ + x + C"],ans:1,
+ exp:"∫3x² dx + ∫2x dx = x³ + x² + C."},
+
+// ── BE-02: Logarithm ──
+{section:"BE-02 · Logarithm",
+ q:"log₂ 8 is equal to:",
+ opts:["2","4","3","8"],ans:2,
+ exp:"log₂ 8 = log₂ 2³ = 3."},
+{section:"BE-02 · Logarithm",
+ q:"If log x = 2, then x is:",
+ opts:["2","20","100","200"],ans:2,
+ exp:"log₁₀ x = 2 → x = 10² = 100."},
+{section:"BE-02 · Logarithm",
+ q:"The change of base formula is logₐb =:",
+ opts:["log b / log a","log a / log b","log(a+b)","log a × log b"],ans:0,
+ exp:"Change of base: logₐ b = log b / log a (any common base)."},
+{section:"BE-02 · Logarithm",
+ q:"log 1 (any base) is always:",
+ opts:["1","−1","0","∞"],ans:2,
+ exp:"logₐ 1 = 0 for any valid base a, because a⁰ = 1."},
+
+// ── BE-02: Statistics ──
+{section:"BE-02 · Statistics",
+ q:"The mode of the data set 3, 5, 3, 7, 3, 5, 7 is:",
+ opts:["5","7","3","4"],ans:2,
+ exp:"Mode is the most frequently occurring value. 3 appears 3 times — most frequent."},
+{section:"BE-02 · Statistics",
+ q:"Standard deviation measures:",
+ opts:["Central value","Spread/dispersion of data","Total sum","Number of observations"],ans:1,
+ exp:"Standard deviation measures how spread out the data values are around the mean."},
+
+// ── BE-02: Communication ──
+{section:"BE-02 · Theory of Communication",
+ q:"Formal communication follows:",
+ opts:["Grapevine channels","Official organisational structure","Personal relationships","Social media"],ans:1,
+ exp:"Formal communication flows through official channels defined by organisational structure (upward, downward, horizontal)."},
+{section:"BE-02 · Theory of Communication",
+ q:"Feedback in communication refers to:",
+ opts:["The original message","The channel used","Receiver's response to sender","Noise in the channel"],ans:2,
+ exp:"Feedback is the receiver's response to the sender's message — it completes the communication cycle."},
+{section:"BE-02 · Theory of Communication",
+ q:"Which of the following is an example of downward communication?",
+ opts:["Employee suggestion to manager","Manager issuing instructions to team","Two colleagues discussing","Customer complaint"],ans:1,
+ exp:"Downward communication flows from higher to lower levels — e.g., manager giving instructions to subordinates."},
+{section:"BE-02 · Theory of Communication",
+ q:"A memo is a form of:",
+ opts:["Verbal communication","External written communication","Internal written communication","Non-verbal communication"],ans:2,
+ exp:"A memorandum (memo) is used for internal written communication within an organisation."},
+
+// ── BE-02: Techniques of Writing ──
+{section:"BE-02 · Techniques of Writing",
+ q:"A curriculum vitae (CV) is used for:",
+ opts:["Placing a business order","Applying for a job","Writing a complaint","Sending a quotation"],ans:1,
+ exp:"A CV (curriculum vitae) is a document summarising education, skills and experience — used for job applications."},
+{section:"BE-02 · Techniques of Writing",
+ q:"The subject line in a formal letter appears:",
+ opts:["Before salutation","After salutation","In the body","At the end"],ans:1,
+ exp:"In a formal letter: Date → Address → Salutation → Subject → Body → Closing. Subject appears after salutation."},
+{section:"BE-02 · Techniques of Writing",
+ q:"A report should be written in:",
+ opts:["First-person active","Second person","Third-person passive/objective","Informal style"],ans:2,
+ exp:"Formal reports are written in third-person, objective, passive style to maintain impartiality."},
+
+// ── BE-02: Grammar ──
+{section:"BE-02 · Grammar",
+ q:"Choose the correct passive voice of 'She wrote the letter.'",
+ opts:["The letter is written by her.","The letter was written by her.","The letter has been written.","She has written the letter."],ans:1,
+ exp:"Simple past active → simple past passive: 'The letter was written by her.'"},
+{section:"BE-02 · Grammar",
+ q:"The synonym of 'diligent' is:",
+ opts:["Lazy","Hardworking","Careless","Slow"],ans:1,
+ exp:"Diligent means hardworking and careful — synonym: industrious, hardworking."},
+{section:"BE-02 · Grammar",
+ q:"'Neither he nor his friends _____ coming.' Fill in the correct verb:",
+ opts:["is","are","was","were"],ans:1,
+ exp:"With 'neither...nor', verb agrees with the noun closer to it. 'Friends' is plural → 'are'."},
+];
+
+let userAnswers=new Array(questions.length).fill(null);
+let revealed=new Array(questions.length).fill(false);
+let timerInterval,seconds=150*60;
+
+function startTest(){
+  document.getElementById('startScreen').style.display='none';
+  document.getElementById('testArea').style.display='block';
+  buildQuestions();buildNavGrid();startTimer();
+}
+function buildQuestions(){
+  const cont=document.getElementById('questionsContainer');
+  let lastSection='';
+  questions.forEach((q,i)=>{
+    if(q.section!==lastSection){
+      lastSection=q.section;
+      const badge=document.createElement('div');
+      badge.className='section-badge'+(q.section.startsWith('BE-02')?' s2':'');
+      badge.textContent=q.section;cont.appendChild(badge);
+    }
+    const card=document.createElement('div');
+    card.className='qcard';card.id='qcard-'+i;
+    const L=['A','B','C','D'];
+    let optsHTML=q.opts.map((o,j)=>`<label class="opt" id="opt-${i}-${j}" onclick="selectOpt(${i},${j})"><input type="radio" name="q${i}" value="${j}"><span class="opt-label">${L[j]}</span><span>${o}</span></label>`).join('');
+    card.innerHTML=`<div class="qtop"><span class="qnum">Q${i+1}</span><span class="qtext">${q.q}</span></div><div class="options">${optsHTML}</div><div class="explanation" id="exp-${i}"><strong>✓ Answer: ${L[q.ans]} — ${q.opts[q.ans]}</strong><br>${q.exp}</div>`;
+    cont.appendChild(card);
+  });
+}
+function selectOpt(qi,oi){
+  if(revealed[qi])return;
+  userAnswers[qi]=oi;
+  questions[qi].opts.forEach((_,j)=>{document.getElementById(`opt-${qi}-${j}`).classList.toggle('selected',j===oi);});
+  document.getElementById('qcard-'+qi).classList.add('answered');
+  updateNav(qi,'done');updateProgress();
+}
+function revealQuestion(qi){
+  if(revealed[qi])return;revealed[qi]=true;
+  const q=questions[qi];const L=['A','B','C','D'];
+  q.opts.forEach((_,j)=>{
+    const el=document.getElementById(`opt-${qi}-${j}`);
+    el.classList.remove('selected');
+    if(j===q.ans)el.classList.add('correct');
+    else if(userAnswers[qi]===j)el.classList.add('wrong');
+    el.style.pointerEvents='none';
+  });
+  document.getElementById('exp-'+qi).classList.add('visible');
+  updateNav(qi,'revealed');
+}
+function showAllAnswers(){questions.forEach((_,i)=>revealQuestion(i));}
+function submitTest(){
+  clearInterval(timerInterval);showAllAnswers();
+  let c=0,w=0,s=0;
+  questions.forEach((q,i)=>{
+    if(userAnswers[i]===null)s++;
+    else if(userAnswers[i]===q.ans)c++;
+    else w++;
+  });
+  const pct=((c/questions.length)*100).toFixed(1);
+  document.getElementById('resScore').textContent=c+'/'+questions.length;
+  document.getElementById('resC').textContent=c;
+  document.getElementById('resW').textContent=w;
+  document.getElementById('resS').textContent=s;
+  document.getElementById('resPct').textContent=pct+'%';
+  const panel=document.getElementById('resultPanel');
+  panel.classList.add('visible');panel.scrollIntoView({behavior:'smooth'});
+}
+function resetTest(){location.reload();}
+function startTimer(){
+  const box=document.getElementById('timerBox');
+  timerInterval=setInterval(()=>{
+    seconds--;
+    if(seconds<=0){clearInterval(timerInterval);submitTest();return;}
+    const h=Math.floor(seconds/3600),m=Math.floor((seconds%3600)/60),s=seconds%60;
+    box.textContent=`${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    if(seconds<300)box.classList.add('warn');
+  },1000);
+}
+function updateProgress(){
+  const done=userAnswers.filter(a=>a!==null).length;
+  document.getElementById('progressBar').style.width=(done/questions.length*100)+'%';
+}
+function buildNavGrid(){
+  const grid=document.getElementById('navGrid');
+  questions.forEach((_,i)=>{
+    const btn=document.createElement('button');
+    btn.className='navBtn';btn.id='nav-'+i;btn.textContent=i+1;
+    btn.onclick=()=>document.getElementById('qcard-'+i).scrollIntoView({behavior:'smooth',block:'center'});
+    grid.appendChild(btn);
+  });
+}
+function updateNav(qi,state){
+  const btn=document.getElementById('nav-'+qi);
+  btn.classList.remove('done','revealed');btn.classList.add(state);
+}
+</script>
+</body>
+</html>
