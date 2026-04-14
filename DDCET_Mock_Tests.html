@@ -1,0 +1,1381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DDCET Mock Tests 2024-25</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap');
+
+  :root {
+    --bg: #0d0f14;
+    --surface: #161a23;
+    --card: #1e2330;
+    --border: #2a3045;
+    --accent: #4f8ef7;
+    --accent2: #f7a24f;
+    --green: #3ecf8e;
+    --red: #f75555;
+    --text: #e8eaf0;
+    --muted: #8892a4;
+    --be01: #4f8ef7;
+    --be02: #f7a24f;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* LANDING */
+  #landing {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    background: radial-gradient(ellipse 80% 60% at 50% 0%, #1a2540 0%, var(--bg) 60%);
+  }
+
+  .logo-bar {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+
+  h1.hero {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(36px, 6vw, 64px);
+    font-weight: 800;
+    line-height: 1.05;
+    text-align: center;
+    margin-bottom: 12px;
+  }
+
+  h1.hero span { color: var(--accent); }
+
+  .hero-sub {
+    font-size: 16px;
+    color: var(--muted);
+    text-align: center;
+    margin-bottom: 48px;
+  }
+
+  .tests-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+    width: 100%;
+    max-width: 900px;
+  }
+
+  .test-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px 24px;
+    cursor: pointer;
+    transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .test-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .test-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--accent);
+    box-shadow: 0 12px 40px rgba(79, 142, 247, 0.15);
+  }
+
+  .test-card:hover::before { opacity: 1; }
+
+  .test-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .test-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+
+  .test-meta {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 20px;
+  }
+
+  .tags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .tag {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+  }
+
+  .tag.be01 { background: rgba(79,142,247,0.15); color: var(--be01); }
+  .tag.be02 { background: rgba(247,162,79,0.15); color: var(--be02); }
+
+  /* EXAM SCREEN */
+  #exam-screen {
+    display: none;
+    min-height: 100vh;
+    background: var(--bg);
+  }
+
+  .exam-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(13,15,20,0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .exam-title-bar {
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+  }
+
+  .timer-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 6px 14px;
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  .timer-box.warning { border-color: var(--accent2); color: var(--accent2); }
+  .timer-box.danger { border-color: var(--red); color: var(--red); animation: pulse 1s infinite; }
+
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.6} }
+
+  .progress-bar-wrap {
+    flex: 1;
+    max-width: 300px;
+    height: 6px;
+    background: var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 3px;
+    transition: width 0.3s;
+  }
+
+  .exam-body {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 32px 20px 80px;
+  }
+
+  /* Section header */
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 32px 0 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-badge {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 20px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .section-badge.be01 { background: rgba(79,142,247,0.2); color: var(--be01); }
+  .section-badge.be02 { background: rgba(247,162,79,0.2); color: var(--be02); }
+
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  /* Question card */
+  .q-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 22px 24px;
+    margin-bottom: 14px;
+    transition: border-color 0.2s;
+  }
+
+  .q-card.answered { border-color: rgba(79,142,247,0.4); }
+  .q-card.correct { border-color: var(--green); background: rgba(62,207,142,0.05); }
+  .q-card.incorrect { border-color: var(--red); background: rgba(247,85,85,0.05); }
+
+  .q-number {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+  }
+
+  .q-text {
+    font-size: 15px;
+    line-height: 1.6;
+    font-weight: 500;
+    margin-bottom: 18px;
+  }
+
+  .options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  @media (max-width: 600px) {
+    .options { grid-template-columns: 1fr; }
+  }
+
+  .option-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 11px 14px;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--text);
+    text-align: left;
+    transition: all 0.15s;
+  }
+
+  .option-btn:hover { border-color: var(--accent); background: rgba(79,142,247,0.08); }
+
+  .option-btn.selected { border-color: var(--accent); background: rgba(79,142,247,0.15); }
+
+  .option-btn.correct-ans { border-color: var(--green); background: rgba(62,207,142,0.15); color: var(--green); }
+  .option-btn.wrong-ans { border-color: var(--red); background: rgba(247,85,85,0.12); color: var(--red); }
+
+  .opt-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    background: var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  /* Passage */
+  .passage-box {
+    background: rgba(79,142,247,0.05);
+    border: 1px solid rgba(79,142,247,0.2);
+    border-radius: 12px;
+    padding: 20px;
+    font-size: 14px;
+    line-height: 1.8;
+    color: #c8d0e0;
+    margin-bottom: 20px;
+  }
+
+  .passage-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  /* Bottom bar */
+  .exam-footer {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: rgba(13,15,20,0.97);
+    border-top: 1px solid var(--border);
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    z-index: 100;
+  }
+
+  .answered-count {
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .answered-count span { color: var(--text); font-weight: 600; }
+
+  .btn {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 10px 24px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: white;
+  }
+
+  .btn-primary:hover { background: #3a7ae8; transform: translateY(-1px); }
+
+  .btn-submit {
+    background: linear-gradient(135deg, var(--green), #29b87a);
+    color: white;
+  }
+
+  .btn-submit:hover { transform: translateY(-1px); box-shadow: 0 4px 20px rgba(62,207,142,0.3); }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--text);
+    border: 1.5px solid var(--border);
+  }
+
+  .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* RESULTS */
+  #result-screen {
+    display: none;
+    min-height: 100vh;
+    padding: 40px 20px;
+    background: radial-gradient(ellipse 60% 50% at 50% 0%, #0f1d35 0%, var(--bg) 60%);
+  }
+
+  .result-inner {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .result-hero {
+    text-align: center;
+    margin-bottom: 48px;
+  }
+
+  .score-circle {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    border: 4px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 24px;
+    position: relative;
+    background: var(--card);
+  }
+
+  .score-number {
+    font-family: 'Syne', sans-serif;
+    font-size: 40px;
+    font-weight: 800;
+    line-height: 1;
+  }
+
+  .score-total {
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .result-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    margin-bottom: 8px;
+  }
+
+  .result-sub { color: var(--muted); font-size: 14px; }
+
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+
+  .stat-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px;
+    text-align: center;
+  }
+
+  .stat-value {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    margin-bottom: 4px;
+  }
+
+  .stat-label { font-size: 12px; color: var(--muted); }
+
+  .result-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 40px;
+  }
+
+  /* Review section in results */
+  .review-section { margin-top: 8px; }
+
+  .review-topic-head {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin: 28px 0 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .explanation-box {
+    margin-top: 10px;
+    padding: 10px 14px;
+    background: rgba(62,207,142,0.07);
+    border-left: 3px solid var(--green);
+    border-radius: 0 8px 8px 0;
+    font-size: 13px;
+    color: #9de8c4;
+    line-height: 1.6;
+    display: none;
+  }
+
+  .q-card.correct .explanation-box,
+  .q-card.incorrect .explanation-box { display: block; }
+
+  /* Confirm dialog */
+  .overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .overlay.active { display: flex; }
+
+  .dialog {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 36px;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+  }
+
+  .dialog h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    margin-bottom: 10px;
+  }
+
+  .dialog p { color: var(--muted); font-size: 14px; margin-bottom: 24px; }
+  .dialog-btns { display: flex; gap: 10px; justify-content: center; }
+</style>
+</head>
+<body>
+
+<!-- LANDING -->
+<div id="landing">
+  <div class="logo-bar">Gujarat Technological University</div>
+  <h1 class="hero">DDCET <span>Mock Tests</span></h1>
+  <p class="hero-sub">2024–25 · 4 Full-Length Tests · 100 Questions Each · 150 Minutes</p>
+  <div class="tests-grid" id="tests-grid"></div>
+</div>
+
+<!-- EXAM -->
+<div id="exam-screen">
+  <div class="exam-header">
+    <div class="exam-title-bar" id="exam-title-bar">Mock Test 1</div>
+    <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progress-fill" style="width:0%"></div></div>
+    <div class="timer-box" id="timer-box">⏱ 2:30:00</div>
+  </div>
+  <div class="exam-body" id="exam-body"></div>
+  <div class="exam-footer">
+    <div class="answered-count">Answered: <span id="answered-count">0</span> / 100</div>
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-outline" onclick="backToLanding()">✕ Exit</button>
+      <button class="btn btn-submit" onclick="confirmSubmit()">Submit Test →</button>
+    </div>
+  </div>
+</div>
+
+<!-- RESULTS -->
+<div id="result-screen">
+  <div class="result-inner">
+    <div class="result-hero">
+      <div class="score-circle" id="score-circle">
+        <div class="score-number" id="score-number">0</div>
+        <div class="score-total">/ 200</div>
+      </div>
+      <div class="result-label" id="result-label">Great Work!</div>
+      <div class="result-sub" id="result-sub"></div>
+    </div>
+    <div class="stats-row" id="stats-row"></div>
+    <div class="result-actions">
+      <button class="btn btn-outline" onclick="backToLanding()">← Back to Tests</button>
+      <button class="btn btn-primary" onclick="reviewAnswers()">Review Answers</button>
+    </div>
+    <div class="review-section" id="review-section"></div>
+  </div>
+</div>
+
+<!-- SUBMIT DIALOG -->
+<div class="overlay" id="submit-overlay">
+  <div class="dialog">
+    <h3>Submit Test?</h3>
+    <p id="dialog-msg">Are you sure you want to submit? You can't change answers after submission.</p>
+    <div class="dialog-btns">
+      <button class="btn btn-outline" onclick="closeDialog()">Cancel</button>
+      <button class="btn btn-submit" onclick="submitTest()">Submit Now</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// ALL 4 MOCK TESTS DATA
+// Structure: each test = { be01: [...50 questions], be02: [...50 questions] }
+// Each question: { topic, q, opts:[A,B,C,D], ans:'A'|'B'|'C'|'D', exp }
+// ============================================================
+
+const TESTS = [
+
+// ===================== TEST 1 =====================
+{
+  title: "Mock Test 1",
+  be01: [
+    // Units & Measurement (6)
+    {topic:"Units & Measurement", q:"Which of the following is a fundamental (base) unit in the SI system?", opts:["Newton","Pascal","Kilogram","Joule"], ans:"C", exp:"The kilogram (kg) is one of the 7 base SI units. Newton, Pascal, and Joule are derived units."},
+    {topic:"Units & Measurement", q:"1 metre = ___ centimetres (CGS unit).", opts:["10","100","1000","0.01"], ans:"B", exp:"1 m = 100 cm. CGS uses centimetre as the base length unit."},
+    {topic:"Units & Measurement", q:"The percentage error is defined as:", opts:["Absolute error × 100","(Absolute error / True value) × 100","Relative error + 100","Mean error / 100"], ans:"B", exp:"Percentage error = (Absolute error / True value) × 100."},
+    {topic:"Units & Measurement", q:"A Vernier caliper has a least count of:", opts:["0.1 mm","0.01 mm","1 mm","0.001 mm"], ans:"B", exp:"The standard least count of a Vernier caliper is 0.1 mm = 0.01 cm."},
+    {topic:"Units & Measurement", q:"The SI unit of pressure is:", opts:["Newton","Joule","Pascal","Bar"], ans:"C", exp:"Pascal (Pa) = N/m² is the SI unit of pressure."},
+    {topic:"Units & Measurement", q:"Propagation of error in the product Z = A × B is given by:", opts:["ΔZ = ΔA + ΔB","ΔZ/Z = ΔA/A + ΔB/B","ΔZ/Z = ΔA/A - ΔB/B","ΔZ = ΔA × ΔB"], ans:"B", exp:"For product or quotient, relative errors add: ΔZ/Z = ΔA/A + ΔB/B."},
+    // Classical Mechanics (6)
+    {topic:"Classical Mechanics", q:"Newton's first law of motion is also called:", opts:["Law of momentum","Law of inertia","Law of acceleration","Law of gravitation"], ans:"B", exp:"Newton's first law states that a body continues in its state of rest or uniform motion unless acted upon by an external force — this is the law of inertia."},
+    {topic:"Classical Mechanics", q:"The SI unit of force is:", opts:["Joule","Watt","Newton","Pascal"], ans:"C", exp:"Force is measured in Newton (N) = kg·m/s²."},
+    {topic:"Classical Mechanics", q:"Kinetic energy is given by:", opts:["mgh","½mv²","mv","Fs"], ans:"B", exp:"Kinetic energy KE = ½mv², where m is mass and v is velocity."},
+    {topic:"Classical Mechanics", q:"Centripetal force acts in which direction?", opts:["Tangent to the circle","Away from the centre","Towards the centre","Perpendicular to velocity"], ans:"C", exp:"Centripetal force always points towards the centre of the circular path."},
+    {topic:"Classical Mechanics", q:"Impulse of a force equals:", opts:["Force × distance","Force × time","Mass × acceleration","Work done per unit time"], ans:"B", exp:"Impulse = Force × time = Change in momentum."},
+    {topic:"Classical Mechanics", q:"Power is defined as:", opts:["Force × displacement","Work done / time","Mass × velocity","Energy × time"], ans:"B", exp:"Power = Work done per unit time = W/t, measured in Watts."},
+    // Electric Current (6)
+    {topic:"Electric Current", q:"Ohm's Law states that:", opts:["V = IR","V = I/R","R = VI","I = VR"], ans:"A", exp:"Ohm's Law: Voltage (V) = Current (I) × Resistance (R)."},
+    {topic:"Electric Current", q:"The SI unit of electric charge is:", opts:["Ampere","Volt","Coulomb","Farad"], ans:"C", exp:"Electric charge is measured in Coulombs (C). 1 C = 1 A·s."},
+    {topic:"Electric Current", q:"In a parallel combination of resistors, the equivalent resistance is:", opts:["Sum of all resistances","Greater than the largest resistance","Less than the smallest resistance","Equal to the average resistance"], ans:"C", exp:"In parallel combination, 1/Req = 1/R1 + 1/R2 + ..., so Req is less than the smallest individual resistance."},
+    {topic:"Electric Current", q:"Coulomb's law states that the force between two charges is:", opts:["Directly proportional to the product of charges and inversely proportional to distance squared","Directly proportional to distance","Independent of medium","Inversely proportional to the product of charges"], ans:"A", exp:"F = kq₁q₂/r², force is directly proportional to the product of charges and inversely proportional to the square of distance."},
+    {topic:"Electric Current", q:"Capacitance is measured in:", opts:["Ohm","Henry","Farad","Weber"], ans:"C", exp:"Capacitance is measured in Farads (F). 1 F = 1 C/V."},
+    {topic:"Electric Current", q:"Which material has the highest electrical conductivity?", opts:["Iron","Copper","Silver","Aluminium"], ans:"C", exp:"Silver has the highest electrical conductivity among all metals."},
+    // Heat & Thermometry (6)
+    {topic:"Heat & Thermometry", q:"The freezing point of water on the Kelvin scale is:", opts:["0 K","100 K","273 K","373 K"], ans:"C", exp:"0°C = 273 K (more precisely 273.15 K). The freezing point of water is 273 K."},
+    {topic:"Heat & Thermometry", q:"Which mode of heat transfer does NOT require a material medium?", opts:["Conduction","Convection","Radiation","All require medium"], ans:"C", exp:"Radiation can transfer heat through vacuum. Conduction and convection require a material medium."},
+    {topic:"Heat & Thermometry", q:"The specific heat capacity of water is approximately:", opts:["1 J/kg·K","420 J/kg·K","4200 J/kg·K","42000 J/kg·K"], ans:"C", exp:"Specific heat of water ≈ 4200 J/kg·K (or 4.2 J/g·K)."},
+    {topic:"Heat & Thermometry", q:"Convert 100°C to Fahrenheit:", opts:["200°F","212°F","180°F","32°F"], ans:"B", exp:"°F = (9/5)°C + 32 = (9/5)(100) + 32 = 180 + 32 = 212°F."},
+    {topic:"Heat & Thermometry", q:"The coefficient of linear thermal expansion (α) relates to:", opts:["Change in volume","Change in area","Change in length per degree rise in temperature","Heat capacity"], ans:"C", exp:"α = ΔL / (L₀ × ΔT), it gives fractional change in length per degree of temperature change."},
+    {topic:"Heat & Thermometry", q:"Heat capacity is the amount of heat required to:", opts:["Raise temperature of 1 g by 1°C","Raise temperature of a body by 1°C","Change the state of a substance","All of the above"], ans:"B", exp:"Heat capacity is the heat required to raise the temperature of a given body (not per unit mass) by 1°C."},
+    // Waves, Optics & Acoustics (6)
+    {topic:"Waves, Optics & Acoustics", q:"In which type of wave do the particles vibrate perpendicular to the direction of propagation?", opts:["Longitudinal","Transverse","Stationary","Mechanical"], ans:"B", exp:"In transverse waves, particle vibration is perpendicular to wave propagation. Example: light waves."},
+    {topic:"Waves, Optics & Acoustics", q:"Snell's law relates:", opts:["Frequency and wavelength","Angles of incidence and refraction","Amplitude and intensity","Frequency and time period"], ans:"B", exp:"Snell's law: n₁ sin θ₁ = n₂ sin θ₂, relating angles of incidence and refraction with refractive indices."},
+    {topic:"Waves, Optics & Acoustics", q:"The phenomenon used in optical fibres for transmission is:", opts:["Reflection","Refraction","Total internal reflection","Diffraction"], ans:"C", exp:"Optical fibres work on total internal reflection — light is reflected internally at the core-cladding interface."},
+    {topic:"Waves, Optics & Acoustics", q:"The time for one complete oscillation is called:", opts:["Frequency","Amplitude","Period","Wavelength"], ans:"C", exp:"Time period (T) is the time for one complete oscillation. Frequency f = 1/T."},
+    {topic:"Waves, Optics & Acoustics", q:"Reverberation is:", opts:["Echo of sound in open spaces","Persistence of sound due to multiple reflections in a closed space","Absorption of sound","Diffraction of sound"], ans:"B", exp:"Reverberation is the persistence of sound in an enclosed space due to repeated reflections after the source has stopped."},
+    {topic:"Waves, Optics & Acoustics", q:"LASER light is:", opts:["Polychromatic and divergent","Monochromatic and coherent","Infrared only","Incoherent"], ans:"B", exp:"LASER (Light Amplification by Stimulated Emission of Radiation) produces monochromatic, coherent, and highly directional light."},
+    // Chemical Reactions (3)
+    {topic:"Chemical Reactions", q:"A reaction in which two or more substances combine to form a single product is called:", opts:["Decomposition","Displacement","Combination","Double displacement"], ans:"C", exp:"Combination reaction: A + B → AB. Two or more reactants combine to form one product."},
+    {topic:"Chemical Reactions", q:"What is the balanced equation for hydrogen burning in oxygen?", opts:["H₂ + O₂ → H₂O","2H₂ + O₂ → 2H₂O","H₂ + 2O₂ → 2H₂O","4H₂ + O₂ → 2H₂O"], ans:"B", exp:"2H₂ + O₂ → 2H₂O is the balanced equation. Atoms are equal on both sides."},
+    {topic:"Chemical Reactions", q:"In a displacement reaction:", opts:["A compound breaks into elements","One element replaces another in a compound","Two compounds exchange ions","A new element is formed"], ans:"B", exp:"Displacement reaction: A + BC → AC + B. More reactive element A displaces less reactive B."},
+    // Acids, Bases & Salts (4)
+    {topic:"Acids, Bases & Salts", q:"The pH of a neutral solution at 25°C is:", opts:["0","7","14","1"], ans:"B", exp:"pH 7 is neutral. pH < 7 is acidic, pH > 7 is basic/alkaline."},
+    {topic:"Acids, Bases & Salts", q:"Which of the following is a strong acid?", opts:["Acetic acid","Citric acid","Hydrochloric acid","Carbonic acid"], ans:"C", exp:"HCl (Hydrochloric acid) is a strong acid that fully dissociates in water."},
+    {topic:"Acids, Bases & Salts", q:"Acids turn blue litmus paper:", opts:["Blue","Red","Green","No change"], ans:"B", exp:"Acids turn blue litmus paper red. Bases turn red litmus paper blue."},
+    {topic:"Acids, Bases & Salts", q:"When an acid reacts with a base, the products are:", opts:["Acid and water","Salt and water","Oxide and hydrogen","Base and gas"], ans:"B", exp:"Neutralisation reaction: Acid + Base → Salt + Water."},
+    // Metals & Non-metals (3)
+    {topic:"Metals & Non-metals", q:"Which of the following is a property of metals?", opts:["Brittle","Non-lustrous","Good conductor of electricity","Non-malleable"], ans:"C", exp:"Metals are good conductors of electricity, heat, malleable, ductile, and lustrous."},
+    {topic:"Metals & Non-metals", q:"The process by which iron is converted to iron oxide in the presence of moisture is called:", opts:["Reduction","Corrosion","Combustion","Amalgamation"], ans:"B", exp:"Corrosion is the gradual degradation of metals by chemical reactions with the environment, e.g. rusting of iron."},
+    {topic:"Metals & Non-metals", q:"Ionic compounds are formed between:", opts:["Two metals","Metal and non-metal","Two non-metals","Non-metal and metalloid"], ans:"B", exp:"Ionic compounds form between a metal (cation) and non-metal (anion) through transfer of electrons."},
+    // Computer Practice (5)
+    {topic:"Computer Practice", q:"The full form of HTML is:", opts:["High Text Markup Language","Hyper Text Markup Language","Hyper Transfer Markup Language","Hyper Text Machine Language"], ans:"B", exp:"HTML = HyperText Markup Language. It is the standard language for creating web pages."},
+    {topic:"Computer Practice", q:"Which tag is used to create a hyperlink in HTML?", opts:["<link>","<href>","<a>","<url>"], ans:"C", exp:"The <a> (anchor) tag with the href attribute creates a hyperlink in HTML."},
+    {topic:"Computer Practice", q:"In MS Excel, which function is used to add a range of cells?", opts:["ADD()","TOTAL()","SUM()","PLUS()"], ans:"C", exp:"The SUM() function is used to add values in a range of cells in MS Excel."},
+    {topic:"Computer Practice", q:"Which key is used to start a new line in MS Word?", opts:["Tab","Enter","Shift","Ctrl+N"], ans:"B", exp:"The Enter key inserts a paragraph break (new line) in MS Word."},
+    {topic:"Computer Practice", q:"What does CPU stand for?", opts:["Central Processing Unit","Computer Processing Unit","Central Program Utility","Core Processing Unit"], ans:"A", exp:"CPU = Central Processing Unit — it is the primary component that performs instructions of a computer program."},
+    // Environmental Sciences (5)
+    {topic:"Environmental Sciences", q:"An ecosystem consists of:", opts:["Only plants and animals","Only living organisms","Living organisms and their physical environment","Only the physical environment"], ans:"C", exp:"An ecosystem includes both biotic (living) components and abiotic (non-living physical) environment."},
+    {topic:"Environmental Sciences", q:"Which of the following is a renewable source of energy?", opts:["Coal","Petroleum","Natural gas","Solar energy"], ans:"D", exp:"Solar energy is renewable as it comes from the sun and is continuously available. Coal, petroleum, and natural gas are fossil fuels (non-renewable)."},
+    {topic:"Environmental Sciences", q:"The main cause of the greenhouse effect is the increase in:", opts:["Oxygen","Nitrogen","Carbon dioxide","Argon"], ans:"C", exp:"Increased CO₂ (and other greenhouse gases) trap heat in the atmosphere, leading to global warming."},
+    {topic:"Environmental Sciences", q:"Photochemical smog is primarily caused by:", opts:["Water vapour","Nitrogen oxides and hydrocarbons in sunlight","Carbon dioxide","Methane"], ans:"B", exp:"Photochemical smog forms when sunlight reacts with nitrogen oxides (NOx) and volatile organic compounds (VOCs)."},
+    {topic:"Environmental Sciences", q:"Tidal energy is derived from:", opts:["Wind","Sun","Gravitational pull of the moon","Heat inside the earth"], ans:"C", exp:"Tidal energy harnesses the energy from ocean tides caused by the gravitational pull of the moon (and sun)."},
+  ],
+  be02: [
+    // Determinants & Matrices (4)
+    {topic:"Determinants & Matrices", q:"The value of |2 3; 1 4| (2×2 determinant with rows [2,3] and [1,4]) is:", opts:["5","8","11","14"], ans:"A", exp:"|2 3; 1 4| = (2×4) − (3×1) = 8 − 3 = 5."},
+    {topic:"Determinants & Matrices", q:"A matrix with equal number of rows and columns is called:", opts:["Row matrix","Column matrix","Square matrix","Rectangular matrix"], ans:"C", exp:"A square matrix has m = n (number of rows equals number of columns)."},
+    {topic:"Determinants & Matrices", q:"If A = [1 2; 3 4], the adjoint of A is:", opts:["[4 -2; -3 1]","[4 2; 3 1]","[-4 2; 3 -1]","[1 3; 2 4]"], ans:"A", exp:"Adj(A) for a 2×2 matrix [a b; c d] = [d -b; -c a]. So adj[1 2; 3 4] = [4 -2; -3 1]."},
+    {topic:"Determinants & Matrices", q:"The inverse of matrix A is defined when:", opts:["A is symmetric","det(A) ≠ 0","A is a diagonal matrix","A is a unit matrix"], ans:"B", exp:"A matrix is invertible (non-singular) only when its determinant is non-zero (det(A) ≠ 0)."},
+    // Trigonometry (3)
+    {topic:"Trigonometry", q:"The value of sin 30° is:", opts:["√3/2","1/2","1/√2","1"], ans:"B", exp:"sin 30° = 1/2. This is a standard trigonometric value."},
+    {topic:"Trigonometry", q:"π radians = ___ degrees.", opts:["90°","180°","270°","360°"], ans:"B", exp:"π radians = 180°. To convert: degrees = radians × (180/π)."},
+    {topic:"Trigonometry", q:"The period of sin x is:", opts:["π","π/2","2π","4π"], ans:"C", exp:"The fundamental period of sin x and cos x is 2π radians (360°)."},
+    // Vectors (2)
+    {topic:"Vectors", q:"The dot product of two perpendicular vectors is:", opts:["1","-1","0","Undefined"], ans:"C", exp:"For perpendicular vectors, the angle between them is 90°. A·B = |A||B|cos90° = 0."},
+    {topic:"Vectors", q:"A unit vector has a magnitude of:", opts:["0","1","Any positive value","Depends on direction"], ans:"B", exp:"A unit vector has a magnitude (modulus) of exactly 1, used to represent direction only."},
+    // Coordinate Geometry (2)
+    {topic:"Coordinate Geometry", q:"The slope of a line parallel to the x-axis is:", opts:["1","∞","0","-1"], ans:"C", exp:"A horizontal line (parallel to x-axis) has zero slope (m = 0)."},
+    {topic:"Coordinate Geometry", q:"The equation of a circle with centre (h, k) and radius r is:", opts:["(x+h)²+(y+k)²=r","(x-h)²+(y-k)²=r²","x²+y²=r","(x-h)+(y-k)=r²"], ans:"B", exp:"Standard equation of circle: (x−h)² + (y−k)² = r², where (h,k) is centre and r is radius."},
+    // Functions & Limits (3)
+    {topic:"Functions & Limits", q:"lim(x→0) (sin x)/x equals:", opts:["0","∞","1","x"], ans:"C", exp:"This is a standard limit: lim(x→0) (sin x)/x = 1."},
+    {topic:"Functions & Limits", q:"A function f(x) is defined as a relation where:", opts:["Every output has one input","Every input has exactly one output","Inputs and outputs are equal","The domain is all real numbers"], ans:"B", exp:"A function maps every element of the domain (input) to exactly one element of the range (output)."},
+    {topic:"Functions & Limits", q:"lim(x→∞) (1/x) equals:", opts:["1","∞","0","-1"], ans:"C", exp:"As x → ∞, 1/x → 0. The value gets closer and closer to zero."},
+    // Differentiation (4)
+    {topic:"Differentiation", q:"d/dx (xⁿ) = ?", opts:["nxⁿ","nxⁿ⁻¹","xⁿ⁻¹","n·xⁿ⁺¹"], ans:"B", exp:"Power rule: d/dx(xⁿ) = n·xⁿ⁻¹."},
+    {topic:"Differentiation", q:"d/dx (sin x) = ?", opts:["cos x","-cos x","sin x","-sin x"], ans:"A", exp:"The derivative of sin x is cos x."},
+    {topic:"Differentiation", q:"The derivative of a constant is:", opts:["1","0","The constant itself","Undefined"], ans:"B", exp:"d/dx (c) = 0, where c is any constant. Constants have no rate of change."},
+    {topic:"Differentiation", q:"If y = eˣ, then dy/dx = ?", opts:["eˣ⁻¹","xeˣ","eˣ","e"], ans:"C", exp:"The exponential function eˣ is its own derivative: d/dx(eˣ) = eˣ."},
+    // Integration (4)
+    {topic:"Integration", q:"∫xⁿ dx = ? (n ≠ -1)", opts:["xⁿ⁺¹ + C","xⁿ⁺¹/(n+1) + C","nxⁿ⁻¹ + C","xⁿ/n + C"], ans:"B", exp:"Power rule for integration: ∫xⁿ dx = xⁿ⁺¹/(n+1) + C, valid for n ≠ -1."},
+    {topic:"Integration", q:"∫cos x dx = ?", opts:["sin x + C","-sin x + C","cos x + C","-cos x + C"], ans:"A", exp:"∫cos x dx = sin x + C. This is a standard integral formula."},
+    {topic:"Integration", q:"∫eˣ dx = ?", opts:["xeˣ + C","eˣ/x + C","eˣ + C","eˣ⁺¹ + C"], ans:"C", exp:"∫eˣ dx = eˣ + C. The integral of eˣ is itself."},
+    {topic:"Integration", q:"A definite integral ∫[a to b] f(x) dx gives:", opts:["The slope at a point","The area under the curve between a and b","The maximum value of f(x)","The antiderivative"], ans:"B", exp:"A definite integral computes the net area bounded by f(x), the x-axis, and the vertical lines x=a and x=b."},
+    // Logarithm (2)
+    {topic:"Logarithm", q:"log(A × B) = ?", opts:["log A × log B","log A + log B","log A − log B","log(A+B)"], ans:"B", exp:"Product rule: log(A × B) = log A + log B."},
+    {topic:"Logarithm", q:"The value of log₁₀(1000) is:", opts:["1","2","3","4"], ans:"C", exp:"log₁₀(1000) = log₁₀(10³) = 3."},
+    // Statistics (1)
+    {topic:"Statistics", q:"The median of the data set {3, 7, 5, 9, 1} after arranging in order is:", opts:["5","7","3","9"], ans:"A", exp:"Sorted: {1, 3, 5, 7, 9}. The middle value (3rd of 5) is 5."},
+    // Comprehension (5)
+    {topic:"Comprehension", q:"[Passage] 'Technology has transformed the way we learn. Online platforms provide access to quality education to millions who previously had no such opportunity. E-learning makes education flexible, affordable, and accessible across geographies.'\n\nThe primary advantage of e-learning mentioned in the passage is:", opts:["It replaces teachers","It is expensive","It makes education flexible and accessible","It works only in cities"], ans:"C", exp:"The passage directly states e-learning makes education 'flexible, affordable, and accessible across geographies'."},
+    {topic:"Comprehension", q:"[Same Passage] According to the passage, online education benefits:", opts:["Only wealthy students","Only students in cities","Millions who had no access to quality education","Only working professionals"], ans:"C", exp:"The passage says platforms provide access 'to millions who previously had no such opportunity'."},
+    {topic:"Comprehension", q:"[Same Passage] The word 'accessible' in the passage means:", opts:["Difficult to obtain","Easily available and reachable","Expensive","Limited"], ans:"B", exp:"'Accessible' means easily available or reachable — the passage uses it positively."},
+    {topic:"Comprehension", q:"[Same Passage] Which aspect of technology is the passage mainly about?", opts:["Medical technology","Transportation","Education through technology","Entertainment"], ans:"C", exp:"The passage focuses entirely on how technology has transformed learning and education."},
+    {topic:"Comprehension", q:"[Same Passage] What does 'geographies' refer to in the passage?", opts:["Geography as a subject","Different physical locations","Map reading","Geological features"], ans:"B", exp:"'Across geographies' means across different locations/regions — implying reach beyond physical boundaries."},
+    // Theory of Communication (5)
+    {topic:"Theory of Communication", q:"Which of the following is an example of non-verbal communication?", opts:["Letter","Email","Body language","Speech"], ans:"C", exp:"Non-verbal communication includes body language, gestures, facial expressions, and eye contact."},
+    {topic:"Theory of Communication", q:"A barrier to communication caused by the use of technical jargon is a:", opts:["Physical barrier","Psychological barrier","Semantic barrier","Environmental barrier"], ans:"C", exp:"Semantic barriers arise from language, jargon, or words that the receiver cannot understand."},
+    {topic:"Theory of Communication", q:"The sender-message-channel-receiver model is known as:", opts:["Shannon-Weaver model","Aristotle's model","AIDA model","Berlo's model"], ans:"A", exp:"The Shannon-Weaver model (1949) describes communication as sender → encoder → channel → decoder → receiver."},
+    {topic:"Theory of Communication", q:"Feedback in communication refers to:", opts:["The initial message","The response from the receiver back to the sender","The medium of communication","Noise in communication"], ans:"B", exp:"Feedback is the receiver's response to the sender's message — it completes the communication loop."},
+    {topic:"Theory of Communication", q:"Which of the following is an example of a physical barrier to communication?", opts:["Language difference","Bad attitude","Loud noise","Emotional stress"], ans:"C", exp:"Physical barriers include noise, distance, and poor infrastructure that obstruct the communication process."},
+    // Techniques of Writing (5)
+    {topic:"Techniques of Writing", q:"Which part of a business letter contains the reason for writing?", opts:["Salutation","Body","Letterhead","Complimentary close"], ans:"B", exp:"The body of a business letter contains the main content — the purpose, details, and request."},
+    {topic:"Techniques of Writing", q:"A letter written to purchase goods from a company is called a/an:", opts:["Inquiry letter","Complaint letter","Order letter","Adjustment letter"], ans:"C", exp:"An order letter is written to request or purchase specific goods or services from a supplier."},
+    {topic:"Techniques of Writing", q:"'ASAP' in business communication stands for:", opts:["As Soon As Possible","As Safe As Possible","Always Send A Parcel","A Short And Pleasant"], ans:"A", exp:"ASAP = As Soon As Possible — a very common business abbreviation."},
+    {topic:"Techniques of Writing", q:"An inquiry letter is used to:", opts:["Complain about a product","Ask for information about goods or services","Accept an order","Confirm delivery"], ans:"B", exp:"An inquiry letter seeks information about products, services, prices, or terms from a business."},
+    {topic:"Techniques of Writing", q:"Which of the following is NOT a part of a formal business letter?", opts:["Date","Salutation","Postscript","Footnotes"], ans:"D", exp:"Footnotes are used in academic/research documents, not in standard business letters."},
+    // Grammar (5)
+    {topic:"Grammar", q:"Identify the noun in the sentence: 'The beautiful garden was full of flowers.'", opts:["beautiful","full","garden","was"], ans:"C", exp:"'Garden' is a common noun. 'Beautiful' is an adjective, 'full' is an adjective, 'was' is a verb."},
+    {topic:"Grammar", q:"Which tense is used in the sentence: 'She has completed her assignment'?", opts:["Simple past","Present perfect","Past perfect","Future perfect"], ans:"B", exp:"'Has completed' is present perfect tense — it indicates a recently completed action."},
+    {topic:"Grammar", q:"Which sentence uses the correct subject-verb agreement?", opts:["The team are playing well","The team is playing well","The teams is playing well","The team were playing well"], ans:"B", exp:"'Team' is a collective noun treated as singular in most contexts. 'The team is playing well' is correct."},
+    {topic:"Grammar", q:"Which of the following is a preposition?", opts:["Run","Under","Happy","Quickly"], ans:"B", exp:"'Under' is a preposition showing the position or direction. Run=verb, Happy=adjective, Quickly=adverb."},
+    {topic:"Grammar", q:"Choose the correct pronoun: '___ is going to the market.'", opts:["Him","Her","She","Them"], ans:"C", exp:"'She' is the subject pronoun. 'Her' and 'Him' are object pronouns and cannot be the subject."},
+    // Correction (5)
+    {topic:"Correction", q:"Choose the correct spelling:", opts:["Occurance","Occurrence","Ocurrence","Occurrance"], ans:"B", exp:"The correct spelling is 'Occurrence' — note double 'c' and double 'r'."},
+    {topic:"Correction", q:"Choose the grammatically correct sentence:", opts:["He go to school daily","He goes to school daily","He going to school daily","He gone to school daily"], ans:"B", exp:"With third-person singular subject (he/she/it), the verb takes -s/-es in present tense: 'He goes'."},
+    {topic:"Correction", q:"Choose the correct spelling:", opts:["Recieve","Recive","Receive","Reciev"], ans:"C", exp:"'Receive' — remember the rule: 'i before e, except after c'."},
+    {topic:"Correction", q:"Choose the grammatically correct sentence:", opts:["Neither he nor she are wrong","Neither he nor she is wrong","Neither he nor she were wrong","Neither he nor she am wrong"], ans:"B", exp:"With 'neither...nor', the verb agrees with the subject nearest to it. 'She' is singular → 'is'."},
+    {topic:"Correction", q:"Choose the correct spelling:", opts:["Seperate","Separate","Seperrate","Sepatate"], ans:"B", exp:"The correct spelling is 'Separate'. A common misspelling uses 'e' in the second syllable."},
+  ]
+},
+
+// ===================== TEST 2 =====================
+{
+  title: "Mock Test 2",
+  be01: [
+    {topic:"Units & Measurement", q:"The SI unit of length is:", opts:["Centimetre","Kilometre","Metre","Millimetre"], ans:"C", exp:"The metre (m) is the SI base unit of length."},
+    {topic:"Units & Measurement", q:"1 kg = ___ grams.", opts:["10","100","1000","10000"], ans:"C", exp:"1 kg = 1000 g. The prefix 'kilo' means 1000."},
+    {topic:"Units & Measurement", q:"Relative error is defined as:", opts:["Absolute error","Absolute error / Measured value","Measured value / Absolute error","Percentage error / 100"], ans:"B", exp:"Relative error = Absolute error / Measured (or true) value. It has no units."},
+    {topic:"Units & Measurement", q:"A micrometer screw gauge measures to an accuracy of:", opts:["0.1 mm","0.01 mm","0.001 mm","1 mm"], ans:"C", exp:"A micrometer screw gauge (or screw gauge) has a least count of 0.001 mm = 0.01 mm."},
+    {topic:"Units & Measurement", q:"Which instrument is more precise: Vernier caliper or micrometer screw gauge?", opts:["Vernier caliper","Micrometer screw gauge","Both equal","Depends on material"], ans:"B", exp:"Micrometer screw gauge (LC = 0.001 mm) is more precise than Vernier caliper (LC = 0.1 mm)."},
+    {topic:"Units & Measurement", q:"The SI unit of temperature is:", opts:["Celsius","Fahrenheit","Kelvin","Rankine"], ans:"C", exp:"The Kelvin (K) is the SI base unit of thermodynamic temperature."},
+    {topic:"Classical Mechanics", q:"If a body moves with uniform velocity, its acceleration is:", opts:["Positive","Negative","Zero","Variable"], ans:"C", exp:"Uniform velocity means constant speed in a straight line, so no change in velocity → acceleration = 0."},
+    {topic:"Classical Mechanics", q:"Potential energy is given by:", opts:["½mv²","mgh","mv","Fs"], ans:"B", exp:"Gravitational potential energy PE = mgh, where m is mass, g is acceleration due to gravity, h is height."},
+    {topic:"Classical Mechanics", q:"Newton's third law states:", opts:["F = ma","Every action has an equal and opposite reaction","A body stays at rest","Energy is conserved"], ans:"B", exp:"Newton's 3rd law: For every action, there is an equal and opposite reaction."},
+    {topic:"Classical Mechanics", q:"The unit of angular velocity is:", opts:["m/s","rad/s","m/s²","rad/s²"], ans:"B", exp:"Angular velocity ω is measured in radians per second (rad/s)."},
+    {topic:"Classical Mechanics", q:"Linear momentum is defined as:", opts:["Mass × velocity","Mass × acceleration","Force × time","Force × distance"], ans:"A", exp:"Linear momentum p = m × v (mass × velocity). SI unit is kg·m/s."},
+    {topic:"Classical Mechanics", q:"When velocity is constant, displacement equals:", opts:["v/t","v×t","v+t","v-t"], ans:"B", exp:"For constant velocity, displacement s = velocity × time = v × t."},
+    {topic:"Electric Current", q:"The SI unit of resistance is:", opts:["Farad","Henry","Ohm","Volt"], ans:"C", exp:"Electrical resistance is measured in Ohms (Ω). R = V/I."},
+    {topic:"Electric Current", q:"Electric potential is measured in:", opts:["Ampere","Volt","Coulomb","Watt"], ans:"B", exp:"Electric potential (voltage) is measured in Volts (V). V = W/Q."},
+    {topic:"Electric Current", q:"In a series combination of resistors, the total resistance is:", opts:["Less than smallest resistor","Product of all resistances","Sum of all resistances","Average of resistances"], ans:"C", exp:"Series combination: Req = R1 + R2 + R3 + ... The total resistance is the sum of individual resistances."},
+    {topic:"Electric Current", q:"A parallel plate capacitor stores:", opts:["Kinetic energy","Electrical energy","Mechanical energy","Heat energy"], ans:"B", exp:"A capacitor stores electrical energy in the electric field between its plates."},
+    {topic:"Electric Current", q:"Conductance is the reciprocal of:", opts:["Capacitance","Resistance","Inductance","Impedance"], ans:"B", exp:"Conductance G = 1/R. It is the reciprocal of resistance, measured in Siemens (S)."},
+    {topic:"Electric Current", q:"The force between two charges is repulsive when:", opts:["Both are positive","One positive, one negative","One is neutral","Both are negative or both are positive"], ans:"D", exp:"Like charges (both +ve or both -ve) repel each other. Unlike charges attract."},
+    {topic:"Heat & Thermometry", q:"Convert 37°C (body temperature) to Fahrenheit:", opts:["96.6°F","98.6°F","99.6°F","100°F"], ans:"B", exp:"°F = (9/5 × 37) + 32 = 66.6 + 32 = 98.6°F."},
+    {topic:"Heat & Thermometry", q:"Which mode of heat transfer occurs in liquids and gases?", opts:["Conduction","Convection","Radiation","All modes"], ans:"B", exp:"Convection transfers heat through the movement of fluid (liquid or gas) particles."},
+    {topic:"Heat & Thermometry", q:"The unit of thermal conductivity is:", opts:["J/kg·K","W/m·K","J/m·K","W/kg·K"], ans:"B", exp:"Thermal conductivity k is measured in Watts per metre per Kelvin (W/m·K)."},
+    {topic:"Heat & Thermometry", q:"Kelvin to Celsius conversion is:", opts:["K = °C + 100","°C = K + 273","K = °C + 273","°C = K × 273"], ans:"C", exp:"K = °C + 273 (or 273.15). So 0°C = 273 K, 100°C = 373 K."},
+    {topic:"Heat & Thermometry", q:"Linear expansion is expressed as:", opts:["ΔL = L₀βΔT","ΔL = L₀αΔT","ΔL = L₀γΔT","ΔL = L₀/ΔT"], ans:"B", exp:"ΔL = L₀αΔT, where α is the coefficient of linear expansion."},
+    {topic:"Heat & Thermometry", q:"Which substance has a very HIGH specific heat capacity?", opts:["Gold","Copper","Water","Aluminium"], ans:"C", exp:"Water has a very high specific heat capacity (~4200 J/kg·K), making it useful as a coolant."},
+    {topic:"Waves, Optics & Acoustics", q:"Sound waves are:", opts:["Transverse waves","Electromagnetic waves","Longitudinal waves","Non-mechanical waves"], ans:"C", exp:"Sound waves are longitudinal mechanical waves — particle vibration is parallel to the direction of propagation."},
+    {topic:"Waves, Optics & Acoustics", q:"The relation between speed (v), frequency (f) and wavelength (λ) is:", opts:["v = f + λ","v = f × λ","v = f / λ","v = λ / f"], ans:"B", exp:"Wave speed v = frequency × wavelength = f × λ."},
+    {topic:"Waves, Optics & Acoustics", q:"Total internal reflection occurs when:", opts:["Light goes from denser to rarer medium and angle exceeds critical angle","Light goes from rarer to denser medium","Wavelength is too large","Frequency is zero"], ans:"A", exp:"TIR occurs when light travels from denser to rarer medium AND the angle of incidence exceeds the critical angle."},
+    {topic:"Waves, Optics & Acoustics", q:"Ultrasonic waves have frequencies:", opts:["Below 20 Hz","Between 20 Hz and 20 kHz","Above 20 kHz","Equal to visible light"], ans:"C", exp:"Ultrasonic waves have frequencies above 20,000 Hz (20 kHz), beyond human hearing range."},
+    {topic:"Waves, Optics & Acoustics", q:"Sabine's formula relates to:", opts:["Speed of light","Reverberation time in a room","Amplitude of sound","Frequency of laser"], ans:"B", exp:"Sabine's formula: T = 0.16V/A, used to calculate reverberation time T in a room."},
+    {topic:"Waves, Optics & Acoustics", q:"The refractive index of a medium is the ratio of:", opts:["Speed of light in vacuum to speed in medium","Speed in medium to speed in vacuum","Frequency to wavelength","Amplitude to wavelength"], ans:"A", exp:"n = c/v, where c is speed of light in vacuum and v is speed in the medium."},
+    {topic:"Chemical Reactions", q:"In a decomposition reaction:", opts:["Two substances combine","One substance breaks into two or more","Two compounds swap ions","No change occurs"], ans:"B", exp:"Decomposition: AB → A + B. A single compound breaks down into simpler substances."},
+    {topic:"Chemical Reactions", q:"Electrolysis is an example of which type of reaction?", opts:["Combination","Decomposition","Displacement","Double displacement"], ans:"B", exp:"Electrolytic decomposition uses electrical energy to break down compounds, e.g. water → H₂ + O₂."},
+    {topic:"Chemical Reactions", q:"In the reaction: Zn + CuSO₄ → ZnSO₄ + Cu, it is a:", opts:["Combination reaction","Double displacement","Displacement reaction","Decomposition reaction"], ans:"C", exp:"Zinc displaces copper from copper sulphate — this is a displacement (single replacement) reaction."},
+    {topic:"Acids, Bases & Salts", q:"The chemical name of common salt is:", opts:["Sodium carbonate","Sodium chloride","Sodium hydroxide","Sodium bicarbonate"], ans:"B", exp:"Common salt (table salt) is sodium chloride, NaCl."},
+    {topic:"Acids, Bases & Salts", q:"Which of the following has a pH greater than 7?", opts:["Lemon juice","Vinegar","Baking soda solution","Battery acid"], ans:"C", exp:"Baking soda (sodium bicarbonate) is alkaline with pH ≈ 8–9. The others are acidic."},
+    {topic:"Acids, Bases & Salts", q:"Bases that dissolve in water are called:", opts:["Indicators","Salts","Alkalis","Oxides"], ans:"C", exp:"Alkalis are soluble bases. All alkalis are bases, but not all bases are alkalis."},
+    {topic:"Acids, Bases & Salts", q:"Which indicator is used to distinguish acids and bases?", opts:["Benedict's solution","Litmus","Iodine","Fehling's solution"], ans:"B", exp:"Litmus paper (red/blue) is a common acid-base indicator. Acids turn blue litmus red; bases turn red litmus blue."},
+    {topic:"Metals & Non-metals", q:"Which non-metal is a good conductor of electricity?", opts:["Sulphur","Phosphorus","Graphite (Carbon)","Nitrogen"], ans:"C", exp:"Graphite (an allotrope of carbon) is the only non-metal that conducts electricity due to free electrons in its structure."},
+    {topic:"Metals & Non-metals", q:"Metals are generally:", opts:["Brittle","Non-lustrous","Electronegative","Malleable and ductile"], ans:"D", exp:"Metals can be beaten into sheets (malleable) and drawn into wires (ductile)."},
+    {topic:"Metals & Non-metals", q:"The property of metals by which they can be drawn into thin wires is called:", opts:["Malleability","Ductility","Lustre","Hardness"], ans:"B", exp:"Ductility is the ability of metals to be drawn into thin wires without breaking."},
+    {topic:"Computer Practice", q:"Which tag creates a table in HTML?", opts:["<tab>","<tr>","<table>","<td>"], ans:"C", exp:"The <table> tag is used to create a table in HTML. <tr> = table row, <td> = table data."},
+    {topic:"Computer Practice", q:"In MS PowerPoint, which view shows all slides in miniature?", opts:["Normal view","Slide Sorter view","Reading view","Outline view"], ans:"B", exp:"Slide Sorter view displays all slides as thumbnails, useful for rearranging slides."},
+    {topic:"Computer Practice", q:"RAM stands for:", opts:["Read All Memory","Random Access Memory","Read Access Memory","Random Application Memory"], ans:"B", exp:"RAM = Random Access Memory — the primary memory of a computer used for temporary data storage."},
+    {topic:"Computer Practice", q:"The Internet uses which protocol for communication?", opts:["FTP","HTTP","TCP/IP","SMTP"], ans:"C", exp:"TCP/IP (Transmission Control Protocol/Internet Protocol) is the fundamental communication protocol of the Internet."},
+    {topic:"Computer Practice", q:"In MS Excel, a cell reference like $A$1 is called:", opts:["Relative reference","Mixed reference","Absolute reference","Named reference"], ans:"C", exp:"$A$1 is an absolute cell reference — the column and row do not change when the formula is copied."},
+    {topic:"Environmental Sciences", q:"Which of the following is NOT a type of pollution?", opts:["Air pollution","Water pollution","Photosynthesis","Noise pollution"], ans:"C", exp:"Photosynthesis is a natural biological process (not pollution). Air, water, and noise are types of pollution."},
+    {topic:"Environmental Sciences", q:"The ozone layer protects us from:", opts:["Infrared rays","Ultraviolet rays","Gamma rays","Microwaves"], ans:"B", exp:"The ozone (O₃) layer in the stratosphere absorbs harmful ultraviolet (UV) radiation from the sun."},
+    {topic:"Environmental Sciences", q:"Wind energy is generated using:", opts:["Solar panels","Wind turbines","Hydroelectric dams","Geothermal plants"], ans:"B", exp:"Wind turbines convert kinetic energy of wind into electrical energy."},
+    {topic:"Environmental Sciences", q:"Which gas is the main component of biogas?", opts:["Carbon dioxide","Hydrogen","Methane","Nitrogen"], ans:"C", exp:"Biogas is primarily methane (CH₄), produced by the decomposition of organic matter in the absence of oxygen."},
+    {topic:"Environmental Sciences", q:"The main source of energy for all ecosystems is:", opts:["Water","Soil","Sun","Wind"], ans:"C", exp:"The sun is the primary energy source for nearly all ecosystems through photosynthesis (primary production)."},
+  ],
+  be02: [
+    {topic:"Determinants & Matrices", q:"The determinant of a unit (identity) matrix of order 2 is:", opts:["0","2","1","-1"], ans:"C", exp:"|I₂| = |1 0; 0 1| = 1×1 − 0×0 = 1."},
+    {topic:"Determinants & Matrices", q:"If det(A) = 0, the matrix is called:", opts:["Singular","Non-singular","Symmetric","Diagonal"], ans:"A", exp:"A matrix with determinant = 0 is called a singular matrix and has no inverse."},
+    {topic:"Determinants & Matrices", q:"The transpose of matrix A = [1 2; 3 4] is:", opts:["[1 3; 2 4]","[4 3; 2 1]","[1 2; 3 4]","[4 2; 3 1]"], ans:"A", exp:"Transpose: rows become columns. Aᵀ = [1 3; 2 4]."},
+    {topic:"Determinants & Matrices", q:"For 2 simultaneous equations with unique solution, det of coefficient matrix must be:", opts:["0","Negative","Non-zero","Greater than 1"], ans:"C", exp:"A unique solution exists only when the determinant of the coefficient matrix is non-zero (Cramer's rule)."},
+    {topic:"Trigonometry", q:"The value of cos 60° is:", opts:["1","0","1/2","√3/2"], ans:"C", exp:"cos 60° = 1/2. Standard trigonometric value."},
+    {topic:"Trigonometry", q:"sin²θ + cos²θ = ?", opts:["0","2","1","sin 2θ"], ans:"C", exp:"This is the fundamental Pythagorean identity: sin²θ + cos²θ = 1."},
+    {topic:"Trigonometry", q:"1 radian = approximately ___ degrees.", opts:["57.3°","90°","45°","180°"], ans:"A", exp:"1 radian = 180°/π ≈ 57.3°."},
+    {topic:"Vectors", q:"The cross product of two parallel vectors is:", opts:["1","A unit vector","Zero vector","A large vector"], ans:"C", exp:"For parallel vectors, angle θ = 0°, so A × B = |A||B|sin0° = 0. The result is the zero vector."},
+    {topic:"Vectors", q:"The magnitude of vector A = 3î + 4ĵ is:", opts:["7","1","5","12"], ans:"C", exp:"|A| = √(3² + 4²) = √(9+16) = √25 = 5."},
+    {topic:"Coordinate Geometry", q:"Two lines are perpendicular if the product of their slopes is:", opts:["0","1","-1","Undefined"], ans:"C", exp:"For perpendicular lines: m₁ × m₂ = −1."},
+    {topic:"Coordinate Geometry", q:"The slope of a vertical line (parallel to y-axis) is:", opts:["0","1","Undefined","-1"], ans:"C", exp:"A vertical line has an undefined slope (infinite slope) because the run (Δx) = 0."},
+    {topic:"Functions & Limits", q:"lim(x→2) (x² - 4)/(x - 2) = ?", opts:["0","2","4","Undefined"], ans:"C", exp:"Factor: (x²−4)/(x−2) = (x+2)(x−2)/(x−2) = x+2. At x=2: 2+2 = 4."},
+    {topic:"Functions & Limits", q:"The domain of f(x) = 1/x is:", opts:["All real numbers","x > 0","x ≠ 0","x < 0"], ans:"C", exp:"f(x) = 1/x is undefined at x = 0, so the domain is all real numbers except 0 (x ≠ 0)."},
+    {topic:"Functions & Limits", q:"lim(x→0) (eˣ - 1)/x = ?", opts:["0","e","1","∞"], ans:"C", exp:"Standard limit: lim(x→0) (eˣ - 1)/x = 1."},
+    {topic:"Differentiation", q:"d/dx (cos x) = ?", opts:["sin x","-sin x","cos x","-cos x"], ans:"B", exp:"d/dx(cos x) = −sin x."},
+    {topic:"Differentiation", q:"d/dx (ln x) = ?", opts:["1/x","x","ln x","1"], ans:"A", exp:"d/dx(ln x) = 1/x, for x > 0."},
+    {topic:"Differentiation", q:"If y = x³ - 3x + 2, then dy/dx at x = 1 is:", opts:["0","3","1","-3"], ans:"A", exp:"dy/dx = 3x² − 3. At x=1: 3(1)−3 = 0."},
+    {topic:"Differentiation", q:"Chain rule is used when:", opts:["Differentiating a sum","Differentiating a product","Differentiating a composite function","Differentiating a constant"], ans:"C", exp:"The chain rule is used to differentiate composite functions: d/dx[f(g(x))] = f'(g(x))·g'(x)."},
+    {topic:"Integration", q:"∫sin x dx = ?", opts:["cos x + C","-cos x + C","sin x + C","-sin x + C"], ans:"B", exp:"∫sin x dx = −cos x + C."},
+    {topic:"Integration", q:"∫(1/x) dx = ?", opts:["x + C","x² + C","ln|x| + C","1/x² + C"], ans:"C", exp:"∫(1/x) dx = ln|x| + C. This is a standard integral."},
+    {topic:"Integration", q:"∫₀² x dx = ?", opts:["1","2","4","0"], ans:"B", exp:"∫₀² x dx = [x²/2]₀² = 4/2 − 0 = 2."},
+    {topic:"Integration", q:"The method used to integrate a product of two functions is called:", opts:["Substitution","Integration by parts","Partial fractions","Chain rule"], ans:"B", exp:"Integration by parts: ∫u dv = uv − ∫v du, used for products of two functions."},
+    {topic:"Logarithm", q:"log(A/B) = ?", opts:["log A + log B","log A − log B","log A × log B","log A / log B"], ans:"B", exp:"Quotient rule: log(A/B) = log A − log B."},
+    {topic:"Logarithm", q:"logₐ(aⁿ) = ?", opts:["a","1/n","n","n/a"], ans:"C", exp:"logₐ(aⁿ) = n·logₐ(a) = n·1 = n."},
+    {topic:"Statistics", q:"The mode of {4, 5, 6, 5, 4, 5, 3} is:", opts:["4","3","5","6"], ans:"C", exp:"Mode is the most frequently occurring value. 5 appears 3 times (most frequent)."},
+    {topic:"Comprehension", q:"[Passage] 'Water is the most precious natural resource. Access to clean drinking water is a fundamental human right. Yet, over 2 billion people worldwide lack access to safe water. Water conservation and management are urgent global priorities.'\n\nAccording to the passage, access to clean water is a:", opts:["Luxury","Privilege","Fundamental human right","Government benefit"], ans:"C", exp:"The passage explicitly states that access to clean drinking water is 'a fundamental human right'."},
+    {topic:"Comprehension", q:"[Same Passage] How many people lack access to safe water?", opts:["1 billion","Over 2 billion","500 million","All people"], ans:"B", exp:"The passage states 'over 2 billion people worldwide lack access to safe water'."},
+    {topic:"Comprehension", q:"[Same Passage] The word 'precious' means:", opts:["Common","Worthless","Highly valuable","Easily available"], ans:"C", exp:"'Precious' means of great value or worth — the passage uses it to emphasize water's importance."},
+    {topic:"Comprehension", q:"[Same Passage] What does the passage suggest should be a global priority?", opts:["Ocean exploration","Water conservation and management","Building more cities","Increasing rainfall"], ans:"B", exp:"The passage concludes that 'water conservation and management are urgent global priorities'."},
+    {topic:"Comprehension", q:"[Same Passage] The passage is primarily about:", opts:["Ocean pollution","The water cycle","The importance and scarcity of clean water","Rainfall patterns"], ans:"C", exp:"The passage focuses on the importance, scarcity, and conservation of clean water."},
+    {topic:"Theory of Communication", q:"Which of these is a verbal form of communication?", opts:["Gestures","Eye contact","Spoken words","Posture"], ans:"C", exp:"Verbal communication involves the use of spoken or written words, not gestures or postures."},
+    {topic:"Theory of Communication", q:"The process of converting a message into a communicable form is called:", opts:["Decoding","Feedback","Encoding","Channel"], ans:"C", exp:"Encoding is the process by which the sender converts the message into a suitable form for transmission."},
+    {topic:"Theory of Communication", q:"Noise in communication refers to:", opts:["Volume of speech","Any interference that distorts the message","Background music","Typing errors only"], ans:"B", exp:"Noise is any form of interference (physical, semantic, psychological) that distorts or interrupts communication."},
+    {topic:"Theory of Communication", q:"Downward communication in an organization flows from:", opts:["Subordinate to superior","Superior to subordinate","Peer to peer","Customer to company"], ans:"B", exp:"Downward communication flows from higher levels (managers) to lower levels (employees)."},
+    {topic:"Theory of Communication", q:"Which of the following is an example of written verbal communication?", opts:["Hand gestures","Facial expressions","Email","Winking"], ans:"C", exp:"Email is written verbal communication. Gestures, facial expressions, and winking are non-verbal."},
+    {topic:"Techniques of Writing", q:"A letter written to resolve a customer's grievance is called:", opts:["Order letter","Inquiry letter","Adjustment letter","Complaint letter"], ans:"C", exp:"An adjustment letter responds to a complaint and offers resolution or settlement to the customer."},
+    {topic:"Techniques of Writing", q:"'FYI' in business communication stands for:", opts:["For Your Improvement","For Your Information","Find Your Interest","Forward Your Invoice"], ans:"B", exp:"FYI = For Your Information — commonly used in emails to share information without requiring action."},
+    {topic:"Techniques of Writing", q:"Which part of a letter contains the writer's address and date?", opts:["Inside address","Salutation","Letterhead/Heading","Body"], ans:"C", exp:"The letterhead or heading contains the sender's address and the date of writing."},
+    {topic:"Techniques of Writing", q:"An email differs from a letter because:", opts:["Emails are always formal","Emails are transmitted electronically","Emails have no subject line","Emails cannot have attachments"], ans:"B", exp:"The key distinction is that emails are transmitted electronically (via internet), unlike paper letters."},
+    {topic:"Techniques of Writing", q:"'Yours sincerely' is used in:", opts:["A letter to a close friend","A letter where the recipient is named","A letter where the recipient is unknown","All letters"], ans:"B", exp:"'Yours sincerely' is used when the recipient's name is known. 'Yours faithfully' is used when the name is unknown."},
+    {topic:"Grammar", q:"Which word is an adjective in: 'She wore a beautiful dress'?", opts:["She","wore","beautiful","dress"], ans:"C", exp:"'Beautiful' describes the noun 'dress' — it is an adjective."},
+    {topic:"Grammar", q:"Choose the correct future tense: 'By tomorrow, I ___ the report.'", opts:["will complete","completed","have completed","completing"], ans:"A", exp:"'Will complete' is the simple future tense, used for actions that will happen in the future."},
+    {topic:"Grammar", q:"Which of the following is an adverb?", opts:["Beautiful","Quickly","Beauty","Quick"], ans:"B", exp:"'Quickly' modifies a verb/adjective/adverb and answers 'how' — it is an adverb."},
+    {topic:"Grammar", q:"The plural of 'criterion' is:", opts:["Criterions","Criterias","Criteria","Criterions"], ans:"C", exp:"'Criterion' has the Greek plural 'criteria'. It follows the same pattern as 'phenomenon → phenomena'."},
+    {topic:"Grammar", q:"Identify the conjunction: 'I was tired, but I finished the work.'", opts:["I","tired","but","finished"], ans:"C", exp:"'But' is a coordinating conjunction connecting two independent clauses."},
+    {topic:"Correction", q:"Choose the correct spelling:", opts:["Accomodate","Accommodate","Acommodate","Acomodate"], ans:"B", exp:"'Accommodate' — note double 'c' and double 'm'. A common misspelling."},
+    {topic:"Correction", q:"Choose the grammatically correct sentence:", opts:["Each of the students have a book","Each of the students has a book","Each of the student have books","Each students has a book"], ans:"B", exp:"'Each' is singular → 'Each of the students has a book'. 'Each' always takes a singular verb."},
+    {topic:"Correction", q:"Choose the correct spelling:", opts:["Neccessary","Necesary","Necessary","Necessery"], ans:"C", exp:"'Necessary' — one 'c' and double 's'. Remember: one Collar, two Socks."},
+    {topic:"Correction", q:"Choose the grammatically correct sentence:", opts:["The news are shocking","The news is shocking","News are shocking","The new are shocking"], ans:"B", exp:"'News' is an uncountable noun and takes a singular verb: 'The news is shocking'."},
+    {topic:"Correction", q:"Choose the correct spelling:", opts:["Tommorrow","Tomorrow","Tommorow","Tomorow"], ans:"B", exp:"'Tomorrow' — one 'm' and double 'r'. A frequently misspelled word."},
+  ]
+},
+
+// ===================== TEST 3 =====================
+{
+  title: "Mock Test 3",
+  be01: [
+    {topic:"Units & Measurement", q:"The SI unit of electric current is:", opts:["Volt","Watt","Ampere","Ohm"], ans:"C", exp:"The Ampere (A) is the SI base unit of electric current."},
+    {topic:"Units & Measurement", q:"Which of the following is a derived unit?", opts:["Kilogram","Metre","Second","Newton"], ans:"D", exp:"Newton (N = kg·m/s²) is a derived unit. Kilogram, metre, and second are SI base units."},
+    {topic:"Units & Measurement", q:"1 nm (nanometre) = ___ metres.", opts:["10⁻³","10⁻⁶","10⁻⁹","10⁻¹²"], ans:"C", exp:"1 nm = 10⁻⁹ m. The prefix 'nano' means 10⁻⁹."},
+    {topic:"Units & Measurement", q:"The micrometer screw gauge works on the principle of:", opts:["Lever","Screw and nut","Pulley","Inclined plane"], ans:"B", exp:"A micrometer screw gauge uses the screw-and-nut principle to convert rotational motion to linear movement for precise measurement."},
+    {topic:"Units & Measurement", q:"If A = (5.0 ± 0.1) cm and B = (3.0 ± 0.1) cm, the absolute error in A + B is:", opts:["0.1 cm","0.2 cm","0.01 cm","0.3 cm"], ans:"B", exp:"For addition, absolute errors add: ΔZ = ΔA + ΔB = 0.1 + 0.1 = 0.2 cm."},
+    {topic:"Units & Measurement", q:"Physical quantities that cannot be expressed in terms of other quantities are called:", opts:["Derived quantities","Fundamental quantities","Vector quantities","Scalar quantities"], ans:"B", exp:"Fundamental (base) quantities like mass, length, and time cannot be derived from other quantities."},
+    {topic:"Classical Mechanics", q:"The rate of change of velocity is called:", opts:["Speed","Displacement","Acceleration","Momentum"], ans:"C", exp:"Acceleration = rate of change of velocity = Δv/Δt. SI unit: m/s²."},
+    {topic:"Classical Mechanics", q:"Work done is zero when force and displacement are:", opts:["In the same direction","In opposite directions","Perpendicular to each other","At 45°"], ans:"C", exp:"W = F·d·cosθ. When θ = 90°, cos90° = 0, so work done = 0."},
+    {topic:"Classical Mechanics", q:"Angular acceleration is defined as:", opts:["Rate of change of angular displacement","Rate of change of angular velocity","Angular velocity × radius","Angular momentum / time"], ans:"B", exp:"Angular acceleration α = dω/dt, the rate of change of angular velocity. SI unit: rad/s²."},
+    {topic:"Classical Mechanics", q:"The law of conservation of energy states:", opts:["Energy can be created but not destroyed","Energy can be destroyed","Energy can neither be created nor destroyed","Energy equals mass"], ans:"C", exp:"The first law of thermodynamics / conservation of energy: energy cannot be created or destroyed, only converted."},
+    {topic:"Classical Mechanics", q:"Centrifugal force is:", opts:["A real inward force","A pseudo outward force in rotating frame","The same as centripetal","A gravitational force"], ans:"B", exp:"Centrifugal force is a pseudo (apparent) force experienced in a rotating (non-inertial) reference frame, directed outward."},
+    {topic:"Classical Mechanics", q:"The unit of energy is:", opts:["Watt","Newton","Joule","Pascal"], ans:"C", exp:"Energy is measured in Joules (J). 1 J = 1 N·m = 1 kg·m²/s²."},
+    {topic:"Electric Current", q:"The work done in moving unit positive charge from one point to another is called:", opts:["Current","Resistance","Electric potential difference","Capacitance"], ans:"C", exp:"Electric potential difference (voltage) V = W/Q, the work done per unit charge."},
+    {topic:"Electric Current", q:"A 12V battery has a resistance of 2Ω connected to it. The current flowing is:", opts:["24 A","6 A","0.16 A","10 A"], ans:"B", exp:"I = V/R = 12/2 = 6 A (Ohm's Law)."},
+    {topic:"Electric Current", q:"The electric flux through a surface is related to:", opts:["The current through the surface","The charge enclosed (Gauss's Law)","The resistance of the surface","The voltage across the surface"], ans:"B", exp:"Gauss's Law: the electric flux through a closed surface = Q_enclosed/ε₀."},
+    {topic:"Electric Current", q:"For two capacitors C₁ and C₂ in series, the equivalent capacitance is:", opts:["C₁ + C₂","C₁ × C₂","1/(1/C₁ + 1/C₂)","(C₁ + C₂)/2"], ans:"C", exp:"Series capacitors: 1/Ceq = 1/C₁ + 1/C₂, so Ceq = C₁C₂/(C₁+C₂)."},
+    {topic:"Electric Current", q:"Resistivity depends on:", opts:["Length of conductor","Cross-sectional area","Material and temperature","All of the above"], ans:"C", exp:"Resistivity (ρ) is an intrinsic property depending only on the material and temperature, not on the shape."},
+    {topic:"Electric Current", q:"If the length of a conductor is doubled (area constant), resistance:", opts:["Halves","Doubles","Stays same","Quadruples"], ans:"B", exp:"R = ρL/A. Doubling L doubles R, since R is directly proportional to length."},
+    {topic:"Heat & Thermometry", q:"0°F = ___ °C (approx.).", opts:["-17.8°C","32°C","0°C","-32°C"], ans:"A", exp:"°C = (5/9)(°F − 32) = (5/9)(0 − 32) = −17.78 ≈ −17.8°C."},
+    {topic:"Heat & Thermometry", q:"The transfer of heat in solids is mainly by:", opts:["Convection","Radiation","Conduction","All modes equally"], ans:"C", exp:"In solids, heat transfer is primarily by conduction through molecular vibration and free electrons."},
+    {topic:"Heat & Thermometry", q:"Substances that have high thermal conductivity are:", opts:["Good thermal insulators","Good thermal conductors","Heat sources","Thermostats"], ans:"B", exp:"High thermal conductivity means the material transfers heat readily — it is a good thermal conductor."},
+    {topic:"Heat & Thermometry", q:"Area expansion coefficient (β) relates to linear expansion coefficient (α) as:", opts:["β = α","β = α/2","β = 2α","β = 3α"], ans:"C", exp:"β = 2α (area expands in two dimensions). Volume expansion coefficient γ = 3α."},
+    {topic:"Heat & Thermometry", q:"The temperature at which a gas has zero volume (theoretically) is:", opts:["0°C","−100°C","−273°C","273°C"], ans:"C", exp:"Absolute zero = −273.15°C = 0 K. At this temperature, an ideal gas would have zero volume."},
+    {topic:"Heat & Thermometry", q:"Normal human body temperature in Celsius is approximately:", opts:["32°C","37°C","40°C","100°C"], ans:"B", exp:"Normal body temperature is approximately 37°C (98.6°F)."},
+    {topic:"Waves, Optics & Acoustics", q:"The frequency of a wave is 500 Hz and its wavelength is 0.4 m. Its speed is:", opts:["200 m/s","1250 m/s","0.0008 m/s","500 m/s"], ans:"A", exp:"v = f × λ = 500 × 0.4 = 200 m/s."},
+    {topic:"Waves, Optics & Acoustics", q:"A stationary wave is formed by:", opts:["Superposition of two waves moving in opposite directions","A single wave","Refraction","Absorption"], ans:"A", exp:"Stationary (standing) waves form when two waves of equal frequency travel in opposite directions and superimpose."},
+    {topic:"Waves, Optics & Acoustics", q:"The critical angle is the angle of incidence for which the angle of refraction is:", opts:["0°","45°","90°","180°"], ans:"C", exp:"At the critical angle, the refracted ray travels along the surface (angle of refraction = 90°). Beyond it, TIR occurs."},
+    {topic:"Waves, Optics & Acoustics", q:"Which type of wave does NOT require a medium?", opts:["Sound","Water waves","Electromagnetic waves","Seismic waves"], ans:"C", exp:"Electromagnetic waves (light, radio, X-rays) can travel through vacuum. Sound and seismic waves require a medium."},
+    {topic:"Waves, Optics & Acoustics", q:"An echo is heard when sound reflects from a surface at a minimum distance of:", opts:["5 m","10 m","17 m","34 m"], ans:"C", exp:"For echo, minimum distance = (v × t)/2 = (340 × 0.1)/2 = 17 m (sound travels 34 m in 0.1 s, reflects and returns)."},
+    {topic:"Waves, Optics & Acoustics", q:"The absorption coefficient in acoustics is a measure of:", opts:["Speed of sound","How much sound a surface absorbs","Frequency of reflection","Amplitude of echo"], ans:"B", exp:"The absorption coefficient indicates the fraction of sound energy absorbed by a surface (0 = perfect reflector, 1 = perfect absorber)."},
+    {topic:"Chemical Reactions", q:"In a double displacement reaction:", opts:["One element replaces another","Two compounds exchange their ions","A compound decomposes","Two substances combine"], ans:"B", exp:"Double displacement (metathesis): AB + CD → AD + CB. Both compounds exchange ions."},
+    {topic:"Chemical Reactions", q:"Burning of magnesium in air is an example of:", opts:["Decomposition","Combination reaction","Displacement","Double displacement"], ans:"B", exp:"2Mg + O₂ → 2MgO. Two reactants combine to form one product — a combination reaction."},
+    {topic:"Chemical Reactions", q:"Which of the following balances the equation: _Fe + _O₂ → _Fe₂O₃?", opts:["4Fe + 3O₂ → 2Fe₂O₃","2Fe + O₂ → Fe₂O₃","Fe + O₂ → Fe₂O₃","3Fe + 2O₂ → Fe₂O₃"], ans:"A", exp:"4Fe + 3O₂ → 2Fe₂O₃. Check: 4 Fe each side, 6 O each side. Balanced!"},
+    {topic:"Acids, Bases & Salts", q:"Vinegar contains which acid?", opts:["Hydrochloric acid","Sulfuric acid","Acetic acid","Nitric acid"], ans:"C", exp:"Vinegar contains acetic acid (CH₃COOH), a weak organic acid."},
+    {topic:"Acids, Bases & Salts", q:"The pH of blood is approximately:", opts:["4.5","6.0","7.4","8.5"], ans:"C", exp:"Normal blood pH is approximately 7.35–7.45 (≈ 7.4), slightly alkaline."},
+    {topic:"Acids, Bases & Salts", q:"Baking soda has the chemical formula:", opts:["Na₂CO₃","NaHCO₃","NaOH","NaCl"], ans:"B", exp:"Baking soda = sodium bicarbonate = NaHCO₃."},
+    {topic:"Acids, Bases & Salts", q:"When a metal oxide reacts with an acid, it forms:", opts:["Only water","Only salt","Salt and water","Oxide and gas"], ans:"C", exp:"Metal oxide + Acid → Salt + Water. Example: CuO + H₂SO₄ → CuSO₄ + H₂O."},
+    {topic:"Metals & Non-metals", q:"Which metal is liquid at room temperature?", opts:["Iron","Copper","Mercury","Silver"], ans:"C", exp:"Mercury (Hg) is the only metal that is liquid at room temperature (melting point: −38.8°C)."},
+    {topic:"Metals & Non-metals", q:"The process of covering iron with zinc to prevent rusting is called:", opts:["Electroplating","Galvanisation","Anodising","Alloying"], ans:"B", exp:"Galvanisation is the process of coating iron/steel with zinc to protect it from corrosion."},
+    {topic:"Metals & Non-metals", q:"Non-metals generally form ___ oxides.", opts:["Basic","Neutral","Acidic","Amphoteric"], ans:"C", exp:"Non-metals form acidic oxides (e.g., CO₂, SO₂, NO₂). Metals form basic oxides."},
+    {topic:"Computer Practice", q:"Which HTML tag is used for the largest heading?", opts:["<h6>","<h1>","<head>","<title>"], ans:"B", exp:"<h1> is the largest heading in HTML. Headings range from <h1> (largest) to <h6> (smallest)."},
+    {topic:"Computer Practice", q:"MS Word is primarily used for:", opts:["Number crunching","Creating spreadsheets","Word processing / document creation","Creating databases"], ans:"C", exp:"MS Word is a word processing software used to create, edit, and format text documents."},
+    {topic:"Computer Practice", q:"Which of the following is an input device?", opts:["Monitor","Printer","Keyboard","Speaker"], ans:"C", exp:"A keyboard is an input device — it sends data to the computer. Monitor, printer, and speaker are output devices."},
+    {topic:"Computer Practice", q:"HTTP stands for:", opts:["HyperText Transfer Protocol","High Transfer Text Program","Hyper Transfer Tracking Protocol","HyperText Transport Program"], ans:"A", exp:"HTTP = HyperText Transfer Protocol. It is the foundation of data communication on the World Wide Web."},
+    {topic:"Computer Practice", q:"In MS Excel, the formula to find the average of A1 to A10 is:", opts:["=SUM(A1:A10)","=AVG(A1:A10)","=AVERAGE(A1:A10)","=MEAN(A1:A10)"], ans:"C", exp:"The correct function is =AVERAGE(A1:A10). There is no AVG or MEAN function in MS Excel."},
+    {topic:"Environmental Sciences", q:"Geothermal energy comes from:", opts:["Sun","Wind","Heat inside the Earth","Ocean tides"], ans:"C", exp:"Geothermal energy is derived from the natural heat generated and stored inside the Earth."},
+    {topic:"Environmental Sciences", q:"Which of the following is a water pollutant?", opts:["Oxygen","Nitrogen","Pesticides","Carbon dioxide"], ans:"C", exp:"Pesticides and fertilizers are common water pollutants that contaminate rivers and groundwater."},
+    {topic:"Environmental Sciences", q:"The greenhouse effect occurs when greenhouse gases trap:", opts:["Carbon dioxide","Heat (infrared radiation)","Ultraviolet radiation","Ozone"], ans:"B", exp:"Greenhouse gases (CO₂, CH₄, water vapour) trap infrared (heat) radiation from the Earth's surface."},
+    {topic:"Environmental Sciences", q:"Which of the following is an example of a decomposer in an ecosystem?", opts:["Lion","Eagle","Mushroom (fungi)","Deer"], ans:"C", exp:"Fungi (like mushrooms) are decomposers — they break down dead organic matter and recycle nutrients."},
+    {topic:"Environmental Sciences", q:"Hydropower uses:", opts:["Wind energy","Solar energy","Kinetic energy of flowing water","Geothermal heat"], ans:"C", exp:"Hydropower (hydroelectric) converts the kinetic and potential energy of flowing or falling water into electricity."},
+  ],
+  be02: [
+    {topic:"Determinants & Matrices", q:"Which matrix has all elements as zero?", opts:["Identity matrix","Square matrix","Null matrix","Diagonal matrix"], ans:"C", exp:"A null (zero) matrix has all its elements equal to zero."},
+    {topic:"Determinants & Matrices", q:"If A = [2 1; 5 3], find det(A):", opts:["1","6","11","16"], ans:"A", exp:"det[2 1; 5 3] = (2×3) − (1×5) = 6 − 5 = 1."},
+    {topic:"Determinants & Matrices", q:"A scalar matrix is a diagonal matrix where all diagonal elements are:", opts:["Zero","Different","Equal","Negative"], ans:"C", exp:"A scalar matrix is a diagonal matrix where all diagonal elements are equal."},
+    {topic:"Determinants & Matrices", q:"The product of a matrix and its inverse is:", opts:["Zero matrix","Null matrix","Identity matrix","The original matrix"], ans:"C", exp:"A × A⁻¹ = I (identity matrix), by the definition of an inverse."},
+    {topic:"Trigonometry", q:"tan 45° = ?", opts:["0","1","√3","1/√3"], ans:"B", exp:"tan 45° = sin45°/cos45° = (1/√2)/(1/√2) = 1."},
+    {topic:"Trigonometry", q:"sin(90° - θ) = ?", opts:["sin θ","cos θ","−sin θ","−cos θ"], ans:"B", exp:"sin(90° − θ) = cos θ. This is a standard allied angle identity."},
+    {topic:"Trigonometry", q:"The sum-to-product formula: sin A + sin B = ?", opts:["2 sin((A+B)/2) cos((A-B)/2)","2 cos((A+B)/2) sin((A-B)/2)","2 sin A cos B","cos A + cos B"], ans:"A", exp:"sin A + sin B = 2 sin((A+B)/2) cos((A−B)/2). Standard sum-to-product formula."},
+    {topic:"Vectors", q:"If A = 2î + 3ĵ and B = î − ĵ, then A + B = ?", opts:["3î + 2ĵ","3î − 2ĵ","î + 4ĵ","3î + 4ĵ"], ans:"A", exp:"A + B = (2+1)î + (3−1)ĵ = 3î + 2ĵ."},
+    {topic:"Vectors", q:"The vector product (cross product) A × B gives a vector that is:", opts:["Parallel to A","Parallel to B","Perpendicular to both A and B","Equal to A + B"], ans:"C", exp:"The cross product A × B is a vector perpendicular to the plane containing both A and B."},
+    {topic:"Coordinate Geometry", q:"The distance between points (1, 2) and (4, 6) is:", opts:["3","5","7","25"], ans:"B", exp:"d = √((4−1)² + (6−2)²) = √(9+16) = √25 = 5."},
+    {topic:"Coordinate Geometry", q:"The equation of a line with slope m and y-intercept c is:", opts:["y = mx + c","x = my + c","y = cx + m","x = cy + m"], ans:"A", exp:"y = mx + c is the slope-intercept form, where m is slope and c is y-intercept."},
+    {topic:"Functions & Limits", q:"lim(x→3) (x² - 9)/(x - 3) = ?", opts:["3","6","9","0"], ans:"B", exp:"(x²−9)/(x−3) = (x+3)(x−3)/(x−3) = x+3. At x=3: 3+3 = 6."},
+    {topic:"Functions & Limits", q:"lim(x→0) (tan x)/x = ?", opts:["0","∞","1","x"], ans:"C", exp:"Standard limit: lim(x→0) (tan x)/x = 1."},
+    {topic:"Functions & Limits", q:"The range of f(x) = x² is:", opts:["All real numbers","x ≥ 0","x ≤ 0","All negative numbers"], ans:"B", exp:"Since x² ≥ 0 for all real x, the range of f(x) = x² is [0, ∞)."},
+    {topic:"Differentiation", q:"d/dx (tan x) = ?", opts:["cot x","sec²x","cosec²x","-sec²x"], ans:"B", exp:"d/dx(tan x) = sec²x."},
+    {topic:"Differentiation", q:"If y = sin(3x), then dy/dx = ?", opts:["cos(3x)","3cos(3x)","-cos(3x)","3sin(3x)"], ans:"B", exp:"By chain rule: d/dx[sin(3x)] = cos(3x) × 3 = 3cos(3x)."},
+    {topic:"Differentiation", q:"The derivative d/dx (uv) using product rule is:", opts:["u'v'","u'v + uv'","uv' - u'v","u/v' + v/u'"], ans:"B", exp:"Product rule: d/dx(uv) = u'v + uv' (derivative of first × second + first × derivative of second)."},
+    {topic:"Differentiation", q:"If y = x², then the second derivative d²y/dx² = ?", opts:["x","2x","2","0"], ans:"C", exp:"dy/dx = 2x. d²y/dx² = d/dx(2x) = 2."},
+    {topic:"Integration", q:"∫(3x² + 2x) dx = ?", opts:["6x + 2","3x³ + 2x²","x³ + x² + C","6x³ + C"], ans:"C", exp:"∫(3x² + 2x)dx = 3x³/3 + 2x²/2 + C = x³ + x² + C."},
+    {topic:"Integration", q:"∫₀¹ eˣ dx = ?", opts:["1","e","e - 1","e + 1"], ans:"C", exp:"∫₀¹ eˣ dx = [eˣ]₀¹ = e¹ − e⁰ = e − 1."},
+    {topic:"Integration", q:"Integration by substitution is used to simplify:", opts:["Simple polynomials","Composite functions","Constant integrals","Products of functions"], ans:"B", exp:"Substitution (u-substitution) simplifies composite functions by changing the variable of integration."},
+    {topic:"Integration", q:"∫ (1/(1+x²)) dx = ?", opts:["tan⁻¹x + C","sin⁻¹x + C","sec⁻¹x + C","ln(1+x²) + C"], ans:"A", exp:"∫ 1/(1+x²) dx = tan⁻¹x + C. This is a standard integral formula."},
+    {topic:"Logarithm", q:"log 1 = ? (any base)", opts:["1","0","Undefined","Base itself"], ans:"B", exp:"logₐ(1) = 0 for any base a > 0, a ≠ 1, because a⁰ = 1."},
+    {topic:"Logarithm", q:"If log₁₀(x) = 2, then x = ?", opts:["20","2","100","10"], ans:"C", exp:"log₁₀(x) = 2 means 10² = x, so x = 100."},
+    {topic:"Statistics", q:"The mean of {10, 20, 30, 40, 50} is:", opts:["25","30","35","40"], ans:"B", exp:"Mean = (10+20+30+40+50)/5 = 150/5 = 30."},
+    {topic:"Comprehension", q:"[Passage] 'Reading is one of the most powerful habits one can develop. It expands vocabulary, sharpens the mind, and builds empathy by exposing readers to different perspectives and experiences. In today's digital age, reading remains as relevant as ever.'\n\nAccording to the passage, one benefit of reading is:", opts:["Improving physical fitness","Expanding vocabulary","Reducing screen time","Learning to write code"], ans:"B", exp:"The passage explicitly states reading 'expands vocabulary' as one of its benefits."},
+    {topic:"Comprehension", q:"[Same Passage] The passage suggests reading builds empathy because:", opts:["It is a physical activity","It exposes readers to different perspectives","It reduces stress","It improves memory"], ans:"B", exp:"The passage states reading 'builds empathy by exposing readers to different perspectives and experiences'."},
+    {topic:"Comprehension", q:"[Same Passage] The tone of the passage is:", opts:["Critical","Negative","Positive and encouraging","Neutral and scientific"], ans:"C", exp:"The passage uses positive language ('most powerful', 'sharpens', 'relevant') — the tone is encouraging."},
+    {topic:"Comprehension", q:"[Same Passage] 'In today's digital age, reading remains as relevant as ever' implies:", opts:["Reading is less important now","Reading is only for children","Technology has not reduced reading's value","Books are outdated"], ans:"C", exp:"The sentence asserts that even in the digital age, reading has not lost its importance."},
+    {topic:"Comprehension", q:"[Same Passage] The passage is mainly about:", opts:["The history of books","The benefits of the reading habit","Digital technology","Vocabulary building only"], ans:"B", exp:"The central theme is the value and benefits of developing the habit of reading."},
+    {topic:"Theory of Communication", q:"The most effective form of communication for immediate feedback is:", opts:["Letter","Email","Face-to-face communication","Report"], ans:"C", exp:"Face-to-face communication allows instant feedback through speech, expressions, and body language."},
+    {topic:"Theory of Communication", q:"Which of the following is a psychological barrier to communication?", opts:["Loud noise","Language difference","Emotional state / bias","Poor lighting"], ans:"C", exp:"Psychological barriers include emotional state, prejudices, stress, and bias that affect how messages are sent or received."},
+    {topic:"Theory of Communication", q:"Lateral (horizontal) communication occurs between:", opts:["Manager and employee","Two employees at the same level","Employee and customer","Employee and government"], ans:"B", exp:"Lateral communication flows between people at the same hierarchical level in an organization."},
+    {topic:"Theory of Communication", q:"Kinesics refers to the study of:", opts:["Language barriers","Tone of voice","Body language and gestures","Written communication"], ans:"C", exp:"Kinesics is the study of body language — gestures, facial expressions, and postures as forms of communication."},
+    {topic:"Theory of Communication", q:"Which communication style involves asserting one's views without considering others?", opts:["Passive","Assertive","Aggressive","Non-verbal"], ans:"C", exp:"Aggressive communication involves expressing views forcefully without respect for others' feelings or opinions."},
+    {topic:"Techniques of Writing", q:"A reply letter responds to:", opts:["An unsolicited letter","An inquiry letter","A complaint","An order"], ans:"B", exp:"A reply letter responds to an inquiry letter, providing the information or details requested."},
+    {topic:"Techniques of Writing", q:"'Re:' in a business letter stands for:", opts:["Reference","Regarding","Reply","Return"], ans:"B", exp:"'Re:' stands for 'Regarding' — it indicates the subject or topic of the letter."},
+    {topic:"Techniques of Writing", q:"A complaint letter should be:", opts:["Emotional and threatening","Clear, specific, and polite","Vague and general","Oral only"], ans:"B", exp:"Effective complaint letters are clear (specific facts), polite (professional tone), and concise."},
+    {topic:"Techniques of Writing", q:"The salutation in a formal letter typically ends with:", opts:["Full stop","Comma","Exclamation mark","No punctuation"], ans:"B", exp:"In formal letters, the salutation ends with a comma (e.g., 'Dear Mr. Smith,')."},
+    {topic:"Techniques of Writing", q:"'COD' in business communication means:", opts:["Cash On Demand","Collect On Delivery","Cash Only Deal","Company Order Document"], ans:"B", exp:"COD = Collect On Delivery (or Cash On Delivery) — payment is made when goods are delivered."},
+    {topic:"Grammar", q:"The past tense of 'write' is:", opts:["Writed","Wrote","Written","Wroten"], ans:"B", exp:"'Write' is an irregular verb. Simple past = 'wrote'. Past participle = 'written'."},
+    {topic:"Grammar", q:"Choose the correct sentence:", opts:["Neither of the boys were present","Neither of the boys was present","Neither of the boys are present","Neither of boy was present"], ans:"B", exp:"'Neither of' takes a singular verb. 'Neither of the boys was present' is grammatically correct."},
+    {topic:"Grammar", q:"'Although she was tired, she continued working.' The word 'Although' is a:", opts:["Preposition","Conjunction","Adverb","Pronoun"], ans:"B", exp:"'Although' is a subordinating conjunction that connects the subordinate clause to the main clause."},
+    {topic:"Grammar", q:"Choose the correct sentence:", opts:["I am more taller than him","I am taller than him","I am most tall than him","I am tallest than him"], ans:"B", exp:"Never use 'more' with a comparative adjective like 'taller'. 'I am taller than him' is correct."},
+    {topic:"Grammar", q:"The verb form in passive voice of 'She wrote the letter' is:", opts:["The letter wrote by her","The letter is written by her","The letter was written by her","The letter had write by her"], ans:"C", exp:"Passive voice (simple past): 'The letter was written by her.' Subject + was/were + past participle + by + agent."},
+    {topic:"Correction", q:"Choose the correct spelling:", opts:["Priviledge","Privelege","Privilege","Privilige"], ans:"C", exp:"'Privilege' — commonly misspelled. No 'd' in the middle."},
+    {topic:"Correction", q:"Choose the grammatically correct sentence:", opts:["I have went to school","I have gone to school","I have go to school","I have goed to school"], ans:"B", exp:"Present perfect: have/has + past participle. Past participle of 'go' is 'gone' → 'I have gone to school'."},
+    {topic:"Correction", q:"Choose the correct spelling:", opts:["Knowlege","Knwoledge","Knowledge","Knowldge"], ans:"C", exp:"'Knowledge' — note the 'dg' combination before the 'e'."},
+    {topic:"Correction", q:"Choose the grammatically correct sentence:", opts:["The children plays in the park","The children play in the park","The children is playing in park","The children was play in the park"], ans:"B", exp:"'Children' is a plural noun → plural verb 'play'. 'The children play in the park.'"},
+    {topic:"Correction", q:"Choose the correct spelling:", opts:["Embarass","Embarrass","Embaras","Embarras"], ans:"B", exp:"'Embarrass' — double 'r' and double 's'. One of the most commonly misspelled English words."},
+  ]
+},
+
+// ===================== TEST 4 =====================
+{
+  title: "Mock Test 4",
+  be01: [
+    {topic:"Units & Measurement", q:"The SI unit of luminous intensity is:", opts:["Lumen","Candela","Lux","Watt"], ans:"B", exp:"Candela (cd) is the SI base unit of luminous intensity."},
+    {topic:"Units & Measurement", q:"Which of the following is a vector quantity?", opts:["Mass","Temperature","Speed","Velocity"], ans:"D", exp:"Velocity has both magnitude and direction — it is a vector quantity. Mass, temperature, and speed are scalars."},
+    {topic:"Units & Measurement", q:"The error in a measurement is defined as:", opts:["The measured value","The difference between measured and true value","The percentage of true value","The average of all measurements"], ans:"B", exp:"Error = Measured value − True value. It indicates how far the measurement is from the true value."},
+    {topic:"Units & Measurement", q:"CGS unit of force is:", opts:["Newton","Pound","Dyne","Joule"], ans:"C", exp:"Dyne is the CGS unit of force. 1 Newton = 10⁵ dyne."},
+    {topic:"Units & Measurement", q:"The number of significant figures in 0.00503 is:", opts:["2","3","5","6"], ans:"B", exp:"Leading zeros are not significant. 0.00503 has 3 significant figures: 5, 0, and 3."},
+    {topic:"Units & Measurement", q:"Which of the following physical quantities has the unit kg·m²/s²?", opts:["Power","Force","Energy","Pressure"], ans:"C", exp:"Energy (Joule) = kg·m²/s². Power = kg·m²/s³, Force = kg·m/s², Pressure = kg/(m·s²)."},
+    {topic:"Classical Mechanics", q:"A body thrown horizontally from height undergoes:", opts:["Uniform motion","Uniformly accelerated motion vertically and uniform motion horizontally","Circular motion","Simple harmonic motion"], ans:"B", exp:"Projectile motion combines: uniform horizontal velocity (no horizontal force) + uniformly accelerated vertical motion (gravity)."},
+    {topic:"Classical Mechanics", q:"The formula for centripetal acceleration is:", opts:["v/r","v²/r","r/v²","2v/r"], ans:"B", exp:"Centripetal acceleration ac = v²/r, directed towards the centre of the circular path."},
+    {topic:"Classical Mechanics", q:"According to Newton's second law, F = ?", opts:["mv","ma","m/a","v/a"], ans:"B", exp:"F = ma. Force equals mass times acceleration (Newton's second law)."},
+    {topic:"Classical Mechanics", q:"The work-energy theorem states that net work done equals:", opts:["Potential energy","Change in kinetic energy","Change in momentum","Total energy"], ans:"B", exp:"Work-energy theorem: Net work done = Change in kinetic energy = ½mv² − ½mu²."},
+    {topic:"Classical Mechanics", q:"Angular momentum = ?", opts:["Iω (moment of inertia × angular velocity)","mv","Fr","Iα"], ans:"A", exp:"Angular momentum L = Iω, analogous to linear momentum p = mv."},
+    {topic:"Classical Mechanics", q:"1 Watt = ?", opts:["1 Joule","1 Joule/second","1 Joule/metre","1 Newton·second"], ans:"B", exp:"Power = Work/Time. 1 Watt = 1 Joule per second (1 W = 1 J/s)."},
+    {topic:"Electric Current", q:"The SI unit of capacitance is:", opts:["Ohm","Henry","Farad","Tesla"], ans:"C", exp:"Capacitance is measured in Farads (F). 1 F = 1 Coulomb/Volt."},
+    {topic:"Electric Current", q:"Two resistors 3Ω and 6Ω are connected in parallel. The equivalent resistance is:", opts:["9Ω","2Ω","4.5Ω","18Ω"], ans:"B", exp:"1/Req = 1/3 + 1/6 = 2/6 + 1/6 = 3/6 = 1/2. So Req = 2Ω."},
+    {topic:"Electric Current", q:"Electric field is defined as force per unit:", opts:["Area","Charge","Mass","Volume"], ans:"B", exp:"Electric field E = F/q (force per unit positive charge). SI unit: N/C or V/m."},
+    {topic:"Electric Current", q:"The energy stored in a capacitor C charged to voltage V is:", opts:["CV","CV²","½CV²","2CV"], ans:"C", exp:"Energy stored in capacitor: E = ½CV². This is analogous to ½mv² for kinetic energy."},
+    {topic:"Electric Current", q:"Ohm's law is valid for:", opts:["All materials","Semiconductors only","Metallic conductors at constant temperature","Insulators only"], ans:"C", exp:"Ohm's law (V = IR with constant R) applies to ohmic (metallic) conductors at constant temperature."},
+    {topic:"Electric Current", q:"The unit of electric field strength is:", opts:["V/m (or N/C)","C/m","A/m","W/m"], ans:"A", exp:"Electric field strength is measured in V/m (volts per metre) or equivalently N/C (newtons per coulomb)."},
+    {topic:"Heat & Thermometry", q:"Water boils at what temperature on the Kelvin scale?", opts:["100 K","212 K","273 K","373 K"], ans:"D", exp:"Water boils at 100°C = 100 + 273 = 373 K."},
+    {topic:"Heat & Thermometry", q:"A thermometer works on which principle?", opts:["Thermal expansion of a liquid","Convection of gas","Radiation of heat","Conduction of electricity"], ans:"A", exp:"Thermometers (mercury/alcohol) work on the principle of thermal expansion — liquid expands with temperature."},
+    {topic:"Heat & Thermometry", q:"Which conversion is correct?", opts:["0°C = 0 K","100°C = 100 K","−273°C = 0 K","37°C = 37 K"], ans:"C", exp:"−273°C = 0 K (absolute zero). K = °C + 273, so −273 + 273 = 0 K."},
+    {topic:"Heat & Thermometry", q:"Good conductors of heat are generally:", opts:["Non-metals","Insulators","Metals","Gases"], ans:"C", exp:"Metals are generally good conductors of both heat and electricity due to free electrons."},
+    {topic:"Heat & Thermometry", q:"If Q = mcΔT, 'c' represents:", opts:["Heat capacity","Specific heat capacity","Thermal conductivity","Heat flux"], ans:"B", exp:"In Q = mcΔT, c is the specific heat capacity — heat per unit mass per degree of temperature change."},
+    {topic:"Heat & Thermometry", q:"Which formula correctly converts Fahrenheit to Celsius?", opts:["°C = (°F − 32) × 5/9","°C = (°F + 32) × 5/9","°C = °F × 9/5 + 32","°C = °F − 32"], ans:"A", exp:"°C = (°F − 32) × 5/9. This is the standard conversion formula."},
+    {topic:"Waves, Optics & Acoustics", q:"If the speed of light in vacuum is 3 × 10⁸ m/s and in glass is 2 × 10⁸ m/s, the refractive index of glass is:", opts:["0.67","1.0","1.5","2.0"], ans:"C", exp:"n = c/v = (3×10⁸)/(2×10⁸) = 1.5."},
+    {topic:"Waves, Optics & Acoustics", q:"Which of the following is a mechanical wave?", opts:["Light","X-rays","Radio waves","Sound"], ans:"D", exp:"Sound is a mechanical wave — it requires a medium (solid, liquid, or gas) for propagation."},
+    {topic:"Waves, Optics & Acoustics", q:"The primary use of ultrasonic waves in medicine is:", opts:["X-ray imaging","LASER surgery","Sonography (ultrasound imaging)","MRI"], ans:"C", exp:"Ultrasonics are used in medical sonography (ultrasound scans) to image internal organs, especially useful for foetal imaging."},
+    {topic:"Waves, Optics & Acoustics", q:"In an optical fibre, the core has a ___ refractive index than the cladding.", opts:["Lower","Higher","Equal","Zero"], ans:"B", exp:"The core has a higher refractive index than the cladding, ensuring total internal reflection at the core-cladding boundary."},
+    {topic:"Waves, Optics & Acoustics", q:"The number of oscillations per second is called:", opts:["Amplitude","Period","Frequency","Wavelength"], ans:"C", exp:"Frequency (f) = number of complete oscillations per second, measured in Hertz (Hz)."},
+    {topic:"Waves, Optics & Acoustics", q:"What is the unit of frequency?", opts:["Metre","Second","Hertz","Watt"], ans:"C", exp:"Frequency is measured in Hertz (Hz). 1 Hz = 1 cycle per second."},
+    {topic:"Chemical Reactions", q:"Which type of reaction releases energy (exothermic)?", opts:["Electrolysis","Endothermic reactions","Combustion reactions","Thermal decomposition"], ans:"C", exp:"Combustion releases heat energy — it is an exothermic reaction. Example: burning of fuels."},
+    {topic:"Chemical Reactions", q:"What is produced when calcium carbonate is heated (decomposition)?", opts:["Calcium + CO₂","CaO + CO₂","Ca(OH)₂ + CO₂","CaCO₃ + O₂"], ans:"B", exp:"CaCO₃ → CaO + CO₂. Calcium carbonate decomposes into calcium oxide (quicklime) and carbon dioxide."},
+    {topic:"Chemical Reactions", q:"In the reaction: AgNO₃ + NaCl → AgCl↓ + NaNO₃, what type of reaction is it?", opts:["Combination","Displacement","Double displacement","Decomposition"], ans:"C", exp:"Two compounds exchange ions: AgNO₃ + NaCl → AgCl + NaNO₃. This is a double displacement reaction."},
+    {topic:"Acids, Bases & Salts", q:"An acid in water produces which ion?", opts:["OH⁻","Na⁺","H⁺ (or H₃O⁺)","Cl⁻"], ans:"C", exp:"Acids produce H⁺ ions (protons) or H₃O⁺ (hydronium ions) in water — Arrhenius definition."},
+    {topic:"Acids, Bases & Salts", q:"Common salt (NaCl) solution has a pH of approximately:", opts:["3","7","11","14"], ans:"B", exp:"NaCl is the salt of a strong acid (HCl) and strong base (NaOH), so its solution is neutral — pH ≈ 7."},
+    {topic:"Acids, Bases & Salts", q:"Which of the following is an example of an amphoteric oxide?", opts:["Na₂O","CO₂","Al₂O₃","CaO"], ans:"C", exp:"Al₂O₃ (aluminium oxide) is amphoteric — it reacts with both acids and bases."},
+    {topic:"Acids, Bases & Salts", q:"Washing soda has the formula:", opts:["NaHCO₃","NaCl","Na₂CO₃","NaOH"], ans:"C", exp:"Washing soda = sodium carbonate = Na₂CO₃. Not to be confused with baking soda (NaHCO₃)."},
+    {topic:"Metals & Non-metals", q:"Which metal is used in electrical wiring due to its high conductivity and ductility?", opts:["Iron","Lead","Copper","Zinc"], ans:"C", exp:"Copper is widely used in electrical wiring because of its excellent electrical conductivity and ductility."},
+    {topic:"Metals & Non-metals", q:"Aluminium resists corrosion because:", opts:["It is a non-metal","It forms a protective oxide layer","It is not reactive","It is lighter than water"], ans:"B", exp:"Aluminium forms a thin, adherent aluminium oxide (Al₂O₃) layer that protects it from further corrosion."},
+    {topic:"Metals & Non-metals", q:"Which non-metal is essential for respiration?", opts:["Nitrogen","Carbon dioxide","Oxygen","Hydrogen"], ans:"C", exp:"Oxygen (O₂) is essential for aerobic respiration in living organisms to produce energy."},
+    {topic:"Computer Practice", q:"What does 'www' stand for?", opts:["World Wide Web","World Wide Wire","Wide World Web","World Web Wizard"], ans:"A", exp:"www = World Wide Web — the information system on the internet that enables documents to be linked."},
+    {topic:"Computer Practice", q:"Which MS Office application is best suited for creating a presentation?", opts:["MS Word","MS Excel","MS Access","MS PowerPoint"], ans:"D", exp:"MS PowerPoint is specifically designed for creating slide presentations."},
+    {topic:"Computer Practice", q:"In HTML, the <br> tag is used to:", opts:["Bold text","Create a line break","Create a table","Insert an image"], ans:"B", exp:"<br> is the HTML line break tag — it inserts a single line break without starting a new paragraph."},
+    {topic:"Computer Practice", q:"Which is the correct file extension for an MS Excel file?", opts:[".doc",".ppt",".xlsx",".pdf"], ans:"C", exp:"MS Excel files use the .xlsx extension (or .xls for older versions)."},
+    {topic:"Computer Practice", q:"Secondary storage is also known as:", opts:["RAM","Cache memory","ROM","Auxiliary/Permanent storage"], ans:"D", exp:"Secondary (auxiliary) storage refers to permanent storage devices like hard drives, SSDs, and optical discs."},
+    {topic:"Environmental Sciences", q:"Which of the following contributes most to acid rain?", opts:["CO₂","SO₂ and NOx","CH₄","Argon"], ans:"B", exp:"Acid rain is primarily caused by SO₂ (sulphur dioxide) and NOx (nitrogen oxides) released by burning fossil fuels."},
+    {topic:"Environmental Sciences", q:"Biodiversity refers to:", opts:["Number of countries","Variety of living organisms in an area","Amount of rainfall","Size of ecosystem"], ans:"B", exp:"Biodiversity is the variety of life on Earth, including the diversity of species, genes, and ecosystems."},
+    {topic:"Environmental Sciences", q:"Solar panels convert solar energy into:", opts:["Heat energy","Mechanical energy","Electrical energy","Chemical energy"], ans:"C", exp:"Solar photovoltaic panels convert solar (light) energy directly into electrical energy."},
+    {topic:"Environmental Sciences", q:"Which of the following is NOT a greenhouse gas?", opts:["Carbon dioxide","Methane","Oxygen","Nitrous oxide"], ans:"C", exp:"Oxygen (O₂) is not a greenhouse gas. CO₂, CH₄, and N₂O are major greenhouse gases."},
+    {topic:"Environmental Sciences", q:"The term 'carbon footprint' refers to:", opts:["The size of coal reserves","Total greenhouse gas emissions from an activity or person","Number of trees cut","Fossil fuel price"], ans:"B", exp:"Carbon footprint is the total amount of greenhouse gases (especially CO₂) produced by an individual, activity, or organization."},
+  ],
+  be02: [
+    {topic:"Determinants & Matrices", q:"The order of a matrix with 3 rows and 4 columns is:", opts:["4×3","3×4","3×3","4×4"], ans:"B", exp:"Matrix order is written as rows × columns. A matrix with 3 rows and 4 columns has order 3×4."},
+    {topic:"Determinants & Matrices", q:"For matrices A and B of same order, (A + B)ᵀ = ?", opts:["Aᵀ + Bᵀ","Aᵀ - Bᵀ","Bᵀ + A","A + B"], ans:"A", exp:"The transpose of a sum equals the sum of transposes: (A + B)ᵀ = Aᵀ + Bᵀ."},
+    {topic:"Determinants & Matrices", q:"A diagonal matrix has all non-diagonal elements equal to:", opts:["1","Any value","Zero","Negative numbers"], ans:"C", exp:"In a diagonal matrix, all elements except those on the main diagonal are zero."},
+    {topic:"Determinants & Matrices", q:"If det(A) = 5, then det(2A) for a 2×2 matrix is:", opts:["10","20","25","5"], ans:"B", exp:"det(kA) = kⁿ·det(A) for an n×n matrix. det(2A) = 2²×5 = 4×5 = 20."},
+    {topic:"Trigonometry", q:"cos(A + B) = ?", opts:["cos A cos B + sin A sin B","cos A cos B − sin A sin B","sin A cos B + cos A sin B","sin A sin B − cos A cos B"], ans:"B", exp:"cos(A + B) = cos A cos B − sin A sin B. Standard compound angle formula."},
+    {topic:"Trigonometry", q:"sin 2A = ?", opts:["2 sin A","2 sin A cos A","sin A cos A","2 cos A"], ans:"B", exp:"sin 2A = 2 sin A cos A. Double angle formula for sine."},
+    {topic:"Trigonometry", q:"The range of sin x is:", opts:["[0, 1]","[−1, 1]","(−∞, ∞)","[0, ∞)"], ans:"B", exp:"The sine function has a range of [−1, 1]. Its maximum is 1 and minimum is −1."},
+    {topic:"Vectors", q:"î · î = ? (dot product of unit vector with itself)", opts:["0","î","1","-1"], ans:"C", exp:"î · î = |î||î|cos0° = 1×1×1 = 1. Similarly ĵ·ĵ = k̂·k̂ = 1."},
+    {topic:"Vectors", q:"The angle between vectors A = î and B = ĵ is:", opts:["0°","45°","90°","180°"], ans:"C", exp:"î and ĵ are unit vectors along x and y axes respectively. They are perpendicular → angle = 90°."},
+    {topic:"Coordinate Geometry", q:"Two lines are parallel if:", opts:["Their slopes are equal","Their slopes multiply to -1","They have the same y-intercept","They both pass through origin"], ans:"A", exp:"Two lines are parallel if and only if they have the same slope (m₁ = m₂) and different y-intercepts."},
+    {topic:"Coordinate Geometry", q:"The centre and radius of circle x² + y² − 4x + 6y − 3 = 0 are:", opts:["(2,−3), r=4","(−2,3), r=4","(4,6), r=3","(2,−3), r=16"], ans:"A", exp:"Complete the square: (x−2)²+(y+3)² = 4+9+3 = 16 = 4². Centre (2,−3), radius = 4."},
+    {topic:"Functions & Limits", q:"lim(x→1) (x³ − 1)/(x − 1) = ?", opts:["0","1","2","3"], ans:"D", exp:"Factor: (x³−1)/(x−1) = (x²+x+1). At x=1: 1+1+1 = 3."},
+    {topic:"Functions & Limits", q:"A function is even if:", opts:["f(−x) = −f(x)","f(−x) = f(x)","f(0) = 0","f(x) = f(x+1)"], ans:"B", exp:"An even function satisfies f(−x) = f(x). Example: f(x) = x². Graph is symmetric about y-axis."},
+    {topic:"Functions & Limits", q:"lim(x→0) (aˣ − 1)/x = ?", opts:["1","a","ln a","log a"], ans:"C", exp:"Standard limit: lim(x→0) (aˣ − 1)/x = ln a."},
+    {topic:"Differentiation", q:"d/dx (x³ + 5x² − 2x + 7) at x = 1:", opts:["3","6","8","11"], ans:"C", exp:"dy/dx = 3x² + 10x − 2. At x=1: 3 + 10 − 2 = 11. Wait — 3(1)² + 10(1) − 2 = 3+10-2=11. Correct ans is D."},
+    {topic:"Differentiation", q:"If y = √x, then dy/dx = ?", opts:["√x","1/(2√x)","2√x","1/x"], ans:"B", exp:"y = x^(1/2). dy/dx = (1/2)x^(−1/2) = 1/(2√x)."},
+    {topic:"Differentiation", q:"Logarithmic differentiation is used for functions of the form:", opts:["y = sin x","y = xⁿ","y = xˣ (variable exponent)","y = constant"], ans:"C", exp:"Logarithmic differentiation is especially useful for functions like y = xˣ or y = f(x)^g(x) where both base and exponent are variables."},
+    {topic:"Differentiation", q:"d/dx (sec x) = ?", opts:["sec x tan x","−sec x tan x","cosec x","sec²x"], ans:"A", exp:"d/dx(sec x) = sec x tan x."},
+    {topic:"Integration", q:"∫ sec²x dx = ?", opts:["sec x + C","tan x + C","cosec x + C","cot x + C"], ans:"B", exp:"∫sec²x dx = tan x + C. Standard integral formula."},
+    {topic:"Integration", q:"∫₀^π sin x dx = ?", opts:["0","1","2","π"], ans:"C", exp:"∫₀^π sin x dx = [−cos x]₀^π = −cos π − (−cos 0) = 1 + 1 = 2."},
+    {topic:"Integration", q:"The method used to integrate ∫ x·eˣ dx is:", opts:["Substitution","Integration by parts","Partial fractions","Direct formula"], ans:"B", exp:"∫x·eˣ dx uses integration by parts: u=x, dv=eˣ dx → ∫x·eˣ dx = x·eˣ − eˣ + C."},
+    {topic:"Integration", q:"∫ (2x + 3) dx = ?", opts:["x² + C","x² + 3x + C","2 + C","2x² + 3x + C"], ans:"B", exp:"∫(2x+3)dx = 2x²/2 + 3x + C = x² + 3x + C."},
+    {topic:"Logarithm", q:"ln(eˣ) = ?", opts:["e","x","1","eˣ"], ans:"B", exp:"ln(eˣ) = x·ln(e) = x×1 = x. Natural log and exponential are inverse functions."},
+    {topic:"Logarithm", q:"log₂(8) = ?", opts:["2","3","4","8"], ans:"B", exp:"log₂(8) = log₂(2³) = 3."},
+    {topic:"Statistics", q:"For data {2, 4, 4, 4, 5, 5, 7, 9}, the mean is:", opts:["4","5","5.5","4.5"], ans:"B", exp:"Mean = (2+4+4+4+5+5+7+9)/8 = 40/8 = 5."},
+    {topic:"Comprehension", q:"[Passage] 'Entrepreneurship drives economic growth by creating jobs, fostering innovation, and generating wealth. Entrepreneurs identify market gaps and provide creative solutions. Despite the risks involved, entrepreneurship is considered a cornerstone of modern economies.'\n\nAccording to the passage, entrepreneurship contributes to economic growth by:", opts:["Reducing competition","Increasing government control","Creating jobs and fostering innovation","Eliminating risks"], ans:"C", exp:"The passage states entrepreneurship drives growth 'by creating jobs, fostering innovation, and generating wealth'."},
+    {topic:"Comprehension", q:"[Same Passage] Entrepreneurs are people who:", opts:["Only invest in stocks","Identify market gaps and provide solutions","Work for large corporations only","Avoid all risks"], ans:"B", exp:"The passage defines entrepreneurs as those who 'identify market gaps and provide creative solutions'."},
+    {topic:"Comprehension", q:"[Same Passage] The word 'cornerstone' means:", opts:["An obstacle","A foundation or essential part","A type of stone","A minor element"], ans:"B", exp:"'Cornerstone' means a fundamental or essential element. Here it means entrepreneurship is fundamental to modern economies."},
+    {topic:"Comprehension", q:"[Same Passage] The passage acknowledges that entrepreneurship:", opts:["Is risk-free","Has no social impact","Involves risks","Is only for large companies"], ans:"C", exp:"The passage explicitly mentions 'despite the risks involved' — acknowledging that entrepreneurship carries risks."},
+    {topic:"Comprehension", q:"[Same Passage] The main idea of the passage is:", opts:["Entrepreneurship is too risky","Entrepreneurs only care about profit","Entrepreneurship is vital for economic growth","Only governments can drive growth"], ans:"C", exp:"The central theme is that entrepreneurship drives economic growth through job creation, innovation, and wealth generation."},
+    {topic:"Theory of Communication", q:"Grapevine communication refers to:", opts:["Official written communication","Formal meetings","Informal communication through unofficial channels","Communication with suppliers"], ans:"C", exp:"Grapevine is the informal communication network in an organization — unofficial, unstructured, and fast-spreading."},
+    {topic:"Theory of Communication", q:"Which of the following is NOT a function of communication?", opts:["Information sharing","Motivation","Decision making","Production of goods"], ans:"D", exp:"Production of goods is not a function of communication. Information sharing, motivation, and decision-making are key communication functions."},
+    {topic:"Theory of Communication", q:"Active listening involves:", opts:["Simply hearing the words","Fully concentrating, understanding, and responding","Waiting for your turn to speak","Interrupting to clarify immediately"], ans:"B", exp:"Active listening means fully concentrating on, understanding, and responding thoughtfully to what the speaker says."},
+    {topic:"Theory of Communication", q:"The medium of communication is:", opts:["The sender","The channel used to transmit the message","The feedback","The receiver"], ans:"B", exp:"The medium (channel) is the means through which the message is transmitted (e.g., email, phone, face-to-face)."},
+    {topic:"Theory of Communication", q:"Proxemics in communication refers to:", opts:["Voice tone","Facial expression","Use of personal space and distance","Written symbols"], ans:"C", exp:"Proxemics is the study of how personal space and distance affect communication and relationships."},
+    {topic:"Techniques of Writing", q:"Which of the following is a common abbreviation used in business letters?", opts:["LOL","BRB","E&OE (Errors and Omissions Excepted)","ROFL"], ans:"C", exp:"E&OE (Errors and Omissions Excepted) is a standard business abbreviation used to limit liability for mistakes in documents."},
+    {topic:"Techniques of Writing", q:"The inside address in a business letter refers to:", opts:["The sender's address","The recipient's address","The company's website","The date"], ans:"B", exp:"The inside address is the recipient's name, designation, and address, placed below the date on the left side."},
+    {topic:"Techniques of Writing", q:"A letter of complaint should NOT:", opts:["State the problem clearly","Include dates and facts","Use threatening or abusive language","Request specific action"], ans:"C", exp:"A complaint letter should be professional and polite. Threatening or abusive language is inappropriate and counterproductive."},
+    {topic:"Techniques of Writing", q:"'Enc.' or 'Encl.' at the end of a letter indicates:", opts:["The letter has ended","There is an enclosure/attachment","The writer's name","Carbon copy"], ans:"B", exp:"'Enc.' or 'Encl.' (Enclosure) means additional documents have been attached or enclosed with the letter."},
+    {topic:"Techniques of Writing", q:"'cc' in an email means:", opts:["Carbon Copy (courtesy copy)","Close Communication","Central Copy","Company Contact"], ans:"A", exp:"'cc' stands for Carbon Copy (or Courtesy Copy) — sending a copy of the email to additional recipients for their information."},
+    {topic:"Grammar", q:"Choose the correct sentence:", opts:["Less people came today","Fewer people came today","Lesser people came today","Few people was coming today"], ans:"B", exp:"'Fewer' is used for countable nouns (people, items). 'Less' is for uncountable nouns (water, time)."},
+    {topic:"Grammar", q:"The sentence 'Alas! I have failed the exam' contains what type of interjection?", opts:["Joy","Surprise","Grief/sorrow","Excitement"], ans:"C", exp:"'Alas!' expresses grief, regret, or sorrow. It is an interjection of distress."},
+    {topic:"Grammar", q:"Choose the correct form: 'He insisted on ___ early.'", opts:["leave","to leave","leaving","left"], ans:"C", exp:"After a preposition ('on'), the gerund (verb+ing) is used: 'insisted on leaving'."},
+    {topic:"Grammar", q:"Which sentence is in the simple present tense?", opts:["She was singing","She will sing","She sings beautifully","She has sung"], ans:"C", exp:"'She sings' is simple present tense — used for habitual actions or general truths."},
+    {topic:"Grammar", q:"'The cat sat on the mat.' The word 'on' is a:", opts:["Conjunction","Preposition","Adverb","Adjective"], ans:"B", exp:"'On' shows the relationship between 'sat' and 'mat' — it is a preposition of position."},
+    {topic:"Correction", q:"Choose the correct spelling:", opts:["Definately","Definitly","Definitely","Definitley"], ans:"C", exp:"'Definitely' — not 'definately'. Common misspelling due to pronunciation."},
+    {topic:"Correction", q:"Choose the grammatically correct sentence:", opts:["I am good in English","I am well in English","I am good at English","I am good on English"], ans:"C", exp:"'Good at' is the correct preposition for describing skills. 'I am good at English.'"},
+    {topic:"Correction", q:"Choose the correct spelling:", opts:["Pyscology","Psycholgy","Psychology","Psycology"], ans:"C", exp:"'Psychology' — note the silent 'p' at the beginning and the 'ch' combination."},
+    {topic:"Correction", q:"Choose the grammatically correct sentence:", opts:["He don't know the answer","He doesn't knows the answer","He doesn't know the answer","He do not knows the answer"], ans:"C", exp:"Third-person singular with 'do not': 'He does not know' = 'He doesn't know the answer.'"},
+    {topic:"Correction", q:"Choose the correct spelling:", opts:["Enviroment","Environment","Enviornment","Enviorment"], ans:"B", exp:"'Environment' — a commonly misspelled word. Note the 'n' before the 'm': environ-ment."},
+  ]
+}
+
+];
+
+// ============================================================
+// APP STATE
+// ============================================================
+let currentTest = null;
+let currentTestIndex = -1;
+let userAnswers = {};
+let timerInterval = null;
+let timeLeft = 9000; // 150 minutes
+let submitted = false;
+
+// ============================================================
+// LANDING PAGE
+// ============================================================
+function renderLanding() {
+  const grid = document.getElementById('tests-grid');
+  grid.innerHTML = TESTS.map((t, i) => `
+    <div class="test-card" onclick="startTest(${i})">
+      <div class="test-num">Test ${i+1}</div>
+      <div class="test-title">${t.title}</div>
+      <div class="test-meta">100 Questions · 200 Marks · 150 Min</div>
+      <div class="tags">
+        <span class="tag be01">BE-01 Science</span>
+        <span class="tag be02">BE-02 Aptitude</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ============================================================
+// START TEST
+// ============================================================
+function startTest(idx) {
+  currentTestIndex = idx;
+  currentTest = TESTS[idx];
+  userAnswers = {};
+  submitted = false;
+  timeLeft = 9000;
+
+  document.getElementById('landing').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'none';
+  document.getElementById('exam-screen').style.display = 'block';
+  document.getElementById('exam-title-bar').textContent = currentTest.title;
+
+  renderExam();
+  startTimer();
+  window.scrollTo(0, 0);
+}
+
+// ============================================================
+// RENDER EXAM
+// ============================================================
+function renderExam() {
+  const body = document.getElementById('exam-body');
+  let html = '';
+  let qNum = 0;
+
+  // BE-01 Section
+  html += `<div class="section-header"><span class="section-badge be01">BE-01</span><span class="section-title">Basics of Science & Engineering</span></div>`;
+
+  let currentTopic = '';
+  currentTest.be01.forEach((q, i) => {
+    qNum++;
+    const qId = `be01_${i}`;
+    html += renderQuestion(q, qNum, qId);
+  });
+
+  // BE-02 Section
+  html += `<div class="section-header" style="margin-top:48px"><span class="section-badge be02">BE-02</span><span class="section-title">Aptitude Test — Mathematics & Soft Skills</span></div>`;
+
+  // Group BE-02 by passage for comprehension
+  let passageRendered = false;
+  currentTest.be02.forEach((q, i) => {
+    qNum++;
+    const qId = `be02_${i}`;
+    if (q.topic === 'Comprehension' && !passageRendered) {
+      // Extract passage from first comprehension question
+      const passageMatch = q.q.match(/\[Passage\]([\s\S]*?)\n\n/);
+      if (passageMatch) {
+        html += `<div class="passage-box"><div class="passage-title">📄 Read the Passage</div>${passageMatch[1].trim()}</div>`;
+        passageRendered = true;
+      }
+    }
+    html += renderQuestion(q, qNum, qId);
+  });
+
+  body.innerHTML = html;
+}
+
+function renderQuestion(q, num, qId) {
+  const opts = ['A','B','C','D'];
+  // For comprehension, strip the [Passage] prefix
+  let qText = q.q.replace(/\[Passage\][\s\S]*?\n\n/, '').replace(/\[Same Passage\] /, '');
+
+  return `
+    <div class="q-card" id="card_${qId}">
+      <div class="q-number">Q${num} · ${q.topic}</div>
+      <div class="q-text">${qText}</div>
+      <div class="options" id="opts_${qId}">
+        ${q.opts.map((opt, j) => `
+          <button class="option-btn" id="opt_${qId}_${j}" onclick="selectAnswer('${qId}', ${j}, '${qId}')">
+            <span class="opt-label">${opts[j]}</span>
+            <span>${opt}</span>
+          </button>
+        `).join('')}
+      </div>
+      <div class="explanation-box" id="exp_${qId}">${q.exp}</div>
+    </div>
+  `;
+}
+
+function selectAnswer(qId, optIdx, cardId) {
+  if (submitted) return;
+  userAnswers[qId] = optIdx;
+
+  // Update UI
+  const opts = document.querySelectorAll(`#opts_${qId} .option-btn`);
+  opts.forEach((b, i) => {
+    b.classList.remove('selected');
+    if (i === optIdx) b.classList.add('selected');
+  });
+
+  document.getElementById(`card_${qId}`).classList.add('answered');
+  updateProgress();
+}
+
+// ============================================================
+// TIMER
+// ============================================================
+function startTimer() {
+  if (timerInterval) clearInterval(timerInterval);
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    updateTimerDisplay();
+    if (timeLeft <= 0) {
+      clearInterval(timerInterval);
+      submitTest();
+    }
+  }, 1000);
+}
+
+function updateTimerDisplay() {
+  const h = Math.floor(timeLeft / 3600);
+  const m = Math.floor((timeLeft % 3600) / 60);
+  const s = timeLeft % 60;
+  const str = `${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  const box = document.getElementById('timer-box');
+  box.textContent = `⏱ ${str}`;
+  box.className = 'timer-box';
+  if (timeLeft < 600) box.classList.add('danger');
+  else if (timeLeft < 1800) box.classList.add('warning');
+}
+
+// ============================================================
+// PROGRESS
+// ============================================================
+function updateProgress() {
+  const answered = Object.keys(userAnswers).length;
+  document.getElementById('answered-count').textContent = answered;
+  document.getElementById('progress-fill').style.width = `${(answered/100)*100}%`;
+}
+
+// ============================================================
+// SUBMIT
+// ============================================================
+function confirmSubmit() {
+  const answered = Object.keys(userAnswers).length;
+  const unanswered = 100 - answered;
+  document.getElementById('dialog-msg').textContent = `You have answered ${answered} questions. ${unanswered} questions are unanswered. Submit now?`;
+  document.getElementById('submit-overlay').classList.add('active');
+}
+
+function closeDialog() {
+  document.getElementById('submit-overlay').classList.remove('active');
+}
+
+function submitTest() {
+  closeDialog();
+  submitted = true;
+  clearInterval(timerInterval);
+
+  // Calculate scores
+  const allQ = [...currentTest.be01.map((q,i) => ({...q, id:`be01_${i}`})),
+                 ...currentTest.be02.map((q,i) => ({...q, id:`be02_${i}`}))];
+
+  let correct = 0, wrong = 0, unattempted = 0;
+  const opts = ['A','B','C','D'];
+
+  allQ.forEach(q => {
+    const userAns = userAnswers[q.id];
+    if (userAns === undefined) {
+      unattempted++;
+    } else if (opts[userAns] === q.ans) {
+      correct++;
+    } else {
+      wrong++;
+    }
+  });
+
+  const score = correct * 2; // 2 marks each
+
+  showResults(correct, wrong, unattempted, score, allQ);
+}
+
+// ============================================================
+// RESULTS
+// ============================================================
+function showResults(correct, wrong, unattempted, score, allQ) {
+  document.getElementById('exam-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'block';
+  document.getElementById('review-section').innerHTML = '';
+  window.scrollTo(0, 0);
+
+  // Score circle color
+  const pct = (score / 200) * 100;
+  const circle = document.getElementById('score-circle');
+  if (pct >= 75) circle.style.borderColor = 'var(--green)';
+  else if (pct >= 50) circle.style.borderColor = 'var(--accent2)';
+  else circle.style.borderColor = 'var(--red)';
+
+  document.getElementById('score-number').textContent = score;
+
+  let label, sub;
+  if (pct >= 80) { label = '🏆 Excellent!'; sub = 'Outstanding performance! You are well-prepared for DDCET.'; }
+  else if (pct >= 65) { label = '✅ Good Job!'; sub = 'Solid performance. A little more revision and you\'re ready!'; }
+  else if (pct >= 50) { label = '📚 Keep Going!'; sub = 'Average score. Focus on weaker topics to improve.'; }
+  else { label = '💪 Keep Practising!'; sub = 'Review the syllabus and retry. Practice makes perfect!'; }
+
+  document.getElementById('result-label').textContent = label;
+  document.getElementById('result-sub').textContent = sub;
+
+  document.getElementById('stats-row').innerHTML = `
+    <div class="stat-box"><div class="stat-value" style="color:var(--green)">${correct}</div><div class="stat-label">Correct (×2)</div></div>
+    <div class="stat-box"><div class="stat-value" style="color:var(--red)">${wrong}</div><div class="stat-label">Wrong</div></div>
+    <div class="stat-box"><div class="stat-value" style="color:var(--muted)">${unattempted}</div><div class="stat-label">Unattempted</div></div>
+    <div class="stat-box"><div class="stat-value" style="color:var(--accent)">${score}</div><div class="stat-label">Total Score /200</div></div>
+  `;
+
+  // Store for review
+  window._allQ = allQ;
+  window._userAnswers = userAnswers;
+}
+
+function reviewAnswers() {
+  const allQ = window._allQ;
+  const opts = ['A','B','C','D'];
+  const reviewDiv = document.getElementById('review-section');
+
+  // Group by topic
+  const byTopic = {};
+  allQ.forEach((q, idx) => {
+    if (!byTopic[q.topic]) byTopic[q.topic] = [];
+    byTopic[q.topic].push({...q, globalIdx: idx + 1});
+  });
+
+  let html = '<h2 style="font-family:Syne;font-size:20px;font-weight:800;margin-bottom:8px">Answer Review</h2>';
+
+  Object.entries(byTopic).forEach(([topic, qs]) => {
+    html += `<div class="review-topic-head">${topic}</div>`;
+    qs.forEach(q => {
+      const userAns = userAnswers[q.id];
+      const isCorrect = userAns !== undefined && opts[userAns] === q.ans;
+      const isWrong = userAns !== undefined && opts[userAns] !== q.ans;
+      const cardClass = isCorrect ? 'correct' : isWrong ? 'incorrect' : '';
+      let qText = q.q.replace(/\[Passage\][\s\S]*?\n\n/, '').replace(/\[Same Passage\] /, '');
+
+      html += `
+        <div class="q-card ${cardClass}">
+          <div class="q-number">Q${q.globalIdx} · ${isCorrect ? '✅ Correct' : isWrong ? '❌ Wrong' : '⬜ Not Attempted'}</div>
+          <div class="q-text">${qText}</div>
+          <div class="options">
+            ${q.opts.map((opt, j) => {
+              let cls = 'option-btn';
+              if (opts[j] === q.ans) cls += ' correct-ans';
+              else if (userAns === j && opts[j] !== q.ans) cls += ' wrong-ans';
+              return `<button class="${cls}" disabled><span class="opt-label">${opts[j]}</span><span>${opt}</span></button>`;
+            }).join('')}
+          </div>
+          <div class="explanation-box">${q.exp}</div>
+        </div>
+      `;
+    });
+  });
+
+  reviewDiv.innerHTML = html;
+  reviewDiv.scrollIntoView({behavior:'smooth'});
+}
+
+function backToLanding() {
+  clearInterval(timerInterval);
+  document.getElementById('exam-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'none';
+  document.getElementById('landing').style.display = 'flex';
+  window.scrollTo(0, 0);
+}
+
+// Fix: Q14 in Test 4 answer correction
+TESTS[3].be02[14].ans = "D";
+
+// Init
+renderLanding();
+</script>
+</body>
+</html>
