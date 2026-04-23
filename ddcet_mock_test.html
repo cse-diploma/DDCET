@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DDCET Mock Test 2024-25 | GTU</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #161a23;
+    --surface2: #1e2330;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.12);
+    --text: #e8eaf0;
+    --muted: #7a8299;
+    --accent: #4f8ef7;
+    --accent2: #7c5af7;
+    --green: #3ecf82;
+    --red: #f75a5a;
+    --amber: #f79d3e;
+    --radius: 12px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    top: -50%;
+    left: -30%;
+    width: 80%;
+    height: 80%;
+    background: radial-gradient(ellipse, rgba(79,142,247,0.06) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  body::after {
+    content: '';
+    position: fixed;
+    bottom: -30%;
+    right: -20%;
+    width: 60%;
+    height: 60%;
+    background: radial-gradient(ellipse, rgba(124,90,247,0.05) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .page { position: relative; z-index: 1; max-width: 820px; margin: 0 auto; padding: 0 20px 60px; }
+
+  /* SCREENS */
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  /* ===== START SCREEN ===== */
+  #start-screen { padding: 60px 0; }
+  .logo-bar {
+    display: flex; align-items: center; gap: 14px; margin-bottom: 48px;
+  }
+  .logo-icon {
+    width: 44px; height: 44px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; font-weight: 600; color: white;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .logo-text { font-size: 13px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
+  .hero-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(32px, 6vw, 52px);
+    line-height: 1.1;
+    margin-bottom: 16px;
+    color: var(--text);
+  }
+  .hero-title span { color: var(--accent); font-style: italic; }
+  .hero-sub { font-size: 15px; color: var(--muted); max-width: 500px; margin-bottom: 48px; line-height: 1.7; }
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+    margin-bottom: 48px;
+  }
+  .info-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    transition: border-color 0.2s;
+  }
+  .info-card:hover { border-color: var(--border2); }
+  .info-card .val { font-size: 28px; font-weight: 600; color: var(--text); font-family: 'JetBrains Mono', monospace; }
+  .info-card .lbl { font-size: 12px; color: var(--muted); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.08em; }
+  .marking-note {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    margin-bottom: 36px;
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.8;
+  }
+  .marking-note b { color: var(--text); }
+  .sections-preview { margin-bottom: 48px; }
+  .sections-preview h3 { font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); margin-bottom: 14px; }
+  .section-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+  }
+  .section-row:last-child { border-bottom: none; }
+  .sec-badge {
+    font-size: 11px; font-family: 'JetBrains Mono', monospace;
+    padding: 3px 8px; border-radius: 6px;
+    background: rgba(79,142,247,0.12);
+    color: var(--accent);
+    border: 1px solid rgba(79,142,247,0.2);
+    white-space: nowrap;
+  }
+  .sec-name { flex: 1; color: var(--text); }
+  .sec-count { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--muted); }
+  .start-btn {
+    width: 100%;
+    padding: 16px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border: none;
+    border-radius: var(--radius);
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.15s;
+    letter-spacing: 0.02em;
+  }
+  .start-btn:hover { opacity: 0.92; transform: translateY(-1px); }
+  .start-btn:active { transform: translateY(0); }
+
+  /* ===== TEST SCREEN ===== */
+  #test-screen { padding-top: 0; }
+  .top-bar {
+    position: sticky;
+    top: 0;
+    background: rgba(13,15,20,0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 0;
+    z-index: 100;
+    margin: 0 -20px;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  .top-bar-inner { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .paper-pill {
+    font-size: 11px; font-family: 'JetBrains Mono', monospace;
+    padding: 4px 10px; border-radius: 20px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--muted);
+  }
+  .paper-pill.be01 { background: rgba(79,142,247,0.1); color: var(--accent); border-color: rgba(79,142,247,0.2); }
+  .paper-pill.be02 { background: rgba(124,90,247,0.1); color: var(--accent2); border-color: rgba(124,90,247,0.2); }
+  .q-progress-text { font-size: 13px; color: var(--muted); font-family: 'JetBrains Mono', monospace; }
+  .score-pill {
+    margin-left: auto;
+    font-size: 13px; font-family: 'JetBrains Mono', monospace;
+    padding: 4px 12px; border-radius: 20px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+  }
+  .timer-pill {
+    font-size: 14px; font-family: 'JetBrains Mono', monospace;
+    padding: 5px 14px; border-radius: 20px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    min-width: 88px; text-align: center;
+    transition: background 0.3s, color 0.3s, border-color 0.3s;
+  }
+  .timer-pill.warn { background: rgba(247,90,90,0.1); color: var(--red); border-color: rgba(247,90,90,0.3); }
+  .progress-track { width: 100%; height: 2px; background: var(--surface2); margin-top: 12px; border-radius: 1px; overflow: hidden; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 1px; transition: width 0.4s ease; }
+
+  .test-body { padding-top: 24px; display: grid; grid-template-columns: 1fr 220px; gap: 24px; align-items: start; }
+  @media (max-width: 640px) { .test-body { grid-template-columns: 1fr; } .palette-panel { order: -1; } }
+
+  .q-area {}
+  .topic-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 8px; }
+  .q-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+    margin-bottom: 16px;
+    animation: fadeSlide 0.2s ease;
+  }
+  @keyframes fadeSlide { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+  .q-number { font-size: 11px; font-family: 'JetBrains Mono', monospace; color: var(--muted); margin-bottom: 14px; }
+  .q-text { font-size: 17px; color: var(--text); line-height: 1.65; font-weight: 400; }
+
+  .options-grid { display: flex; flex-direction: column; gap: 10px; }
+  .opt-btn {
+    display: flex; align-items: flex-start; gap: 14px;
+    padding: 14px 18px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: left;
+    width: 100%;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.5;
+  }
+  .opt-btn:hover { background: var(--surface2); border-color: var(--border2); transform: translateX(2px); }
+  .opt-btn.selected { background: rgba(79,142,247,0.08); border-color: rgba(79,142,247,0.4); color: #a5c5fc; }
+  .opt-btn.correct { background: rgba(62,207,130,0.08); border-color: rgba(62,207,130,0.4); color: #7de6b0; }
+  .opt-btn.wrong { background: rgba(247,90,90,0.08); border-color: rgba(247,90,90,0.3); color: #f79898; }
+  .opt-btn.correct-hl { background: rgba(62,207,130,0.12); border-color: var(--green); color: #7de6b0; }
+  .opt-key {
+    flex-shrink: 0;
+    width: 24px; height: 24px;
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-family: 'JetBrains Mono', monospace;
+    font-weight: 500;
+    color: var(--muted);
+    transition: background 0.15s, color 0.15s;
+  }
+  .opt-btn.selected .opt-key { background: rgba(79,142,247,0.2); color: var(--accent); border-color: rgba(79,142,247,0.4); }
+  .opt-btn.correct .opt-key, .opt-btn.correct-hl .opt-key { background: rgba(62,207,130,0.2); color: var(--green); border-color: rgba(62,207,130,0.4); }
+  .opt-btn.wrong .opt-key { background: rgba(247,90,90,0.15); color: var(--red); border-color: rgba(247,90,90,0.3); }
+  .opt-text { flex: 1; }
+
+  .nav-row { display: flex; gap: 10px; align-items: center; }
+  .nav-btn {
+    padding: 10px 20px;
+    border-radius: 9px;
+    border: 1px solid var(--border2);
+    background: var(--surface);
+    color: var(--text);
+    font-size: 13px; font-family: 'DM Sans', sans-serif; font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .nav-btn:hover { background: var(--surface2); border-color: rgba(255,255,255,0.2); }
+  .nav-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+  .nav-btn.primary { background: linear-gradient(135deg, var(--accent), var(--accent2)); border-color: transparent; color: white; }
+  .nav-btn.primary:hover { opacity: 0.9; }
+  .nav-btn.danger { border-color: rgba(247,90,90,0.3); color: var(--red); }
+  .nav-btn.danger:hover { background: rgba(247,90,90,0.08); }
+  .spacer { flex: 1; }
+
+  /* PALETTE */
+  .palette-panel {
+    position: sticky;
+    top: 80px;
+  }
+  .palette-header { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 12px; }
+  .palette-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+    margin-bottom: 16px;
+  }
+  .p-dot {
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 7px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    font-size: 10px; font-family: 'JetBrains Mono', monospace;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .p-dot:hover { border-color: var(--border2); color: var(--text); }
+  .p-dot.answered { background: rgba(79,142,247,0.12); border-color: rgba(79,142,247,0.3); color: var(--accent); }
+  .p-dot.active { border: 2px solid var(--accent); color: var(--text); }
+  .p-dot.current-section { border-color: rgba(124,90,247,0.4); }
+  .palette-legend { font-size: 11px; color: var(--muted); }
+  .legend-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+  .submit-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-top: 16px;
+  }
+  .submit-panel .answered-count { font-size: 22px; font-weight: 600; font-family: 'JetBrains Mono', monospace; color: var(--text); }
+  .submit-panel .answered-label { font-size: 11px; color: var(--muted); margin-bottom: 14px; text-transform: uppercase; letter-spacing: 0.08em; }
+  .submit-full-btn {
+    width: 100%;
+    padding: 10px;
+    background: transparent;
+    border: 1px solid rgba(247,90,90,0.3);
+    border-radius: 8px;
+    color: var(--red);
+    font-size: 13px; font-family: 'DM Sans', sans-serif; font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .submit-full-btn:hover { background: rgba(247,90,90,0.07); }
+
+  /* ===== RESULT SCREEN ===== */
+  #result-screen { padding: 60px 0; }
+  .result-header {
+    text-align: center; margin-bottom: 48px;
+  }
+  .result-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.15em; color: var(--muted); margin-bottom: 16px; }
+  .score-display {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(60px, 12vw, 96px);
+    line-height: 1;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+  .score-outof { font-size: 16px; color: var(--muted); margin-bottom: 24px; }
+  .verdict {
+    display: inline-block;
+    padding: 8px 20px;
+    border-radius: 30px;
+    font-size: 14px; font-weight: 500;
+  }
+  .verdict.excellent { background: rgba(62,207,130,0.1); color: var(--green); border: 1px solid rgba(62,207,130,0.3); }
+  .verdict.good { background: rgba(79,142,247,0.1); color: var(--accent); border: 1px solid rgba(79,142,247,0.3); }
+  .verdict.average { background: rgba(247,157,62,0.1); color: var(--amber); border: 1px solid rgba(247,157,62,0.3); }
+  .verdict.poor { background: rgba(247,90,90,0.1); color: var(--red); border: 1px solid rgba(247,90,90,0.3); }
+  .stats-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin-bottom: 32px; }
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    text-align: center;
+  }
+  .stat-val { font-size: 32px; font-weight: 600; font-family: 'JetBrains Mono', monospace; }
+  .stat-val.g { color: var(--green); }
+  .stat-val.r { color: var(--red); }
+  .stat-val.a { color: var(--amber); }
+  .stat-lbl { font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .section-breakdown {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 28px;
+  }
+  .breakdown-title { font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 18px; }
+  .topic-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+  .topic-row:last-child { border-bottom: none; }
+  .topic-name { font-size: 13px; color: var(--text); flex: 1; }
+  .topic-bar-wrap { width: 100px; height: 4px; background: var(--surface2); border-radius: 2px; overflow: hidden; }
+  .topic-bar-fill { height: 100%; border-radius: 2px; }
+  .topic-score { font-size: 12px; font-family: 'JetBrains Mono', monospace; color: var(--muted); min-width: 40px; text-align: right; }
+  .result-actions { display: flex; gap: 12px; }
+  .result-btn {
+    flex: 1; padding: 14px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border2);
+    background: var(--surface);
+    color: var(--text);
+    font-size: 14px; font-family: 'DM Sans', sans-serif; font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .result-btn:hover { background: var(--surface2); }
+  .result-btn.primary { background: linear-gradient(135deg, var(--accent), var(--accent2)); border-color: transparent; color: white; }
+  .result-btn.primary:hover { opacity: 0.9; }
+
+  /* ===== REVIEW SCREEN ===== */
+  #review-screen { padding-top: 24px; }
+  .review-top { display: flex; align-items: center; gap: 14px; padding: 20px 0 24px; border-bottom: 1px solid var(--border); margin-bottom: 24px; flex-wrap: wrap; }
+  .review-title { font-family: 'DM Serif Display', serif; font-size: 24px; color: var(--text); flex: 1; }
+  .review-q {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px;
+    margin-bottom: 14px;
+    transition: border-color 0.2s;
+  }
+  .review-q.r-correct { border-color: rgba(62,207,130,0.25); }
+  .review-q.r-wrong { border-color: rgba(247,90,90,0.2); }
+  .review-q.r-skip { border-color: rgba(247,157,62,0.2); }
+  .rq-meta { display: flex; gap: 10px; align-items: center; margin-bottom: 10px; }
+  .rq-num { font-size: 11px; font-family: 'JetBrains Mono', monospace; color: var(--muted); }
+  .rq-topic { font-size: 11px; padding: 2px 8px; border-radius: 4px; background: var(--surface2); color: var(--muted); }
+  .rq-status { font-size: 11px; padding: 2px 8px; border-radius: 4px; margin-left: auto; }
+  .rq-status.correct { background: rgba(62,207,130,0.1); color: var(--green); }
+  .rq-status.wrong { background: rgba(247,90,90,0.1); color: var(--red); }
+  .rq-status.skip { background: rgba(247,157,62,0.1); color: var(--amber); }
+  .rq-text { font-size: 15px; color: var(--text); margin-bottom: 14px; line-height: 1.6; }
+  .rq-opts { display: flex; flex-direction: column; gap: 7px; }
+  .rq-opt { padding: 10px 14px; border-radius: 8px; border: 1px solid var(--border); font-size: 13px; color: var(--muted); display: flex; gap: 10px; }
+  .rq-opt.was-selected { border-color: rgba(247,90,90,0.3); background: rgba(247,90,90,0.05); color: var(--red); }
+  .rq-opt.is-correct { border-color: rgba(62,207,130,0.35); background: rgba(62,207,130,0.07); color: var(--green); }
+
+  /* MODAL */
+  .modal-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(4px);
+    z-index: 1000;
+    align-items: center; justify-content: center;
+  }
+  .modal-overlay.show { display: flex; }
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 16px;
+    padding: 32px;
+    max-width: 380px;
+    width: 90%;
+    animation: fadeSlide 0.2s ease;
+  }
+  .modal h3 { font-size: 18px; font-weight: 500; margin-bottom: 10px; }
+  .modal p { font-size: 14px; color: var(--muted); margin-bottom: 24px; line-height: 1.6; }
+  .modal-btns { display: flex; gap: 10px; }
+  .modal-btn { flex: 1; padding: 11px; border-radius: 9px; border: 1px solid var(--border2); background: var(--surface2); color: var(--text); font-size: 13px; font-family: 'DM Sans', sans-serif; cursor: pointer; transition: all 0.15s; }
+  .modal-btn:hover { background: var(--surface); }
+  .modal-btn.confirm { background: linear-gradient(135deg, var(--red), #c44); border-color: transparent; color: white; }
+  .modal-btn.confirm:hover { opacity: 0.9; }
+
+  /* TIME UP MODAL */
+  .timeup-modal { text-align: center; }
+  .timeup-modal .big-icon { font-size: 40px; margin-bottom: 16px; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- START SCREEN -->
+  <div id="start-screen" class="screen active">
+    <div class="logo-bar">
+      <div class="logo-icon">G</div>
+      <div>
+        <div style="font-size: 14px; font-weight: 500; color: var(--text);">Gujarat Technological University</div>
+        <div class="logo-text">Official Mock Test Portal</div>
+      </div>
+    </div>
+    <h1 class="hero-title">DDCET <span>Mock Test</span><br>2024–25</h1>
+    <p class="hero-sub">Diploma to Degree Common Entrance Test — Full syllabus practice test with real exam conditions, timer, and instant evaluation.</p>
+    <div class="info-grid">
+      <div class="info-card"><div class="val">100</div><div class="lbl">Questions</div></div>
+      <div class="info-card"><div class="val">200</div><div class="lbl">Max Marks</div></div>
+      <div class="info-card"><div class="val">150</div><div class="lbl">Minutes</div></div>
+      <div class="info-card"><div class="val">+2 / −½</div><div class="lbl">Marking</div></div>
+    </div>
+    <div class="marking-note">
+      <b>Marking Scheme:</b> +2 for every correct answer &nbsp;|&nbsp; −0.5 for every wrong answer &nbsp;|&nbsp; 0 for unattempted questions.<br>
+      Questions are randomly selected from a question bank and shuffled on every attempt.
+    </div>
+    <div class="sections-preview">
+      <h3>Syllabus Coverage</h3>
+      <div class="section-row"><span class="sec-badge">BE-01</span><span class="sec-name">Basics of Science & Engineering</span><span class="sec-count">50 Qs</span></div>
+      <div class="section-row" style="padding-left: 28px; border: none; font-size: 12px; color: var(--muted); padding-top: 4px; padding-bottom: 4px;">Units · Mechanics · Electricity · Heat · Waves/Optics · Chemistry · Computers · Environment</div>
+      <div class="section-row"><span class="sec-badge" style="background: rgba(124,90,247,0.1); color: var(--accent2); border-color: rgba(124,90,247,0.2);">BE-02</span><span class="sec-name">Aptitude Test — Maths & Soft Skills</span><span class="sec-count">50 Qs</span></div>
+      <div class="section-row" style="padding-left: 28px; border: none; font-size: 12px; color: var(--muted); padding-top: 4px; padding-bottom: 4px;">Matrices · Trigonometry · Calculus · Logarithm · Statistics · Communication · Grammar · Writing</div>
+    </div>
+    <button class="start-btn" onclick="startTest()">Begin Test →</button>
+  </div>
+
+  <!-- TEST SCREEN -->
+  <div id="test-screen" class="screen">
+    <div class="top-bar">
+      <div class="top-bar-inner">
+        <span class="paper-pill" id="paper-pill">BE-01</span>
+        <span class="q-progress-text" id="q-progress">Q 1/100</span>
+        <span class="score-pill" id="score-pill">Score: 0</span>
+        <span class="timer-pill" id="timer">150:00</span>
+      </div>
+      <div class="progress-track"><div class="progress-fill" id="prog-fill" style="width:1%"></div></div>
+    </div>
+    <div class="test-body">
+      <div class="q-area">
+        <div class="topic-label" id="topic-label">Topic</div>
+        <div class="q-card">
+          <div class="q-number" id="q-number">Question 1 of 100</div>
+          <div class="q-text" id="q-text"></div>
+        </div>
+        <div class="options-grid" id="options-grid"></div>
+        <div class="nav-row" style="margin-top: 16px;">
+          <button class="nav-btn" id="prev-btn" onclick="navigate(-1)" disabled>← Prev</button>
+          <div class="spacer"></div>
+          <button class="nav-btn primary" id="next-btn" onclick="navigate(1)">Next →</button>
+        </div>
+      </div>
+      <div class="palette-panel">
+        <div class="palette-header">Question Palette</div>
+        <div class="palette-grid" id="palette-grid"></div>
+        <div class="palette-legend">
+          <div class="legend-row"><div class="legend-dot" style="background: rgba(79,142,247,0.3); border: 1px solid rgba(79,142,247,0.5);"></div><span>Answered</span></div>
+          <div class="legend-row"><div class="legend-dot" style="background: var(--surface2); border: 1px solid var(--border2);"></div><span>Not answered</span></div>
+        </div>
+        <div class="submit-panel">
+          <div class="answered-count" id="answered-count">0</div>
+          <div class="answered-label">of 100 answered</div>
+          <button class="submit-full-btn" onclick="openSubmitModal()">Submit Test</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESULT SCREEN -->
+  <div id="result-screen" class="screen">
+    <div class="result-header">
+      <div class="result-label">Test Complete</div>
+      <div class="score-display" id="result-score">0</div>
+      <div class="score-outof">out of 200 marks</div>
+      <div class="verdict" id="result-verdict">—</div>
+    </div>
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-val g" id="r-correct">0</div><div class="stat-lbl">Correct</div></div>
+      <div class="stat-card"><div class="stat-val r" id="r-wrong">0</div><div class="stat-lbl">Wrong</div></div>
+      <div class="stat-card"><div class="stat-val a" id="r-skip">0</div><div class="stat-lbl">Skipped</div></div>
+    </div>
+    <div class="section-breakdown">
+      <div class="breakdown-title">Performance by Paper</div>
+      <div id="breakdown-rows"></div>
+    </div>
+    <div class="result-actions">
+      <button class="result-btn primary" onclick="startReview()">Review Answers</button>
+      <button class="result-btn" onclick="restartTest()">New Attempt</button>
+    </div>
+  </div>
+
+  <!-- REVIEW SCREEN -->
+  <div id="review-screen" class="screen">
+    <div class="review-top">
+      <div class="review-title">Answer Review</div>
+      <button class="nav-btn" onclick="restartTest()">New Test</button>
+    </div>
+    <div id="review-list"></div>
+  </div>
+
+</div>
+
+<!-- SUBMIT MODAL -->
+<div class="modal-overlay" id="submit-modal">
+  <div class="modal">
+    <h3>Submit Test?</h3>
+    <p id="submit-modal-msg">You have answered <b id="modal-answered">0</b> out of 100 questions. <b id="modal-unanswered">100</b> questions will be marked as skipped. Are you sure you want to submit?</p>
+    <div class="modal-btns">
+      <button class="modal-btn" onclick="closeSubmitModal()">Cancel</button>
+      <button class="modal-btn confirm" onclick="submitTest()">Submit</button>
+    </div>
+  </div>
+</div>
+
+<!-- TIME UP MODAL -->
+<div class="modal-overlay" id="timeup-modal">
+  <div class="modal timeup-modal">
+    <div class="big-icon">⏰</div>
+    <h3>Time's Up!</h3>
+    <p>Your 150 minutes are over. Your test has been automatically submitted.</p>
+    <div class="modal-btns">
+      <button class="modal-btn confirm" style="background: linear-gradient(135deg,var(--accent),var(--accent2)); border: none;" onclick="closeTimeupAndResult()">See Results</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const QB = [
+  // ===== BE-01: Units & Measurement (12%) = ~6 Qs =====
+  {s:"BE-01",t:"Units & Measurement",q:"Which of the following is a derived SI unit?",o:["Metre","Kilogram","Newton","Kelvin"],a:2},
+  {s:"BE-01",t:"Units & Measurement",q:"The relative error in a measurement is defined as:",o:["Absolute error × measured value","Absolute error ÷ measured value","Measured value ÷ absolute error","Absolute error + measured value"],a:1},
+  {s:"BE-01",t:"Units & Measurement",q:"A Vernier caliper has a main scale division of 1 mm and 10 Vernier divisions = 9 mm. Its least count is:",o:["0.1 mm","0.01 mm","1 mm","0.001 mm"],a:0},
+  {s:"BE-01",t:"Units & Measurement",q:"1 Newton is equal to how many dynes (CGS)?",o:["10³","10⁴","10⁵","10⁶"],a:2},
+  {s:"BE-01",t:"Units & Measurement",q:"If Z = A × B, the percentage error in Z is:",o:["% error A − % error B","% error A × % error B","% error A + % error B","% error A ÷ % error B"],a:2},
+  {s:"BE-01",t:"Units & Measurement",q:"The pitch of a micrometer screw gauge is 0.5 mm with 50 divisions on the circular scale. Its least count is:",o:["0.01 mm","0.001 mm","0.1 mm","0.05 mm"],a:0},
+  {s:"BE-01",t:"Units & Measurement",q:"Which instrument is used to measure very small lengths like the diameter of a wire?",o:["Metre scale","Vernier caliper","Micrometer screw gauge","Measuring tape"],a:2},
+  // ===== BE-01: Classical Mechanics (12%) = ~6 Qs =====
+  {s:"BE-01",t:"Classical Mechanics",q:"A body moves with uniform acceleration. Which graph represents v vs t?",o:["Parabola","Hyperbola","Straight line with positive slope","Horizontal straight line"],a:2},
+  {s:"BE-01",t:"Classical Mechanics",q:"Newton's second law states F equals:",o:["mass × velocity","mass × displacement","rate of change of momentum","mass × distance"],a:2},
+  {s:"BE-01",t:"Classical Mechanics",q:"Centripetal acceleration for circular motion of radius r and speed v is:",o:["v²/r","vr","v/r","r/v²"],a:0},
+  {s:"BE-01",t:"Classical Mechanics",q:"Kinetic energy of mass m moving with speed v is:",o:["mv","mv²","½mv²","2mv²"],a:2},
+  {s:"BE-01",t:"Classical Mechanics",q:"The unit of power in the SI system is:",o:["Joule","Newton","Watt","Pascal"],a:2},
+  {s:"BE-01",t:"Classical Mechanics",q:"A body of mass 2 kg moves at 3 m/s. Its linear momentum is:",o:["6 kg·m/s","1.5 kg·m/s","9 kg·m/s","5 kg·m/s"],a:0},
+  {s:"BE-01",t:"Classical Mechanics",q:"Centrifugal force is a:",o:["Real contact force","Real gravitational force","Pseudo (fictitious) force","Magnetic force"],a:2},
+  // ===== BE-01: Electric Current (12%) = ~6 Qs =====
+  {s:"BE-01",t:"Electric Current",q:"Ohm's law states V = IR. Here R is:",o:["Reactance","Resistance","Reluctance","Radiance"],a:1},
+  {s:"BE-01",t:"Electric Current",q:"Two resistors 4 Ω and 6 Ω are connected in parallel. Equivalent resistance is:",o:["10 Ω","2.4 Ω","5 Ω","24 Ω"],a:1},
+  {s:"BE-01",t:"Electric Current",q:"SI unit of electric field intensity is:",o:["V·m","V/m","C/m²","N·C"],a:1},
+  {s:"BE-01",t:"Electric Current",q:"Coulomb's law: force between two charges q₁ and q₂ separated by r is proportional to:",o:["q₁q₂ × r","q₁q₂ / r²","q₁ + q₂ / r","r² / q₁q₂"],a:1},
+  {s:"BE-01",t:"Electric Current",q:"A parallel plate capacitor — if plate distance is doubled, capacitance becomes:",o:["2C","C/2","4C","C/4"],a:1},
+  {s:"BE-01",t:"Electric Current",q:"Resistivity of a conductor depends on:",o:["Length","Cross-sectional area","Material of conductor","Applied voltage"],a:2},
+  {s:"BE-01",t:"Electric Current",q:"The SI unit of electric charge is:",o:["Ampere","Volt","Coulomb","Ohm"],a:2},
+  // ===== BE-01: Heat & Thermometry (12%) = ~6 Qs =====
+  {s:"BE-01",t:"Heat & Thermometry",q:"Normal body temperature 37°C in Fahrenheit is:",o:["98.6 °F","100 °F","96 °F","102 °F"],a:0},
+  {s:"BE-01",t:"Heat & Thermometry",q:"Which mode of heat transfer requires no medium?",o:["Conduction","Convection","Radiation","All three"],a:2},
+  {s:"BE-01",t:"Heat & Thermometry",q:"Specific heat of water (in CGS) is:",o:["1 cal/g·°C","2 cal/g·°C","0.5 cal/g·°C","4 cal/g·°C"],a:0},
+  {s:"BE-01",t:"Heat & Thermometry",q:"0°C in Kelvin is:",o:["100 K","373 K","273 K","0 K"],a:2},
+  {s:"BE-01",t:"Heat & Thermometry",q:"Linear thermal expansion occurs:",o:["Only in gases","Only in liquids","In all states of matter","Only in solids"],a:3},
+  {s:"BE-01",t:"Heat & Thermometry",q:"SI unit of thermal conductivity is:",o:["W/m·K","J/kg·K","W·m/K","cal/°C"],a:0},
+  {s:"BE-01",t:"Heat & Thermometry",q:"Conversion formula from Celsius to Fahrenheit is:",o:["F = (9/5)C + 32","F = (5/9)C + 32","F = (9/5)C − 32","F = (5/9)C − 32"],a:0},
+  // ===== BE-01: Wave Motion / Optics (12%) = ~6 Qs =====
+  {s:"BE-01",t:"Wave Motion & Optics",q:"Sound waves are classified as:",o:["Transverse and mechanical","Longitudinal and mechanical","Transverse and non-mechanical","Longitudinal and electromagnetic"],a:1},
+  {s:"BE-01",t:"Wave Motion & Optics",q:"Total internal reflection occurs when light travels:",o:["From rare to denser medium at any angle","From denser to rare medium beyond critical angle","From rare to denser beyond critical angle","In vacuum"],a:1},
+  {s:"BE-01",t:"Wave Motion & Optics",q:"Snell's law (n₁ sinθ₁ = n₂ sinθ₂) describes:",o:["Reflection","Refraction","Diffraction","Dispersion"],a:1},
+  {s:"BE-01",t:"Wave Motion & Optics",q:"Reverberation time is the time for sound to decay by:",o:["10 dB","30 dB","60 dB","90 dB"],a:2},
+  {s:"BE-01",t:"Wave Motion & Optics",q:"LASER light is:",o:["Polychromatic and incoherent","Monochromatic and coherent","Monochromatic and incoherent","Polychromatic and coherent"],a:1},
+  {s:"BE-01",t:"Wave Motion & Optics",q:"Relationship between frequency f, wavelength λ, and wave speed v:",o:["v = f/λ","v = f + λ","v = fλ","v = λ/f"],a:2},
+  {s:"BE-01",t:"Wave Motion & Optics",q:"An optical fibre works on the principle of:",o:["Diffraction","Refraction","Total internal reflection","Polarisation"],a:2},
+  // ===== BE-01: Chemical Reactions (6%) = ~3 Qs =====
+  {s:"BE-01",t:"Chemical Reactions",q:"A balanced chemical equation obeys:",o:["Conservation of mass only","Conservation of charge only","Both conservation of mass and charge","Neither"],a:0},
+  {s:"BE-01",t:"Chemical Reactions",q:"In a displacement reaction, a more reactive element:",o:["Combines with everything","Displaces a less reactive element from its compound","Decomposes spontaneously","Is always a gas"],a:1},
+  {s:"BE-01",t:"Chemical Reactions",q:"Which type of reaction is: CaCO₃ → CaO + CO₂?",o:["Combination","Decomposition","Displacement","Double displacement"],a:1},
+  // ===== BE-01: Acids, Bases & Salts (8%) = ~4 Qs =====
+  {s:"BE-01",t:"Acids, Bases & Salts",q:"pH of a neutral solution at 25°C is:",o:["0","7","14","10"],a:1},
+  {s:"BE-01",t:"Acids, Bases & Salts",q:"Which of the following is a strong acid?",o:["Acetic acid","Citric acid","Hydrochloric acid","Carbonic acid"],a:2},
+  {s:"BE-01",t:"Acids, Bases & Salts",q:"When an acid reacts with a metallic oxide, the products are:",o:["Salt and hydrogen","Salt and water","Oxide and water","Base and salt"],a:1},
+  {s:"BE-01",t:"Acids, Bases & Salts",q:"Baking soda (NaHCO₃) solution has a pH that is:",o:["Less than 7","Equal to 7","Greater than 7","Zero"],a:2},
+  // ===== BE-01: Metals & Non-metals (6%) = ~3 Qs =====
+  {s:"BE-01",t:"Metals & Non-metals",q:"Which property generally characterises metals?",o:["Brittle and non-lustrous","Ductile, malleable and lustrous","Poor conductors of electricity","Low melting point"],a:1},
+  {s:"BE-01",t:"Metals & Non-metals",q:"Rusting of iron requires:",o:["Only water","Only oxygen","Both water and oxygen","Carbon dioxide alone"],a:2},
+  {s:"BE-01",t:"Metals & Non-metals",q:"Non-metals are generally:",o:["Good conductors of heat","Malleable","Poor conductors of heat and electricity","Dense"],a:2},
+  // ===== BE-01: Computer Practice (10%) = ~5 Qs =====
+  {s:"BE-01",t:"Computer Practice",q:"Which of the following is NOT an input device?",o:["Keyboard","Mouse","Monitor","Scanner"],a:2},
+  {s:"BE-01",t:"Computer Practice",q:"HTML stands for:",o:["Hyper Text Markup Language","High Transfer Markup Language","Hyper Transfer Mode Language","Hyper Text Module Language"],a:0},
+  {s:"BE-01",t:"Computer Practice",q:"To merge cells in MS Excel you use:",o:["Format > Cells > Merge","Home > Merge & Center","Insert > Merge","Data > Merge"],a:1},
+  {s:"BE-01",t:"Computer Practice",q:"In MS PowerPoint, pressing F5 does what?",o:["Save presentation","Start slideshow from beginning","Open new slide","Close the file"],a:1},
+  {s:"BE-01",t:"Computer Practice",q:"Which protocol is used to send emails?",o:["HTTP","FTP","SMTP","POP3"],a:2},
+  // ===== BE-01: Environmental Sciences (10%) = ~5 Qs =====
+  {s:"BE-01",t:"Environmental Sciences",q:"Which is a renewable source of energy?",o:["Coal","Petroleum","Solar energy","Natural gas"],a:2},
+  {s:"BE-01",t:"Environmental Sciences",q:"The greenhouse effect is primarily caused by excess:",o:["Oxygen","Nitrogen","Carbon dioxide","Hydrogen"],a:2},
+  {s:"BE-01",t:"Environmental Sciences",q:"An ecosystem includes:",o:["Only living organisms","Only non-living factors","Both biotic and abiotic components","Only producers"],a:2},
+  {s:"BE-01",t:"Environmental Sciences",q:"Noise pollution is measured in:",o:["Hertz","Decibels","Joules","Watts"],a:1},
+  {s:"BE-01",t:"Environmental Sciences",q:"Tidal energy is generated by:",o:["Ocean waves alone","Gravitational pull causing tides","Wind on sea surface","Temperature difference in ocean"],a:1},
+
+  // ===== BE-02: Determinants & Matrices (8%) = ~4 Qs =====
+  {s:"BE-02",t:"Determinants & Matrices",q:"The value of |2 3; 4 5| is:",o:["−2","2","22","−22"],a:0},
+  {s:"BE-02",t:"Determinants & Matrices",q:"The identity matrix of order 2×2 is:",o:["[[0,0],[0,0]]","[[1,1],[1,1]]","[[1,0],[0,1]]","[[0,1],[1,0]]"],a:2},
+  {s:"BE-02",t:"Determinants & Matrices",q:"A matrix with equal rows and columns is called:",o:["Row matrix","Column matrix","Square matrix","Rectangular matrix"],a:2},
+  {s:"BE-02",t:"Determinants & Matrices",q:"If A = [[1,2],[3,4]], adjoint of A is:",o:["[[4,−2],[−3,1]]","[[4,3],[2,1]]","[[1,3],[2,4]]","[[−4,2],[3,−1]]"],a:0},
+  {s:"BE-02",t:"Determinants & Matrices",q:"For a singular matrix, the determinant is:",o:["1","Greater than 1","0","Undefined"],a:2},
+  // ===== BE-02: Trigonometry (6%) = ~3 Qs =====
+  {s:"BE-02",t:"Trigonometry",q:"sin(90°) =",o:["0","1","−1","1/√2"],a:1},
+  {s:"BE-02",t:"Trigonometry",q:"Period of tan(x) is:",o:["2π","π","π/2","4π"],a:1},
+  {s:"BE-02",t:"Trigonometry",q:"sin(A+B) =",o:["sinA cosB − cosA sinB","sinA sinB + cosA cosB","sinA cosB + cosA sinB","cosA cosB − sinA sinB"],a:2},
+  {s:"BE-02",t:"Trigonometry",q:"cos(2A) equals:",o:["2sinA cosA","cos²A − sin²A","sin²A − cos²A","2sin²A"],a:1},
+  // ===== BE-02: Vectors (4%) = ~2 Qs =====
+  {s:"BE-02",t:"Vectors",q:"The dot product of two perpendicular vectors is:",o:["1","−1","0","Their magnitude product"],a:2},
+  {s:"BE-02",t:"Vectors",q:"Magnitude of vector (3, 4) is:",o:["7","5","25","1"],a:1},
+  {s:"BE-02",t:"Vectors",q:"Cross product of two parallel vectors is:",o:["Maximum","Zero vector","Unit vector","Equal to dot product"],a:1},
+  // ===== BE-02: Coordinate Geometry (4%) = ~2 Qs =====
+  {s:"BE-02",t:"Coordinate Geometry",q:"Slope of a line parallel to the x-axis is:",o:["1","Undefined","0","−1"],a:2},
+  {s:"BE-02",t:"Coordinate Geometry",q:"Equation of circle with centre (0,0) radius 5 is:",o:["x + y = 5","x² + y² = 5","x² + y² = 25","x² − y² = 25"],a:2},
+  {s:"BE-02",t:"Coordinate Geometry",q:"Two lines are perpendicular when product of their slopes is:",o:["0","1","−1","∞"],a:2},
+  // ===== BE-02: Function & Limit (6%) = ~3 Qs =====
+  {s:"BE-02",t:"Function & Limit",q:"lim(x→0) (sin x)/x =",o:["0","∞","1","−1"],a:2},
+  {s:"BE-02",t:"Function & Limit",q:"f(x) = x² is an example of a:",o:["Linear function","Constant function","Quadratic function","Inverse function"],a:2},
+  {s:"BE-02",t:"Function & Limit",q:"lim(x→∞) (1/x) =",o:["∞","1","0","−1"],a:2},
+  // ===== BE-02: Differentiation (8%) = ~4 Qs =====
+  {s:"BE-02",t:"Differentiation",q:"d/dx (xⁿ) =",o:["nxⁿ","nxⁿ⁻¹","xⁿ/n","(n−1)xⁿ"],a:1},
+  {s:"BE-02",t:"Differentiation",q:"d/dx (sin x) =",o:["cos x","−cos x","−sin x","tan x"],a:0},
+  {s:"BE-02",t:"Differentiation",q:"Product rule: d/dx(uv) =",o:["u·dv/dx − v·du/dx","u·dv/dx + v·du/dx","(u+v)d/dx","u/v·d/dx"],a:1},
+  {s:"BE-02",t:"Differentiation",q:"If y = eˣ, then dy/dx =",o:["xeˣ⁻¹","eˣ","1/eˣ","0"],a:1},
+  {s:"BE-02",t:"Differentiation",q:"d/dx (ln x) =",o:["x","1/x","ln x","eˣ"],a:1},
+  // ===== BE-02: Integration (8%) = ~4 Qs =====
+  {s:"BE-02",t:"Integration",q:"∫xⁿ dx (n ≠ −1) =",o:["nxⁿ⁻¹ + C","xⁿ⁺¹/(n+1) + C","xⁿ/(n+1) + C","(n+1)xⁿ + C"],a:1},
+  {s:"BE-02",t:"Integration",q:"∫cos x dx =",o:["sin x + C","−sin x + C","tan x + C","−cos x + C"],a:0},
+  {s:"BE-02",t:"Integration",q:"∫₀¹ x dx =",o:["1","0","1/2","2"],a:2},
+  {s:"BE-02",t:"Integration",q:"∫(1/x) dx =",o:["x + C","ln|x| + C","−1/x² + C","eˣ + C"],a:1},
+  {s:"BE-02",t:"Integration",q:"∫eˣ dx =",o:["eˣ + C","xeˣ + C","eˣ/x + C","1/eˣ + C"],a:0},
+  // ===== BE-02: Logarithm (4%) = ~2 Qs =====
+  {s:"BE-02",t:"Logarithm",q:"log(AB) =",o:["log A × log B","log A − log B","log A + log B","log A / log B"],a:2},
+  {s:"BE-02",t:"Logarithm",q:"log₁₀(1000) =",o:["2","3","4","10"],a:1},
+  {s:"BE-02",t:"Logarithm",q:"log(A/B) =",o:["log A + log B","log A − log B","log A × log B","log B − log A"],a:1},
+  // ===== BE-02: Statistics (2%) = ~1 Q =====
+  {s:"BE-02",t:"Statistics",q:"Median of {3, 5, 7, 9, 11} is:",o:["5","7","9","11"],a:1},
+  {s:"BE-02",t:"Statistics",q:"Mean of {2, 4, 6, 8, 10} is:",o:["5","6","7","8"],a:1},
+  // ===== BE-02: Comprehension (10%) =====
+  {s:"BE-02",t:"Comprehension",q:"'The report must be submitted by Monday without fail.' This sentence expresses:",o:["A suggestion","A question","An obligation or command","A wish"],a:2},
+  {s:"BE-02",t:"Comprehension",q:"'Although it was raining, the match continued.' The word 'Although' shows:",o:["Reason","Result","Contrast","Condition"],a:2},
+  {s:"BE-02",t:"Comprehension",q:"'The company has been operating since 2005.' Which tense is used?",o:["Simple past","Present perfect continuous","Simple present","Past perfect"],a:1},
+  {s:"BE-02",t:"Comprehension",q:"'The new policy has had a significant impact on productivity.' The word 'significant' means:",o:["Minor","Noticeable and important","Unexpected","Negative"],a:1},
+  {s:"BE-02",t:"Comprehension",q:"A passage says 'employees should submit feedback by Friday'. 'Should' indicates:",o:["Certainty","Ability","Recommendation","Past habit"],a:2},
+  // ===== BE-02: Theory of Communication (10%) = ~5 Qs =====
+  {s:"BE-02",t:"Theory of Communication",q:"Which is an example of non-verbal communication?",o:["Speaking on phone","Writing an email","Body language and gestures","Sending a text message"],a:2},
+  {s:"BE-02",t:"Theory of Communication",q:"A distraction in the environment that disrupts communication is a ______ barrier:",o:["Psychological","Semantic","Physical","Cultural"],a:2},
+  {s:"BE-02",t:"Theory of Communication",q:"The first step in the process of communication is:",o:["Decoding","Encoding","Receiving","Feedback"],a:1},
+  {s:"BE-02",t:"Theory of Communication",q:"Two-way communication is characterised by:",o:["Only sender speaking","Feedback from receiver","Written messages only","No medium required"],a:1},
+  {s:"BE-02",t:"Theory of Communication",q:"Which is a verbal form of communication?",o:["Facial expression","Posture","Spoken words","Eye contact"],a:2},
+  // ===== BE-02: Techniques of Writing (10%) = ~5 Qs =====
+  {s:"BE-02",t:"Techniques of Writing",q:"A business complaint letter should:",o:["Be aggressive and emotional","State the problem clearly and request action","Avoid mentioning dates or facts","Be extremely lengthy"],a:1},
+  {s:"BE-02",t:"Techniques of Writing",q:"'cc' in email stands for:",o:["Carbon copy","Courtesy call","Central copy","Copied contact"],a:0},
+  {s:"BE-02",t:"Techniques of Writing",q:"The part of a business letter that comes after the salutation is:",o:["Subject line","Body of the letter","Complimentary close","Reference number"],a:1},
+  {s:"BE-02",t:"Techniques of Writing",q:"An inquiry letter is written to:",o:["Complain about a product","Request information about goods/services","Acknowledge receipt","Confirm an order"],a:1},
+  {s:"BE-02",t:"Techniques of Writing",q:"'Enc.' in a business letter means:",o:["Encourage","Enclosure","Encoding","Encrypted"],a:1},
+  // ===== BE-02: Grammar (10%) = ~5 Qs =====
+  {s:"BE-02",t:"Grammar",q:"Which of these is a pronoun?",o:["Run","Beautiful","She","Quickly"],a:2},
+  {s:"BE-02",t:"Grammar",q:"'The birds are singing' uses ______ tense:",o:["Simple past","Present continuous","Simple future","Past perfect"],a:1},
+  {s:"BE-02",t:"Grammar",q:"'She ________ to school every day.'",o:["go","goes","gone","going"],a:1},
+  {s:"BE-02",t:"Grammar",q:"Which sentence is grammatically correct?",o:["He don't know the answer.","She doesn't knows the answer.","They doesn't play cricket.","We do not need any help."],a:3},
+  {s:"BE-02",t:"Grammar",q:"An adjective modifies a:",o:["Verb","Noun or pronoun","Adverb only","Conjunction"],a:1},
+  // ===== BE-02: Word/Sentence Correction (10%) = ~5 Qs =====
+  {s:"BE-02",t:"Word & Sentence Correction",q:"Choose the correct spelling:",o:["Accomodation","Acommodation","Accommodation","Acomodation"],a:2},
+  {s:"BE-02",t:"Word & Sentence Correction",q:"Choose the correct spelling:",o:["Recieve","Receive","Receve","Receeve"],a:1},
+  {s:"BE-02",t:"Word & Sentence Correction",q:"Choose the correct spelling:",o:["Beleive","Beleave","Believe","Beleve"],a:2},
+  {s:"BE-02",t:"Word & Sentence Correction",q:"Choose the correct spelling:",o:["Occurance","Occurence","Ocurence","Occurrence"],a:3},
+  {s:"BE-02",t:"Word & Sentence Correction",q:"Choose the grammatically correct sentence:",o:["He is more smarter than his brother.","She is most intelligent student.","He is smarter than his brother.","She is more intelligent than all the students in class."],a:2},
+];
+
+let questions=[], answers=[], current=0, totalSecs=9000, timerInt=null, testOver=false;
+
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+function startTest(){
+  const be01=shuffle(QB.filter(q=>q.s==="BE-01")).slice(0,50);
+  const be02=shuffle(QB.filter(q=>q.s==="BE-02")).slice(0,50);
+  questions=[...be01,...be02];
+  answers=new Array(100).fill(-1);
+  current=0; totalSecs=9000; testOver=false;
+  showScreen('test-screen');
+  buildPalette(); renderQ();
+  timerInt=setInterval(tick,1000);
+}
+
+function tick(){
+  totalSecs--;
+  if(totalSecs<=0){clearInterval(timerInt);timeUp();return;}
+  const m=Math.floor(totalSecs/60), s=totalSecs%60;
+  const el=document.getElementById('timer');
+  el.textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  el.className='timer-pill'+(totalSecs<=300?' warn':'');
+}
+
+function timeUp(){
+  document.getElementById('timeup-modal').classList.add('show');
+  computeResult();
+}
+
+function closeTimeupAndResult(){
+  document.getElementById('timeup-modal').classList.remove('show');
+  showScreen('result-screen');
+}
+
+function buildPalette(){
+  const g=document.getElementById('palette-grid'); g.innerHTML='';
+  for(let i=0;i<100;i++){
+    const d=document.createElement('div');
+    d.className='p-dot'+(i===0?' active':'');
+    d.id='pd-'+i; d.textContent=i+1;
+    d.onclick=(()=>{const idx=i;return()=>{current=idx;renderQ();updatePalette();}})();
+    g.appendChild(d);
+  }
+}
+
+function updatePalette(){
+  let answered=0;
+  for(let i=0;i<100;i++){
+    const d=document.getElementById('pd-'+i);
+    if(!d) continue;
+    let cls='p-dot';
+    if(answers[i]!==-1){cls+=' answered';answered++;}
+    if(i===current) cls+=' active';
+    d.className=cls;
+  }
+  document.getElementById('answered-count').textContent=answered;
+}
+
+function renderQ(){
+  const q=questions[current];
+  const isPaper1=current<50;
+  const pill=document.getElementById('paper-pill');
+  pill.textContent=isPaper1?'BE-01':'BE-02';
+  pill.className='paper-pill '+(isPaper1?'be01':'be02');
+  document.getElementById('topic-label').textContent=q.t;
+  document.getElementById('q-progress').textContent=`Q ${current+1}/100`;
+  document.getElementById('q-number').textContent=`Question ${current+1} of 100`;
+  document.getElementById('q-text').textContent=q.q;
+  document.getElementById('prog-fill').style.width=((current+1)/100*100)+'%';
+  const og=document.getElementById('options-grid'); og.innerHTML='';
+  const keys=['A','B','C','D'];
+  q.o.forEach((opt,i)=>{
+    const btn=document.createElement('button');
+    let cls='opt-btn';
+    if(testOver){
+      if(i===q.a) cls+=' correct-hl';
+      else if(i===answers[current]&&answers[current]!==q.a) cls+=' wrong';
+    } else {
+      if(i===answers[current]) cls+=' selected';
+    }
+    btn.className=cls;
+    btn.innerHTML=`<span class="opt-key">${keys[i]}</span><span class="opt-text">${opt}</span>`;
+    if(!testOver) btn.onclick=(()=>{const idx=i;return()=>pickAnswer(idx);})();
+    og.appendChild(btn);
+  });
+  document.getElementById('prev-btn').disabled=current===0;
+  document.getElementById('next-btn').textContent=current===99?'Finish ✓':'Next →';
+  updateScore();
+}
+
+function pickAnswer(i){answers[current]=i;updatePalette();renderQ();}
+
+function navigate(dir){
+  if(dir===1&&current===99){openSubmitModal();return;}
+  current=Math.max(0,Math.min(99,current+dir));
+  renderQ(); updatePalette();
+}
+
+function updateScore(){
+  let sc=0;
+  answers.forEach((a,i)=>{if(a!==-1) sc+=(a===questions[i].a?2:-0.5);});
+  document.getElementById('score-pill').textContent=`Score: ${sc%1===0?sc:sc.toFixed(1)}`;
+}
+
+function openSubmitModal(){
+  const answered=answers.filter(a=>a!==-1).length;
+  document.getElementById('modal-answered').textContent=answered;
+  document.getElementById('modal-unanswered').textContent=100-answered;
+  document.getElementById('submit-modal').classList.add('show');
+}
+function closeSubmitModal(){document.getElementById('submit-modal').classList.remove('show');}
+
+function submitTest(){
+  closeSubmitModal();
+  clearInterval(timerInt);
+  testOver=true;
+  computeResult();
+  showScreen('result-screen');
+}
+
+function computeResult(){
+  let correct=0,wrong=0,skip=0,score=0;
+  answers.forEach((a,i)=>{
+    if(a===-1) skip++;
+    else if(a===questions[i].a){correct++;score+=2;}
+    else{wrong++;score-=0.5;}
+  });
+  document.getElementById('result-score').textContent=score%1===0?score:score.toFixed(1);
+  document.getElementById('r-correct').textContent=correct;
+  document.getElementById('r-wrong').textContent=wrong;
+  document.getElementById('r-skip').textContent=skip;
+  const pct=score/200*100;
+  let vtxt='', vcls='';
+  if(pct>=80){vtxt='Excellent — Outstanding Performance';vcls='excellent';}
+  else if(pct>=60){vtxt='Good — Well Prepared';vcls='good';}
+  else if(pct>=40){vtxt='Average — Needs More Practice';vcls='average';}
+  else{vtxt='Below Average — Revise Thoroughly';vcls='poor';}
+  const v=document.getElementById('result-verdict');
+  v.textContent=vtxt; v.className='verdict '+vcls;
+  // breakdown by paper
+  const papers=[{name:'BE-01: Science & Engineering',start:0,end:50},{name:'BE-02: Aptitude & Soft Skills',start:50,end:100}];
+  const rows=document.getElementById('breakdown-rows'); rows.innerHTML='';
+  papers.forEach(p=>{
+    let c=0,t=0;
+    for(let i=p.start;i<p.end;i++){
+      if(answers[i]!==-1){t++;if(answers[i]===questions[i].a)c++;}
+    }
+    const pct2=t>0?Math.round(c/t*100):0;
+    const bar=pct2>60?'var(--green)':pct2>40?'var(--amber)':'var(--red)';
+    rows.innerHTML+=`<div class="topic-row">
+      <span class="topic-name">${p.name}</span>
+      <div class="topic-bar-wrap"><div class="topic-bar-fill" style="width:${pct2}%;background:${bar};"></div></div>
+      <span class="topic-score">${c}/${p.end-p.start}</span>
+    </div>`;
+  });
+}
+
+function startReview(){
+  testOver=true;
+  buildReview();
+  showScreen('review-screen');
+}
+
+function buildReview(){
+  const list=document.getElementById('review-list'); list.innerHTML='';
+  const keys=['A','B','C','D'];
+  questions.forEach((q,i)=>{
+    const ua=answers[i];
+    let sts='skip', stxt='Skipped';
+    if(ua!==-1){sts=ua===q.a?'correct':'wrong';stxt=ua===q.a?'+2 Correct':'−0.5 Wrong';}
+    const div=document.createElement('div');
+    div.className=`review-q r-${sts}`;
+    let optsHtml=q.o.map((opt,j)=>{
+      let cls='rq-opt';
+      if(j===q.a) cls+=' is-correct';
+      else if(j===ua&&ua!==q.a) cls+=' was-selected';
+      return `<div class="${cls}"><span style="font-family:'JetBrains Mono',monospace;min-width:18px;">${keys[j]}</span><span>${opt}</span></div>`;
+    }).join('');
+    div.innerHTML=`<div class="rq-meta">
+      <span class="rq-num">Q${i+1}</span>
+      <span class="rq-topic">${q.t}</span>
+      <span class="rq-status ${sts}">${stxt}</span>
+    </div>
+    <div class="rq-text">${q.q}</div>
+    <div class="rq-opts">${optsHtml}</div>`;
+    list.appendChild(div);
+  });
+}
+
+function restartTest(){
+  clearInterval(timerInt);
+  testOver=false;
+  showScreen('start-screen');
+}
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+</script>
+</body>
+</html>
