@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DDCET Mock Test 3 — 2024-25</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0e1a;
+  --s1:#111827;
+  --s2:#1a2235;
+  --s3:#243048;
+  --border:rgba(99,130,201,0.15);
+  --border2:rgba(99,130,201,0.28);
+  --text:#e2e8f8;
+  --muted:#7b8db8;
+  --accent:#6366f1;
+  --ac2:#8b5cf6;
+  --green:#10b981;
+  --red:#ef4444;
+  --amber:#f59e0b;
+  --r:10px;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Space Grotesk',sans-serif;font-size:15px;line-height:1.6;min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;width:600px;height:600px;background:radial-gradient(circle,rgba(99,102,241,.07),transparent 70%);top:-100px;right:-100px;pointer-events:none;z-index:0}
+body::after{content:'';position:fixed;width:400px;height:400px;background:radial-gradient(circle,rgba(139,92,246,.05),transparent 70%);bottom:0;left:0;pointer-events:none;z-index:0}
+.page{position:relative;z-index:1;max-width:860px;margin:0 auto;padding:0 20px 80px}
+.screen{display:none}.screen.active{display:block}
+
+/* START */
+#start-screen{padding:60px 0}
+.badge{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:30px;background:rgba(99,102,241,.12);border:1px solid rgba(99,102,241,.25);font-size:12px;color:var(--accent);font-family:'Space Mono',monospace;letter-spacing:0.05em;margin-bottom:28px}
+.badge .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+h1.hero{font-size:clamp(40px,8vw,72px);font-weight:700;line-height:1;margin-bottom:16px;letter-spacing:-0.02em}
+h1.hero .hl{background:linear-gradient(90deg,var(--accent),var(--ac2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{font-size:15px;color:var(--muted);max-width:500px;line-height:1.8;margin-bottom:48px}
+.info-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:32px}
+.is-cell{background:var(--s1);padding:18px 16px}
+.is-v{font-family:'Space Mono',monospace;font-size:22px;font-weight:700;color:var(--text)}
+.is-l{font-size:11px;color:var(--muted);margin-top:3px;text-transform:uppercase;letter-spacing:0.08em}
+.marking-card{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:18px 20px;margin-bottom:32px;display:flex;gap:24px;flex-wrap:wrap}
+.mk{font-size:13px;color:var(--muted);display:flex;align-items:center;gap:8px}
+.mk b{font-size:15px;font-family:'Space Mono',monospace}
+.mk b.pos{color:var(--green)}.mk b.neg{color:var(--red)}.mk b.neu{color:var(--muted)}
+.papers-wrap{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:40px}
+@media(max-width:500px){.papers-wrap{grid-template-columns:1fr}}
+.paper-card{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:18px 20px}
+.pc-label{font-size:10px;font-family:'Space Mono',monospace;color:var(--accent);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px}
+.pc-name{font-size:15px;font-weight:600;margin-bottom:6px}
+.pc-topics{font-size:12px;color:var(--muted);line-height:1.7}
+.pc-count{margin-top:10px;font-size:12px;font-family:'Space Mono',monospace;color:var(--ac2)}
+.start-btn{width:100%;padding:15px;background:linear-gradient(135deg,var(--accent),var(--ac2));border:none;border-radius:var(--r);color:white;font-size:16px;font-weight:600;font-family:'Space Grotesk',sans-serif;cursor:pointer;transition:opacity .2s,transform .15s;letter-spacing:0.02em}
+.start-btn:hover{opacity:.9;transform:translateY(-1px)}.start-btn:active{transform:none}
+
+/* TEST */
+#test-screen{padding-top:0}
+.tbar{position:sticky;top:0;background:rgba(10,14,26,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:12px 0;z-index:100;margin:0 -20px;padding-left:20px;padding-right:20px}
+.tbar-inner{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.pill{font-size:11px;font-family:'Space Mono',monospace;padding:4px 10px;border-radius:20px;border:1px solid var(--border);background:var(--s2);color:var(--muted)}
+.pill.a1{background:rgba(99,102,241,.12);color:var(--accent);border-color:rgba(99,102,241,.28)}
+.pill.a2{background:rgba(139,92,246,.12);color:var(--ac2);border-color:rgba(139,92,246,.28)}
+.qctr{font-size:13px;font-family:'Space Mono',monospace;color:var(--muted)}
+.sc-pill{margin-left:auto;font-size:13px;font-family:'Space Mono',monospace;padding:4px 12px;border-radius:20px;background:var(--s2);border:1px solid var(--border);color:var(--text)}
+.timer{font-size:14px;font-family:'Space Mono',monospace;padding:5px 14px;border-radius:20px;background:var(--s2);border:1px solid var(--border);color:var(--text);min-width:88px;text-align:center;transition:all .3s}
+.timer.warn{background:rgba(239,68,68,.1);color:var(--red);border-color:rgba(239,68,68,.3)}
+.ptrack{width:100%;height:2px;background:var(--s3);margin-top:10px}
+.pfill{height:100%;background:linear-gradient(90deg,var(--accent),var(--ac2));transition:width .4s}
+
+.tlayout{padding-top:24px;display:grid;grid-template-columns:1fr 210px;gap:20px;align-items:start}
+@media(max-width:640px){.tlayout{grid-template-columns:1fr}.rside{order:-1}}
+
+.topic-pill{display:inline-block;font-size:11px;padding:3px 10px;border-radius:5px;background:var(--s2);border:1px solid var(--border);color:var(--muted);font-family:'Space Mono',monospace;margin-bottom:10px}
+.qcard{background:var(--s1);border:1px solid var(--border);border-radius:14px;padding:26px;margin-bottom:14px;animation:fin .2s ease}
+@keyframes fin{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.qidx{font-size:11px;font-family:'Space Mono',monospace;color:var(--muted);margin-bottom:12px}
+.qtxt{font-size:16px;color:var(--text);line-height:1.65;font-weight:500}
+.opts{display:flex;flex-direction:column;gap:9px;margin-bottom:16px}
+.opt{display:flex;align-items:flex-start;gap:13px;padding:13px 16px;border:1px solid var(--border);border-radius:9px;cursor:pointer;background:var(--s1);transition:all .15s;text-align:left;width:100%;font-family:'Space Grotesk',sans-serif;font-size:14px;color:var(--text);line-height:1.5}
+.opt:hover{background:var(--s2);border-color:var(--border2);transform:translateX(2px)}
+.opt.sel{background:rgba(99,102,241,.1);border-color:rgba(99,102,241,.4);color:#a5b4fc}
+.opt.hl{background:rgba(16,185,129,.08);border-color:rgba(16,185,129,.4);color:#6ee7b7}
+.opt.wr{background:rgba(239,68,68,.07);border-color:rgba(239,68,68,.3);color:#fca5a5}
+.okey{flex-shrink:0;width:22px;height:22px;background:var(--s2);border:1px solid var(--border);border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:10px;font-family:'Space Mono',monospace;color:var(--muted);transition:all .15s}
+.opt.sel .okey{background:rgba(99,102,241,.2);color:var(--accent);border-color:rgba(99,102,241,.4)}
+.opt.hl .okey{background:rgba(16,185,129,.15);color:var(--green);border-color:rgba(16,185,129,.4)}
+.opt.wr .okey{background:rgba(239,68,68,.1);color:var(--red);border-color:rgba(239,68,68,.3)}
+.navrow{display:flex;gap:10px}
+.nb{padding:9px 18px;border-radius:8px;border:1px solid var(--border2);background:var(--s1);color:var(--text);font-size:13px;font-family:'Space Grotesk',sans-serif;font-weight:500;cursor:pointer;transition:all .15s}
+.nb:hover{background:var(--s2)}.nb:disabled{opacity:.35;cursor:not-allowed}
+.nb.pr{background:linear-gradient(135deg,var(--accent),var(--ac2));border:none;color:white}
+.nb.pr:hover{opacity:.9}
+.nb.dg{border-color:rgba(239,68,68,.3);color:var(--red)}
+.nb.dg:hover{background:rgba(239,68,68,.07)}
+.sp{flex:1}
+
+.rside{position:sticky;top:70px}
+.ph{font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:10px;font-family:'Space Mono',monospace}
+.pgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin-bottom:12px}
+.pdot{width:100%;aspect-ratio:1;border-radius:6px;border:1px solid var(--border);background:var(--s2);font-size:10px;font-family:'Space Mono',monospace;color:var(--muted);cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center}
+.pdot:hover{border-color:var(--border2);color:var(--text)}
+.pdot.an{background:rgba(99,102,241,.15);border-color:rgba(99,102,241,.35);color:var(--accent)}
+.pdot.cu{border:2px solid var(--accent);color:var(--text)}
+.pleg{font-size:11px;color:var(--muted);margin-bottom:12px}
+.plr{display:flex;align-items:center;gap:7px;margin-bottom:5px}
+.pls{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+.subpanel{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:14px}
+.sbig{font-family:'Space Mono',monospace;font-size:24px;font-weight:700;color:var(--text)}
+.slbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px}
+.subbtn{width:100%;padding:9px;background:transparent;border:1px solid rgba(239,68,68,.3);border-radius:7px;color:var(--red);font-size:13px;font-family:'Space Grotesk',sans-serif;font-weight:500;cursor:pointer;transition:all .15s}
+.subbtn:hover{background:rgba(239,68,68,.07)}
+
+/* RESULT */
+#result-screen{padding:60px 0}
+.re-label{font-size:11px;text-transform:uppercase;letter-spacing:0.15em;color:var(--muted);font-family:'Space Mono',monospace;margin-bottom:16px}
+.re-score{font-size:clamp(64px,14vw,108px);font-weight:700;line-height:1;margin-bottom:8px;background:linear-gradient(90deg,var(--accent),var(--ac2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-family:'Space Mono',monospace}
+.re-out{font-size:15px;color:var(--muted);margin-bottom:20px}
+.vtag{display:inline-block;padding:7px 18px;border-radius:6px;font-size:14px;font-weight:600;margin-bottom:40px}
+.ve{background:rgba(16,185,129,.1);color:var(--green);border:1px solid rgba(16,185,129,.25)}
+.vg{background:rgba(99,102,241,.1);color:var(--accent);border:1px solid rgba(99,102,241,.25)}
+.va{background:rgba(245,158,11,.1);color:var(--amber);border:1px solid rgba(245,158,11,.25)}
+.vp{background:rgba(239,68,68,.1);color:var(--red);border:1px solid rgba(239,68,68,.25)}
+.s3g{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:28px}
+.sg{background:var(--s1);padding:20px;text-align:center}
+.sv{font-family:'Space Mono',monospace;font-size:34px;font-weight:700}
+.sv.g{color:var(--green)}.sv.r{color:var(--red)}.sv.a{color:var(--amber)}
+.sl{font-size:12px;color:var(--muted);margin-top:3px}
+.bkd{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:22px;margin-bottom:28px}
+.bkdh{font-size:10px;text-transform:uppercase;letter-spacing:0.12em;color:var(--muted);font-family:'Space Mono',monospace;margin-bottom:16px}
+.brow{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
+.brow:last-child{border-bottom:none}
+.bname{font-size:13px;color:var(--text);flex:1}
+.bbar{width:90px;height:4px;background:var(--s3);border-radius:2px;overflow:hidden}
+.bfill{height:100%;border-radius:2px}
+.bsc{font-size:12px;font-family:'Space Mono',monospace;color:var(--muted);min-width:40px;text-align:right}
+.ract{display:flex;gap:12px}
+.rbtn{flex:1;padding:13px;border-radius:var(--r);border:1px solid var(--border2);background:var(--s1);color:var(--text);font-size:14px;font-family:'Space Grotesk',sans-serif;font-weight:500;cursor:pointer;transition:all .15s}
+.rbtn:hover{background:var(--s2)}
+.rbtn.pr{background:linear-gradient(135deg,var(--accent),var(--ac2));border:none;color:white}
+.rbtn.pr:hover{opacity:.9}
+
+/* REVIEW */
+#review-screen{padding-top:24px}
+.rvhdr{display:flex;align-items:center;gap:16px;padding-bottom:22px;border-bottom:1px solid var(--border);margin-bottom:22px;flex-wrap:wrap}
+.rvtitle{font-size:26px;font-weight:700;flex:1}
+.rq{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-bottom:12px}
+.rq.rc{border-color:rgba(16,185,129,.25)}.rq.rw{border-color:rgba(239,68,68,.2)}.rq.rs{border-color:rgba(245,158,11,.2)}
+.rqm{display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap}
+.rqn{font-size:11px;font-family:'Space Mono',monospace;color:var(--muted)}
+.rqt{font-size:11px;padding:2px 8px;border-radius:4px;background:var(--s2);color:var(--muted)}
+.rqs{font-size:11px;padding:2px 8px;border-radius:4px;font-weight:600;margin-left:auto}
+.rqs.c{background:rgba(16,185,129,.1);color:var(--green)}
+.rqs.w{background:rgba(239,68,68,.1);color:var(--red)}
+.rqs.s{background:rgba(245,158,11,.1);color:var(--amber)}
+.rqtxt{font-size:15px;color:var(--text);margin-bottom:12px;line-height:1.6;font-weight:500}
+.rqopts{display:flex;flex-direction:column;gap:6px}
+.rqopt{padding:9px 13px;border-radius:7px;border:1px solid var(--border);font-size:13px;color:var(--muted);display:flex;gap:10px;line-height:1.4}
+.rqopt.ic{border-color:rgba(16,185,129,.3);background:rgba(16,185,129,.06);color:var(--green)}
+.rqopt.ws{border-color:rgba(239,68,68,.25);background:rgba(239,68,68,.05);color:var(--red)}
+
+/* MODAL */
+.ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);z-index:1000;align-items:center;justify-content:center}
+.ov.show{display:flex}
+.mdl{background:var(--s1);border:1px solid var(--border2);border-radius:14px;padding:28px;max-width:380px;width:90%;animation:fin .2s ease}
+.mdl h3{font-size:20px;font-weight:700;margin-bottom:10px}
+.mdl p{font-size:14px;color:var(--muted);margin-bottom:22px;line-height:1.6}
+.mbtns{display:flex;gap:10px}
+.mbtn{flex:1;padding:10px;border-radius:8px;border:1px solid var(--border2);background:var(--s2);color:var(--text);font-size:13px;font-family:'Space Grotesk',sans-serif;cursor:pointer;transition:all .15s}
+.mbtn:hover{background:var(--s3)}
+.mbtn.cf{background:linear-gradient(135deg,var(--red),#c0392b);border:none;color:white}
+.mbtn.cf:hover{opacity:.9}
+</style>
+</head>
+<body>
+<div class="page">
+
+<div id="start-screen" class="screen active">
+  <div class="badge"><span class="dot"></span>DDCET · Set 03 · 2024-25</div>
+  <h1 class="hero">Full<br><span class="hl">Mock Test</span></h1>
+  <p class="hero-sub">Gujarat Technological University · Diploma to Degree Common Entrance Test. 100 questions, 150 minutes, full syllabus — new questions every attempt.</p>
+  <div class="info-strip">
+    <div class="is-cell"><div class="is-v">100</div><div class="is-l">Questions</div></div>
+    <div class="is-cell"><div class="is-v">200</div><div class="is-l">Max Marks</div></div>
+    <div class="is-cell"><div class="is-v">150</div><div class="is-l">Minutes</div></div>
+    <div class="is-cell"><div class="is-v">+2/−½</div><div class="is-l">Marking</div></div>
+  </div>
+  <div class="marking-card">
+    <div class="mk"><b class="pos">+2</b> Correct answer</div>
+    <div class="mk"><b class="neg">−0.5</b> Wrong answer</div>
+    <div class="mk"><b class="neu">0</b> Unattempted</div>
+  </div>
+  <div class="papers-wrap">
+    <div class="paper-card"><div class="pc-label">BE-01</div><div class="pc-name">Science &amp; Engineering</div><div class="pc-topics">Units · Mechanics · Electricity · Heat · Waves/Optics · Chemical Reactions · Acids/Bases · Metals · Computers · Environment</div><div class="pc-count">50 questions</div></div>
+    <div class="paper-card"><div class="pc-label">BE-02</div><div class="pc-name">Maths &amp; Soft Skills</div><div class="pc-topics">Matrices · Trig · Vectors · Co-geometry · Limits · Differentiation · Integration · Logarithm · Statistics · Communication · Grammar · Writing</div><div class="pc-count">50 questions</div></div>
+  </div>
+  <button class="start-btn" onclick="startTest()">Start Test →</button>
+</div>
+
+<div id="test-screen" class="screen">
+  <div class="tbar">
+    <div class="tbar-inner">
+      <span class="pill" id="ppill">BE-01</span>
+      <span class="qctr" id="qctr">Q 1/100</span>
+      <span class="sc-pill" id="scpill">Score: 0</span>
+      <span class="timer" id="timer">150:00</span>
+    </div>
+    <div class="ptrack"><div class="pfill" id="pfill" style="width:1%"></div></div>
+  </div>
+  <div class="tlayout">
+    <div>
+      <span class="topic-pill" id="tpill">Topic</span>
+      <div class="qcard">
+        <div class="qidx" id="qidx">Question 1 of 100</div>
+        <div class="qtxt" id="qtxt"></div>
+      </div>
+      <div class="opts" id="opts"></div>
+      <div class="navrow">
+        <button class="nb" id="prevb" onclick="nav(-1)" disabled>← Prev</button>
+        <div class="sp"></div>
+        <button class="nb pr" id="nextb" onclick="nav(1)">Next →</button>
+      </div>
+    </div>
+    <div class="rside">
+      <div class="ph">Question Map</div>
+      <div class="pgrid" id="pgrid"></div>
+      <div class="pleg">
+        <div class="plr"><div class="pls" style="background:rgba(99,102,241,.2);border:1px solid rgba(99,102,241,.4)"></div><span>Answered</span></div>
+        <div class="plr"><div class="pls" style="background:var(--s3);border:1px solid var(--border)"></div><span>Unanswered</span></div>
+      </div>
+      <div class="subpanel">
+        <div class="sbig" id="acnt">0</div>
+        <div class="slbl">of 100 answered</div>
+        <button class="subbtn" onclick="openSub()">Submit Test</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="result-screen" class="screen">
+  <div class="re-label">Test Complete · Set 03</div>
+  <div class="re-score" id="res-score">0</div>
+  <div class="re-out">out of 200 marks</div>
+  <div class="vtag" id="res-verdict"></div>
+  <div class="s3g">
+    <div class="sg"><div class="sv g" id="rc">0</div><div class="sl">Correct</div></div>
+    <div class="sg"><div class="sv r" id="rw">0</div><div class="sl">Wrong</div></div>
+    <div class="sg"><div class="sv a" id="rs">0</div><div class="sl">Skipped</div></div>
+  </div>
+  <div class="bkd"><div class="bkdh">Paper-wise Score</div><div id="brows"></div></div>
+  <div class="ract">
+    <button class="rbtn pr" onclick="goReview()">Review Answers</button>
+    <button class="rbtn" onclick="restart()">New Attempt</button>
+  </div>
+</div>
+
+<div id="review-screen" class="screen">
+  <div class="rvhdr"><div class="rvtitle">Answer Review</div><button class="nb" onclick="restart()">New Test</button></div>
+  <div id="rvlist"></div>
+</div>
+
+</div>
+
+<div class="ov" id="subov">
+  <div class="mdl">
+    <h3>Submit Test?</h3>
+    <p>Answered: <b id="mans">0</b>/100 &nbsp;·&nbsp; Unanswered: <b id="mskip">100</b> (score 0). This action cannot be undone.</p>
+    <div class="mbtns"><button class="mbtn" onclick="closeSub()">Cancel</button><button class="mbtn cf" onclick="doSub()">Confirm Submit</button></div>
+  </div>
+</div>
+<div class="ov" id="tuov">
+  <div class="mdl" style="text-align:center">
+    <div style="font-size:40px;margin-bottom:14px">⏰</div>
+    <h3>Time's Up!</h3>
+    <p>Your 150 minutes are over. The test has been auto-submitted.</p>
+    <div class="mbtns"><button class="mbtn cf" onclick="closeTu()">See Results</button></div>
+  </div>
+</div>
+
+<script>
+const QB=[
+  // BE-01 Units & Measurement
+  {s:"BE-01",t:"Units & Measurement",q:"Which of the following pairs has the same dimensional formula?",o:["Work and Torque","Force and Momentum","Power and Energy","Velocity and Acceleration"],a:0},
+  {s:"BE-01",t:"Units & Measurement",q:"The dimension of Planck's constant h (E = hf) is:",o:["[ML²T⁻¹]","[MLT⁻²]","[ML²T⁻²]","[ML⁻¹T⁻¹]"],a:0},
+  {s:"BE-01",t:"Units & Measurement",q:"A measurement is 5.00 cm. How many significant figures does it have?",o:["1","2","3","4"],a:2},
+  {s:"BE-01",t:"Units & Measurement",q:"The maximum permissible error in a result calculated as Z = A + B is:",o:["ΔA − ΔB","ΔA × ΔB","ΔA + ΔB","ΔA / ΔB"],a:2},
+  {s:"BE-01",t:"Units & Measurement",q:"1 litre = ______ m³:",o:["10⁻²","10⁻³","10⁻⁴","10⁻⁶"],a:1},
+  {s:"BE-01",t:"Units & Measurement",q:"The SI unit of pressure is:",o:["Newton","Pascal","Bar","Dyne"],a:1},
+  // BE-01 Classical Mechanics
+  {s:"BE-01",t:"Classical Mechanics",q:"An object is in equilibrium when the net force acting on it is:",o:["Maximum","Greater than gravity","Zero","Equal to its weight"],a:2},
+  {s:"BE-01",t:"Classical Mechanics",q:"A ball is rolled off a table horizontally. The time it takes to reach the ground depends on:",o:["The horizontal speed","The mass of the ball","The height of the table","Both height and speed"],a:2},
+  {s:"BE-01",t:"Classical Mechanics",q:"The work-energy theorem states that the work done on a body equals:",o:["Its potential energy","Change in its kinetic energy","Total energy","Its momentum"],a:1},
+  {s:"BE-01",t:"Classical Mechanics",q:"If radius of circular motion doubles and speed stays same, centripetal force:",o:["Doubles","Halves","Quadruples","Stays same"],a:1},
+  {s:"BE-01",t:"Classical Mechanics",q:"A 10 N force acts on a body through 5 m in the direction of force. Work done =",o:["2 J","15 J","50 J","500 J"],a:2},
+  {s:"BE-01",t:"Classical Mechanics",q:"Impulse is defined as:",o:["Force × distance","Force × time","Mass × velocity","Mass × acceleration"],a:1},
+  // BE-01 Electric Current
+  {s:"BE-01",t:"Electric Current",q:"The colour code for a 47 Ω resistor (Yellow, Violet, Black) — which colour represents 7?",o:["Yellow","Violet","Black","None"],a:1},
+  {s:"BE-01",t:"Electric Current",q:"In a parallel circuit, the voltage across each branch is:",o:["Different for each branch","Zero","Equal for all branches","Sum of all branches"],a:2},
+  {s:"BE-01",t:"Electric Current",q:"The energy stored in a capacitor C charged to voltage V is:",o:["CV","CV²","½CV²","2CV"],a:2},
+  {s:"BE-01",t:"Electric Current",q:"Conductivity is the reciprocal of:",o:["Resistance","Capacitance","Resistivity","Inductance"],a:2},
+  {s:"BE-01",t:"Electric Current",q:"According to Coulomb's law, force between charges is ______ to the square of distance:",o:["Directly proportional","Inversely proportional","Equal","Independent"],a:1},
+  {s:"BE-01",t:"Electric Current",q:"The unit of electric potential is:",o:["Ampere","Ohm","Volt","Watt"],a:2},
+  // BE-01 Heat & Thermometry
+  {s:"BE-01",t:"Heat & Thermometry",q:"On the Kelvin scale, absolute zero is:",o:["−100°C","0°C","−273.15°C","−373°C"],a:2},
+  {s:"BE-01",t:"Heat & Thermometry",q:"Thermal conductivity measures the ability of a material to:",o:["Absorb heat radiation","Conduct heat","Resist electric current","Store thermal energy"],a:1},
+  {s:"BE-01",t:"Heat & Thermometry",q:"Which mode of heat transfer can occur in a vacuum?",o:["Conduction only","Convection only","Radiation only","Both conduction and convection"],a:2},
+  {s:"BE-01",t:"Heat & Thermometry",q:"If temperature rises from 20°C to 70°C, the rise in Kelvin is:",o:["50 K","323 K","343 K","70 K"],a:0},
+  {s:"BE-01",t:"Heat & Thermometry",q:"The SI unit of heat capacity is:",o:["J/°C (or J/K)","cal","Watt","Joule/kg"],a:0},
+  // BE-01 Wave Motion & Optics
+  {s:"BE-01",t:"Wave Motion & Optics",q:"The speed of light in vacuum is approximately:",o:["3×10⁶ m/s","3×10⁸ m/s","3×10¹⁰ m/s","3×10⁴ m/s"],a:1},
+  {s:"BE-01",t:"Wave Motion & Optics",q:"Which of the following is NOT a property of electromagnetic waves?",o:["They travel in vacuum","They require a medium","They carry energy","They travel at speed of light"],a:1},
+  {s:"BE-01",t:"Wave Motion & Optics",q:"The absorption coefficient in Sabine's formula has units of:",o:["m","m²","m⁻¹","Dimensionless"],a:1},
+  {s:"BE-01",t:"Wave Motion & Optics",q:"In refraction, when light goes from denser to rarer medium:",o:["Bends towards normal","Bends away from normal","Speed decreases","Frequency changes"],a:1},
+  {s:"BE-01",t:"Wave Motion & Optics",q:"A wave with amplitude A carries energy proportional to:",o:["A","A³","A²","1/A"],a:2},
+  {s:"BE-01",t:"Wave Motion & Optics",q:"Audible sound frequency range for humans is:",o:["<20 Hz","20 Hz – 20 kHz","20 kHz – 200 kHz",">200 kHz"],a:1},
+  // BE-01 Chemical Reactions
+  {s:"BE-01",t:"Chemical Reactions",q:"The reaction Fe + CuSO₄ → FeSO₄ + Cu is a:",o:["Combination reaction","Decomposition reaction","Single displacement reaction","Double displacement reaction"],a:2},
+  {s:"BE-01",t:"Chemical Reactions",q:"When electrolysis of water is performed, which gas forms at the cathode?",o:["Oxygen","Hydrogen","Carbon dioxide","Nitrogen"],a:1},
+  {s:"BE-01",t:"Chemical Reactions",q:"A combination reaction involves:",o:["Breaking of one substance into two","Two or more substances forming one product","Exchange of ions","Change of state"],a:1},
+  // BE-01 Acids Bases Salts
+  {s:"BE-01",t:"Acids, Bases & Salts",q:"Which salt is formed by mixing H₂SO₄ and NaOH?",o:["NaCl","Na₂SO₄","NaHSO₄ only","NaNO₃"],a:1},
+  {s:"BE-01",t:"Acids, Bases & Salts",q:"The pH of gastric juice (stomach acid) is approximately:",o:["7","9","2","12"],a:2},
+  {s:"BE-01",t:"Acids, Bases & Salts",q:"Common salt (NaCl) is formed by:",o:["Strong acid + strong base","Weak acid + strong base","Strong acid + weak base","Two metals"],a:0},
+  {s:"BE-01",t:"Acids, Bases & Salts",q:"Milk of magnesia has a pH greater than 7. It is:",o:["Acidic","Neutral","Basic","A salt"],a:2},
+  // BE-01 Metals Non-metals
+  {s:"BE-01",t:"Metals & Non-metals",q:"Metals are generally ______ conductors of electricity:",o:["Poor","Non","Good","Selective"],a:2},
+  {s:"BE-01",t:"Metals & Non-metals",q:"Which of the following is an ionic compound?",o:["CO₂","H₂O","NaCl","HCl (gas)"],a:2},
+  {s:"BE-01",t:"Metals & Non-metals",q:"Galvanisation protects iron from rusting by coating it with:",o:["Tin","Copper","Zinc","Aluminium"],a:2},
+  // BE-01 Computer Practice
+  {s:"BE-01",t:"Computer Practice",q:"The extension of a Word document file is:",o:[".ppt",".xls",".doc or .docx",".pdf"],a:2},
+  {s:"BE-01",t:"Computer Practice",q:"In HTML, <br> tag is used for:",o:["Bold text","Line break","Hyperlink","Image insertion"],a:1},
+  {s:"BE-01",t:"Computer Practice",q:"Which shortcut key is used to print a document in MS Word?",o:["Ctrl+S","Ctrl+P","Ctrl+D","Ctrl+R"],a:1},
+  {s:"BE-01",t:"Computer Practice",q:"The Internet protocol that assigns an address to each device on a network is:",o:["HTTP","FTP","IP (Internet Protocol)","SMTP"],a:2},
+  {s:"BE-01",t:"Computer Practice",q:"Which function in Excel counts only numeric cells?",o:["=COUNTA()","=COUNT()","=COUNTIF()","=SUM()"],a:1},
+  // BE-01 Environmental Sciences
+  {s:"BE-01",t:"Environmental Sciences",q:"Geothermal energy is obtained from:",o:["Burning biomass","Tidal waves","Heat from inside the Earth","Solar radiation underground"],a:2},
+  {s:"BE-01",t:"Environmental Sciences",q:"Which gas is NOT a greenhouse gas?",o:["CO₂","CH₄","N₂O","O₂"],a:3},
+  {s:"BE-01",t:"Environmental Sciences",q:"Water pollution caused by excess fertilisers leads to:",o:["Acid rain","Eutrophication","Ozone depletion","Smog"],a:1},
+  {s:"BE-01",t:"Environmental Sciences",q:"The primary source of energy for almost all ecosystems on Earth is:",o:["Wind","Geothermal energy","Solar energy","Chemical energy"],a:2},
+  {s:"BE-01",t:"Environmental Sciences",q:"Solar panels convert solar energy directly into:",o:["Heat","Mechanical energy","Electrical energy","Chemical energy"],a:2},
+
+  // BE-02 Determinants & Matrices
+  {s:"BE-02",t:"Determinants & Matrices",q:"If A is a 2×3 matrix and B is a 3×2 matrix, the order of AB is:",o:["3×3","2×2","2×3","3×2"],a:1},
+  {s:"BE-02",t:"Determinants & Matrices",q:"A diagonal matrix has non-zero elements:",o:["Only in top row","Only in diagonal positions","Everywhere except diagonal","In last row only"],a:1},
+  {s:"BE-02",t:"Determinants & Matrices",q:"det([[a,b],[c,d]]) =",o:["ac − bd","ad + bc","ad − bc","ab − cd"],a:2},
+  {s:"BE-02",t:"Determinants & Matrices",q:"The inverse of matrix A exists only if:",o:["det(A) = 1","det(A) ≠ 0","A is a row matrix","A is symmetric"],a:1},
+  {s:"BE-02",t:"Determinants & Matrices",q:"If A = [[3,0],[0,3]], then A is a:",o:["Null matrix","Identity matrix","Scalar matrix","Rectangular matrix"],a:2},
+  // BE-02 Trigonometry
+  {s:"BE-02",t:"Trigonometry",q:"cos(60°) =",o:["√3/2","1/√2","1/2","0"],a:2},
+  {s:"BE-02",t:"Trigonometry",q:"1 radian = ______ degrees (approximately):",o:["45°","57.3°","90°","180°"],a:1},
+  {s:"BE-02",t:"Trigonometry",q:"cos(A − B) =",o:["cosA cosB + sinA sinB","cosA cosB − sinA sinB","sinA cosB + cosA sinB","sinA sinB − cosA cosB"],a:0},
+  {s:"BE-02",t:"Trigonometry",q:"sec²θ − tan²θ =",o:["0","2","1","cosec²θ"],a:2},
+  // BE-02 Vectors
+  {s:"BE-02",t:"Vectors",q:"If vector A = 3î + 4ĵ, its magnitude is:",o:["7","1","5","12"],a:2},
+  {s:"BE-02",t:"Vectors",q:"The scalar product of î and ĵ (unit vectors) is:",o:["1","0","−1","Undefined"],a:1},
+  {s:"BE-02",t:"Vectors",q:"A null vector has:",o:["Magnitude 1 and no direction","Magnitude 0 and arbitrary direction","Magnitude 0 and fixed direction","Magnitude 1 and fixed direction"],a:1},
+  // BE-02 Coordinate Geometry
+  {s:"BE-02",t:"Coordinate Geometry",q:"The distance between points (1,2) and (4,6) is:",o:["3","4","5","7"],a:2},
+  {s:"BE-02",t:"Coordinate Geometry",q:"The general form of a circle equation is x²+y²+2gx+2fy+c=0. Its centre is:",o:["(g,f)","(−g,−f)","(2g,2f)","(f,g)"],a:1},
+  {s:"BE-02",t:"Coordinate Geometry",q:"The slope of a vertical line is:",o:["0","1","−1","Undefined"],a:3},
+  // BE-02 Function & Limit
+  {s:"BE-02",t:"Function & Limit",q:"lim(x→0) (1−cosx)/x² =",o:["0","1","1/2","2"],a:2},
+  {s:"BE-02",t:"Function & Limit",q:"If f(x) = 3x + 2, then f(4) =",o:["10","12","14","6"],a:2},
+  {s:"BE-02",t:"Function & Limit",q:"lim(x→∞) (2x+1)/(3x+2) =",o:["1/2","2/3","1","0"],a:1},
+  // BE-02 Differentiation
+  {s:"BE-02",t:"Differentiation",q:"d/dx (x³ − 5x + 2) =",o:["3x² − 5","3x² + 5","x² − 5","3x − 5"],a:0},
+  {s:"BE-02",t:"Differentiation",q:"If y = sin(3x), then dy/dx =",o:["cos(3x)","−3cos(3x)","3cos(3x)","−cos(3x)"],a:2},
+  {s:"BE-02",t:"Differentiation",q:"Quotient rule: d/dx(u/v) =",o:["(v·du/dx − u·dv/dx)/v²","(u·dv/dx − v·du/dx)/v²","(du/dx)/(dv/dx)","u·dv/dx + v·du/dx"],a:0},
+  {s:"BE-02",t:"Differentiation",q:"The velocity of a particle is v = ds/dt. Acceleration is:",o:["d²s/dt","ds/dt²","d²s/dt²","ds²/dt"],a:2},
+  {s:"BE-02",t:"Differentiation",q:"d/dx (log x) [base e] =",o:["x","1/x","log x","e^x"],a:1},
+  // BE-02 Integration
+  {s:"BE-02",t:"Integration",q:"∫(3x² + 2) dx =",o:["6x + C","x³ + 2x + C","3x³ + 2x + C","x²/2 + C"],a:1},
+  {s:"BE-02",t:"Integration",q:"∫₀² (2x) dx =",o:["2","4","8","16"],a:1},
+  {s:"BE-02",t:"Integration",q:"∫tan x dx =",o:["sec²x + C","−ln|cosx| + C","ln|cosx| + C","cot x + C"],a:1},
+  {s:"BE-02",t:"Integration",q:"Integration is the reverse process of:",o:["Multiplication","Differentiation","Addition","Limits"],a:1},
+  {s:"BE-02",t:"Integration",q:"∫₁³ (1) dx =",o:["1","2","3","0"],a:1},
+  // BE-02 Logarithm
+  {s:"BE-02",t:"Logarithm",q:"If log₁₀ x = 2, then x =",o:["2","20","100","1000"],a:2},
+  {s:"BE-02",t:"Logarithm",q:"log₁₀(1) =",o:["1","0","10","Undefined"],a:1},
+  {s:"BE-02",t:"Logarithm",q:"log₂(32) =",o:["4","5","6","8"],a:1},
+  // BE-02 Statistics
+  {s:"BE-02",t:"Statistics",q:"Median of {4, 8, 12, 16, 20} is:",o:["8","12","16","10"],a:1},
+  {s:"BE-02",t:"Statistics",q:"The mode of a dataset is the value that:",o:["Has the highest value","Appears most frequently","Is the middle value","Is the average"],a:1},
+  // BE-02 Comprehension
+  {s:"BE-02",t:"Comprehension",q:"'He was too tired to continue.' This sentence indicates:",o:["He continued despite tiredness","He did not continue because of tiredness","He was slightly tired","He was energetic"],a:1},
+  {s:"BE-02",t:"Comprehension",q:"'The committee will reconvene next week.' 'Reconvene' means:",o:["Cancel the meeting","Meet again","Vote","Disagree"],a:1},
+  {s:"BE-02",t:"Comprehension",q:"'She not only passed the exam but also secured the top rank.' This sentence uses:",o:["Simple structure","Not only…but also (correlative conjunctions)","A gerund","Passive voice"],a:1},
+  {s:"BE-02",t:"Comprehension",q:"'The proposal was tabled for further discussion.' 'Tabled' here means:",o:["Thrown away","Placed on a table literally","Postponed for later consideration","Approved immediately"],a:2},
+  {s:"BE-02",t:"Comprehension",q:"'Despite the obstacles, the team achieved its goal.' The word 'Despite' shows:",o:["Reason","Result","Concession/Contrast","Purpose"],a:2},
+  // BE-02 Communication
+  {s:"BE-02",t:"Theory of Communication",q:"Which of the following is a channel of communication?",o:["The sender's emotion","The message content","Email, phone, letter","The receiver's attitude"],a:2},
+  {s:"BE-02",t:"Theory of Communication",q:"Grapevine communication in an organisation is:",o:["Formal downward communication","Informal communication network","Written official communication","Communication via email only"],a:1},
+  {s:"BE-02",t:"Theory of Communication",q:"Kinesics refers to communication through:",o:["Written language","Voice tone and pitch","Body movements and gestures","Electronic media"],a:2},
+  {s:"BE-02",t:"Theory of Communication",q:"'Noise' in the communication model refers to:",o:["Loud sound only","Anything that distorts or interferes with the message","Volume of the speaker's voice","Background music"],a:1},
+  {s:"BE-02",t:"Theory of Communication",q:"Horizontal communication occurs between:",o:["Superior and subordinate","Peers at the same level","Company and customers","Company and government"],a:1},
+  // BE-02 Writing
+  {s:"BE-02",t:"Techniques of Writing",q:"Which of the following best describes the tone of a formal business letter?",o:["Casual and friendly","Emotional and personal","Professional and polite","Humorous and informal"],a:2},
+  {s:"BE-02",t:"Techniques of Writing",q:"An adjustment letter is written in response to a:",o:["Job application","Complaint letter","Sales inquiry","Order confirmation"],a:1},
+  {s:"BE-02",t:"Techniques of Writing",q:"Which abbreviation means 'as soon as possible'?",o:["AKA","ASAP","ATM","FYI"],a:1},
+  {s:"BE-02",t:"Techniques of Writing",q:"The complimentary close of a formal letter is:",o:["'Dear Sir/Madam'","'To whom it may concern'","'Yours sincerely / faithfully'","'Subject:'"],a:2},
+  {s:"BE-02",t:"Techniques of Writing",q:"In a business reply letter, acknowledgement of the original letter should appear:",o:["At the end","In a P.S. note","At the beginning of the body","Only if necessary"],a:2},
+  // BE-02 Grammar
+  {s:"BE-02",t:"Grammar",q:"'He ________ (work) in this company for five years.' Correct form:",o:["works","worked","has been working","is working"],a:2},
+  {s:"BE-02",t:"Grammar",q:"A conjunction joins:",o:["A noun and a verb","Words, phrases, or clauses","A noun and an adjective","A verb and an adverb"],a:1},
+  {s:"BE-02",t:"Grammar",q:"'The team ______ playing well.' (Subject-verb agreement)",o:["are","were","is","have"],a:2},
+  {s:"BE-02",t:"Grammar",q:"Identify the adverb: 'She runs very quickly.'",o:["She","runs","very","quickly"],a:3},
+  {s:"BE-02",t:"Grammar",q:"Which sentence uses the correct form?",o:["He have been there.","He had went there.","He has been there.","He have went there."],a:2},
+  // BE-02 Word/Sentence Correction
+  {s:"BE-02",t:"Word & Sentence Correction",q:"Choose the correct spelling:",o:["Peice","Piece","Pecie","Peece"],a:1},
+  {s:"BE-02",t:"Word & Sentence Correction",q:"Choose the correct spelling:",o:["Questionaire","Questionnair","Questionnaire","Questionair"],a:2},
+  {s:"BE-02",t:"Word & Sentence Correction",q:"Choose the correct spelling:",o:["Definately","Definitly","Definitely","Definetly"],a:2},
+  {s:"BE-02",t:"Word & Sentence Correction",q:"Choose the correct spelling:",o:["Seperate","Separate","Seperete","Seperate"],a:1},
+  {s:"BE-02",t:"Word & Sentence Correction",q:"Choose the grammatically correct sentence:",o:["She is one of the student who have passed.","She is one of the students who have passed.","She is one of the students who has passed.","She is one of the student who has passed."],a:1},
+];
+
+let qs=[],ans=[],cur=0,secs=9000,tint=null,done=false;
+const K=['A','B','C','D'];
+function sh(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0);}
+
+function startTest(){
+  const b1=sh(QB.filter(q=>q.s==="BE-01")).slice(0,50);
+  const b2=sh(QB.filter(q=>q.s==="BE-02")).slice(0,50);
+  qs=[...b1,...b2];ans=new Array(100).fill(-1);cur=0;secs=9000;done=false;
+  show('test-screen');buildPal();renderQ();
+  tint=setInterval(tick,1000);
+}
+function tick(){
+  secs--;if(secs<=0){clearInterval(tint);calcRes();document.getElementById('tuov').classList.add('show');return;}
+  const m=Math.floor(secs/60),s=secs%60;
+  const el=document.getElementById('timer');
+  el.textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  el.className='timer'+(secs<=300?' warn':'');
+}
+function closeTu(){document.getElementById('tuov').classList.remove('show');show('result-screen');}
+function buildPal(){
+  const g=document.getElementById('pgrid');g.innerHTML='';
+  for(let i=0;i<100;i++){
+    const d=document.createElement('div');d.className='pdot'+(i===0?' cu':'');d.id='p'+i;d.textContent=i+1;
+    d.onclick=(()=>{const x=i;return()=>{cur=x;renderQ();updPal();}})();g.appendChild(d);
+  }
+}
+function updPal(){
+  let n=0;
+  for(let i=0;i<100;i++){
+    const d=document.getElementById('p'+i);if(!d)continue;
+    let c='pdot';if(ans[i]!==-1){c+=' an';n++;}if(i===cur)c+=' cu';d.className=c;
+  }
+  document.getElementById('acnt').textContent=n;
+}
+function renderQ(){
+  const q=qs[cur];const p1=cur<50;
+  const pp=document.getElementById('ppill');pp.textContent=p1?'BE-01':'BE-02';pp.className='pill '+(p1?'a1':'a2');
+  document.getElementById('tpill').textContent=q.t;
+  document.getElementById('qctr').textContent=`Q ${cur+1}/100`;
+  document.getElementById('qidx').textContent=`Question ${cur+1} of 100`;
+  document.getElementById('qtxt').textContent=q.q;
+  document.getElementById('pfill').style.width=((cur+1)/100*100)+'%';
+  const oc=document.getElementById('opts');oc.innerHTML='';
+  q.o.forEach((o,i)=>{
+    const b=document.createElement('button');
+    let c='opt';
+    if(done){if(i===q.a)c+=' hl';else if(i===ans[cur]&&ans[cur]!==q.a)c+=' wr';}
+    else if(i===ans[cur])c+=' sel';
+    b.className=c;b.innerHTML=`<span class="okey">${K[i]}</span><span>${o}</span>`;
+    if(!done)b.onclick=(()=>{const x=i;return()=>{ans[cur]=x;updPal();renderQ();}})();
+    oc.appendChild(b);
+  });
+  document.getElementById('prevb').disabled=cur===0;
+  document.getElementById('nextb').textContent=cur===99?'Finish ✓':'Next →';
+  updSc();
+}
+function nav(d){
+  if(d===1&&cur===99){openSub();return;}
+  cur=Math.max(0,Math.min(99,cur+d));renderQ();updPal();
+}
+function updSc(){
+  let sc=0;ans.forEach((a,i)=>{if(a!==-1)sc+=(a===qs[i].a?2:-0.5);});
+  document.getElementById('scpill').textContent=`Score: ${sc%1===0?sc:sc.toFixed(1)}`;
+}
+function openSub(){
+  const n=ans.filter(a=>a!==-1).length;
+  document.getElementById('mans').textContent=n;document.getElementById('mskip').textContent=100-n;
+  document.getElementById('subov').classList.add('show');
+}
+function closeSub(){document.getElementById('subov').classList.remove('show');}
+function doSub(){closeSub();clearInterval(tint);done=true;calcRes();show('result-screen');}
+function calcRes(){
+  let c=0,w=0,sk=0,sc=0;
+  ans.forEach((a,i)=>{if(a===-1)sk++;else if(a===qs[i].a){c++;sc+=2;}else{w++;sc-=0.5;}});
+  document.getElementById('res-score').textContent=sc%1===0?sc:sc.toFixed(1);
+  document.getElementById('rc').textContent=c;document.getElementById('rw').textContent=w;document.getElementById('rs').textContent=sk;
+  const pct=sc/200*100;let vt='',vc='';
+  if(pct>=80){vt='Excellent';vc='ve';}else if(pct>=60){vt='Good Performance';vc='vg';}else if(pct>=40){vt='Average';vc='va';}else{vt='Needs Improvement';vc='vp';}
+  const v=document.getElementById('res-verdict');v.textContent=vt;v.className='vtag '+vc;
+  const ps=[{n:'BE-01: Science & Engineering',s:0,e:50},{n:'BE-02: Aptitude & Soft Skills',s:50,e:100}];
+  const br=document.getElementById('brows');br.innerHTML='';
+  ps.forEach(p=>{
+    let c2=0,t=0;for(let i=p.s;i<p.e;i++){if(ans[i]!==-1){t++;if(ans[i]===qs[i].a)c2++;}}
+    const pp=t>0?Math.round(c2/t*100):0;const fc=pp>60?'var(--green)':pp>40?'var(--amber)':'var(--red)';
+    br.innerHTML+=`<div class="brow"><span class="bname">${p.n}</span><div class="bbar"><div class="bfill" style="width:${pp}%;background:${fc}"></div></div><span class="bsc">${c2}/${p.e-p.s}</span></div>`;
+  });
+}
+function goReview(){done=true;buildRv();show('review-screen');}
+function buildRv(){
+  const l=document.getElementById('rvlist');l.innerHTML='';
+  qs.forEach((q,i)=>{
+    const ua=ans[i];let rs='rs',rt='Skipped / 0';
+    if(ua!==-1){rs=ua===q.a?'rc':'rw';rt=ua===q.a?'+2 Correct':'−0.5 Wrong';}
+    const d=document.createElement('div');d.className=`rq ${rs}`;
+    const opts=q.o.map((o,j)=>{let c='rqopt';if(j===q.a)c+=' ic';else if(j===ua&&ua!==q.a)c+=' ws';return`<div class="${c}"><span style="font-family:'Space Mono',monospace;font-size:10px;min-width:16px">${K[j]}</span><span>${o}</span></div>`;}).join('');
+    d.innerHTML=`<div class="rqm"><span class="rqn">Q${i+1}</span><span class="rqt">${q.t}</span><span class="rqs ${rs==='rc'?'c':rs==='rw'?'w':'s'}">${rt}</span></div><div class="rqtxt">${q.q}</div><div class="rqopts">${opts}</div>`;
+    l.appendChild(d);
+  });
+}
+function restart(){clearInterval(tint);done=false;show('start-screen');}
+</script>
+</body>
+</html>
